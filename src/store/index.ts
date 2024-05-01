@@ -1,15 +1,15 @@
+import type { Store } from 'vuex'
+import { createStore } from 'vuex'
+import { syllabusStore } from './modules/syllabus'
 import type { InjectionKey } from 'vue'
-import type { Store } from 'vuex/types/index.js'
-import { createStore } from 'vuex/types/index.js'
 
-interface State {
-    courses: string[]
-}
+export const key: InjectionKey<Store<any>> = Symbol('store')
 
-export const key: InjectionKey<Store<State>> = Symbol('store')
-
-export const store = createStore<State>({
-    state: {
-        courses: ['Math', 'English', 'Science'],
+export const store = createStore({
+    modules: {
+        syllabus: {
+            namespaced: true,
+            ...syllabusStore,
+        },
     },
 })

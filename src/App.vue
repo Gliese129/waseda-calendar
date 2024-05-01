@@ -1,5 +1,11 @@
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import Navigator from './components/Navigator.vue'
+import { store } from '@/store/index'
+
+onMounted(() => {
+    store.dispatch('syllabus/refresh')
+})
 </script>
 
 <template>

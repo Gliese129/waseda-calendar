@@ -42,7 +42,7 @@ const termShow = [
       </v-chip>
     </div>
   </div>
-  <v-infinite-scroll :height="250" :items="courses" @load="onLoad">
+  <v-infinite-scroll height="50vh" :items="courses" @load="onLoad">
     <template v-for="item in courses" :key="item.name">
       <course-outline :item="item" />
     </template>

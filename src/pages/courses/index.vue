@@ -8,10 +8,12 @@ import type { Course } from '@/model/course'
 
 const form = reactive<SearchParams>({
     keyword: '',
+    name: '',
     term: null,
     dayOfWeek: null,
     period: null,
     pageId: 0,
+    departmentId: null,
 })
 
 const newSearch = async () => {
@@ -44,6 +46,15 @@ const appendSearch = async () => {
         lock.value = false
     }
 }
+const clearForm = () => {
+    form.keyword = ''
+    form.name = ''
+    form.term = null
+    form.dayOfWeek = null
+    form.period = null
+    form.pageId = 0
+    newSearch()
+}
 
 const courses = reactive<Course[]>([])
 const isLastPage = ref(false)
@@ -52,7 +63,7 @@ const lock = ref(false)
 </script>
 
 <template>
-  <Search v-model="form" @search="newSearch" />
+  <Search v-model="form" @search="newSearch" @clear="clearForm" />
   <v-divider></v-divider>
   <ShowList v-model="courses" :lastPage="isLastPage" @search="appendSearch" />
 </template>

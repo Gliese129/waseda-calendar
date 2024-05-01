@@ -1,29 +1,45 @@
 <script setup lang="ts">
 import type { SearchParams } from '@/api/syllabus/course'
 import { dayOfWeek, term, timeOfDay } from '@/resources/courses-date'
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
 
-const emit = defineEmits(['search'])
+const emit = defineEmits(['search', 'clear'])
 const form = defineModel<SearchParams>() as unknown as SearchParams
+const store = useStore()
 
 const clearForm = () => {
-    form.keyword = ''
-    form.term = null
-    form.dayOfWeek = null
-    form.period = null
-    form.pageId = 1
+    emit('clear')
     emit('search')
 }
+const isKeyword = ref(false)
+
+const departments = computed(() => store.state.syllabus.departments) as unknown as { name: string, value: number }[]
 </script>
 
 <template>
   <v-form id="courses-form">
     <v-row>
-      <v-col cols="3" class="label"> Keyword </v-col>
+      <v-col cols="3" class="label"> 
+        <v-btn variant="text" class="text-none" @click="isKeyword = !isKeyword">
+          {{ isKeyword ? 'Keyword' : 'Name' }}
+        </v-btn>
+      </v-col>
       <v-col cols="9">
         <v-text-field
+          v-show="isKeyword"
           v-model="form.keyword"
           label="Keyword"
-          density="comfortable"
+          density="compact"
+          clearable
+          class="text-medium-emphasis"
+          @update:model-value="$emit('search')"
+        ></v-text-field>
+        <v-text-field
+          v-show="!isKeyword"
+          v-model="form.name"
+          label="Name"
+          density="compact"
           clearable
           class="text-medium-emphasis"
           @update:model-value="$emit('search')"
@@ -66,6 +82,21 @@ const clearForm = () => {
         ></v-select>
       </v-col>
     </v-row>
+    <v-row>
+      <v-col cols="3" class="label"> Dept </v-col>
+      <v-col cols="9">
+        <v-autocomplete
+          v-model="form.departmentId"
+          label="Department"
+          :items="departments"
+          item-text="name"
+          item-value="value"
+          density="compact"
+          clearable
+          @update:model-value="$emit('search')"
+        ></v-autocomplete>
+      </v-col>
+    </v-row>
 
     <v-row>
       <v-col cols="6">
@@ -94,5 +125,11 @@ const clearForm = () => {
     vertical-align: middle;
     font-size: 1.1em;
     margin: auto;
+  }
+  .v-text-field {
+    margin-bottom: 5px;
+  }
+  :deep(.v-input__details) {
+    display: none;
   }
 </style>
