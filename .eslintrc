@@ -1,0 +1,55 @@
+{
+  "extends": ["alloy", "alloy/typescript", "alloy/vue"],
+  "parser": "vue-eslint-parser",
+  "parserOptions": {
+    "parser": {
+      "js": "@babel/eslint-parser",
+      "jsx": "@babel/eslint-parser",
+      "ts": "@typescript-eslint/parser",
+      "tsx": "@typescript-eslint/parser"
+    }
+  },
+  "env": {},
+  "globals": {},
+  "rules": {
+    "vue/script-indent": [
+      "error",
+      4,
+      {
+        "baseIndent": 0,
+        "switchCase": 1,
+        "ignores": []
+      }
+    ],
+    "@typescript-eslint/no-unused-vars": "off",
+    "vue/no-empty-component-block": "off",
+    "guard-for-in": "off"
+  },
+  "overrides": [
+    {
+      "files": ["*.vue"],
+      "rules": {
+        "indent": "off"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/indent": ["error", 4]
+      }
+    },
+    {
+      "files": ["*.json"],
+      "rules": {
+        "indent": [
+          "error",
+          4,
+          {
+            "SwitchCase": 1,
+            "ignoredNodes": ["ObjectExpression"]
+          }
+        ]
+      }
+    }
+  ]
+}
