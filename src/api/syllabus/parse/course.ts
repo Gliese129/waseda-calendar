@@ -30,4 +30,19 @@ const getCoursesList = async (html: string) => {
     return courses
 }
 
-export { getCoursesList }
+const getCourseDetail = async (html: string, course: Course) => {
+    let $ = load(html)
+    let courseTable = $('.ct-sirabasu').first().children()
+    let syllabusTable = $('.ct-sirabasu').eq(1).children()
+    course.credits = parseInt(
+        courseTable.children().eq(4).children().eq(5).text(),
+        10
+    )
+    console.log(courseTable.children().eq(0).text())
+    course.campus = courseTable.children().eq(5).children().eq(3).text()
+    course.textbook = syllabusTable.children().eq(6).children().eq(1).text()
+    course.departmentFull = courseTable.children().eq(0).children().eq(3).text()
+    return course
+}
+
+export { getCoursesList, getCourseDetail }

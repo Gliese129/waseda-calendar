@@ -12,12 +12,15 @@ const instance = axios.create({
 const isWeb = (): boolean => {
     return Capacitor.getPlatform() === 'web'
 }
-instance.interceptors.response.use((response) => {
-    return response.data
-}, (error) => {
-    console.error(error)
-    return Promise.reject(error)
-})
+instance.interceptors.response.use(
+    (response) => {
+        return response.data
+    },
+    (error) => {
+        console.error(error)
+        return Promise.reject(error)
+    }
+)
 
 const get = async (url: string, params: any = {}): Promise<any> => {
     if (isWeb()) return await instance.get(url, { params })

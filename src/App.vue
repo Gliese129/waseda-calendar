@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted } from 'vue'
 import Navigator from './components/Navigator.vue'
 import { store } from '@/store/index'
 
@@ -10,24 +10,26 @@ onMounted(() => {
 
 <template>
   <v-app id="mobile">
-    <v-app-bar>
+    <v-app-bar app>
       <v-app-bar-title>Application</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
-      <router-view />
+      <v-container fluid>
+        <router-view />
+      </v-container>
     </v-main>
 
-    <v-bottom-navigation fixed> <Navigator /> </v-bottom-navigation>
+    <v-bottom-navigation app> <Navigator /> </v-bottom-navigation>
   </v-app>
 </template>
 
 <style scoped>
-  v-bottom-navigation {
+  .v-bottom-navigation {
     align-items: center;
   }
-  html {
-    overflow-y: auto !important;
+  .v-main {
+    height: fit-content;
   }
 </style>
 <style></style>

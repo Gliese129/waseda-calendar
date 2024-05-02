@@ -6,12 +6,18 @@ export class Course {
     public code: string
     public name: string
     public teachers: string[]
-    public department
+    public department: string
     public timePlace: TimePlaceInfo[]
     public PeriodStr: string | null | undefined // this param is only used when period str cannot be parsed
     public classroomStr: string | null | undefined // this param is only used when period str cannot be parsed
     public url: string
     public key: string
+    // the following params are only shown in the detail page
+    public credits: number | null | undefined
+    public campus: string | null | undefined
+    public leastGrade: string | null | undefined // the least grade to take this course
+    public textbook: string | null | undefined
+    public departmentFull: string | null | undefined
 
     public constructor(code: string, name: string) {
         this.code = code
@@ -56,12 +62,7 @@ export class Course {
         let term = termStr.split('\n').map((t) => this.termStr2Num(t))
 
         // broadcast the same term to all timePlace
-        const lengths = [
-            term.length,
-            days.length,
-            periods.length,
-            classrooms.length,
-        ]
+        const lengths = [term.length, days.length, periods.length]
         let lca = MathUtils.lca(lengths)
         // the only case that could broadcast is when there is only 1 and lca in the lengths
         for (const length of lengths) {

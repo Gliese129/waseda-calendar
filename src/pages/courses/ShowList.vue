@@ -1,13 +1,15 @@
 <script setup lang="ts">
+import { fetchCoursesDetail } from '@/api/syllabus/course'
 import CourseOutline from '@/components/CourseOutline.vue'
+import CourseEdit from '@/components/CourseEdit.vue'
 import type { Course } from '@/model/course'
-import { defineEmits, defineModel } from 'vue'
+import { defineEmits, defineModel, ref } from 'vue'
 const emit = defineEmits(['search'])
 const courses = defineModel<Course[]>()
 const isLastPage = defineModel('lastPage')
 
 async function onLoad({ done }: { done: Function }) {
-    if (courses.length >= 100) return done('error')
+    if ((courses.value?.length || 0) >= 100) return done('error')
     emit('search')
     if (isLastPage.value) return done('empty')
     done('ok')
@@ -31,6 +33,21 @@ const termShow = [
         color: '#2196F3',
     },
 ]
+// dialog
+const dialogActive = ref(false)
+const selectedCourse = ref<Course | null>(null)
+
+const loadCourse = async (course: Course) => {
+    console.log(`clicked course: ${course.name}`)
+    dialogActive.value = true
+    selectedCourse.value = course
+    await fetchCoursesDetail(course)
+}
+
+const openInNew = (url: string | undefined) => {
+    if (!url) return
+    window.open(url, '_blank')
+}
 </script>
 
 <template>
@@ -44,7 +61,7 @@ const termShow = [
   </div>
   <v-infinite-scroll height="50vh" :items="courses" @load="onLoad">
     <template v-for="item in courses" :key="item.name">
-      <course-outline :item="item" />
+      <course-outline :item="item" @click="loadCourse(item)" />
     </template>
     <template #empty>
       <v-alert color="info" dense> No more courses to show </v-alert>
@@ -55,9 +72,43 @@ const termShow = [
       </v-alert>
     </template>
   </v-infinite-scroll>
-  <span style="color: gray; font-size: 0.8em"
-    >Tip: due to the size, only the first teacher and period will be shown</span
-  >
+  <span style="color: gray; font-size: 0.8em">
+    Tip: due to the size limit, only the first teacher and period will be shown
+  </span>
+  <v-dialog v-model="dialogActive" fullscreen>
+    <v-card
+      :title="selectedCourse?.name"
+      :subtitle="
+        selectedCourse
+          ? selectedCourse.departmentFull || selectedCourse.department
+          : 'Unknown'
+      "
+    >
+      <div class="inner-content">
+        <v-expansion-panels>
+          <v-expansion-panel>
+            <template #title>
+              <p>Syllabus Raw Content</p>
+              <v-btn
+                icon="mdi-open-in-new"
+                style="margin-left: 10px"
+                @click.stop="openInNew(selectedCourse?.url)"
+              ></v-btn>
+            </template>
+            <template #text>
+              <iframe
+                :src="selectedCourse?.url"
+                class="raw-content"
+                frameborder="0"
+              ></iframe>
+            </template>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <course-edit :item="selectedCourse" />
+      </div>
+      <v-btn @click="dialogActive = false"> close </v-btn>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
@@ -68,5 +119,18 @@ const termShow = [
   .term-group {
     display: inline-block;
     margin: 3px 0;
+  }
+  .inner-content {
+    width: 90%;
+    margin: 0 auto;
+  }
+  .raw-content {
+    width: 100%;
+    margin: auto;
+    height: 30vh;
+  }
+  :deep(.v-expansion-panel-title) {
+    padding-top: 5px;
+    padding-bottom: 5px;
   }
 </style>

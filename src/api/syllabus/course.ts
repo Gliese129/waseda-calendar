@@ -1,3 +1,4 @@
+import type { Course } from '@/model/course'
 import Http from './http'
 
 export interface SearchParams {
@@ -10,7 +11,7 @@ export interface SearchParams {
     departmentId: number | null
 }
 
-import { getCoursesList } from './parse/course'
+import { getCourseDetail, getCoursesList } from './parse/course'
 const fetchCoursesList = async (form: SearchParams) => {
     const formData: any = {}
     if (form.keyword) formData['keyword'] = form.keyword
@@ -27,4 +28,12 @@ const fetchCoursesList = async (form: SearchParams) => {
     return getCoursesList(html)
 }
 
-export { fetchCoursesList }
+const fetchCoursesDetail = async (course: Course) => {
+    let url = '/JAA104.php?pKey=' + course.key
+    let html: string = await Http.get(url)
+    await getCourseDetail(html, course)
+    console.log('detailed course info: ', course)
+    return course
+}
+
+export { fetchCoursesList, fetchCoursesDetail }

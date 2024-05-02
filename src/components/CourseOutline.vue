@@ -30,7 +30,7 @@ const showPeriod = (period: number[]): string => {
 }
 </script>
 <template>
-  <v-card class="course" elevation="4">
+  <v-card class="course" elevation="4" link>
     <template v-slot:text>
       <h2 class="name">{{ course.name }}</h2>
       <div class="info">
@@ -58,9 +58,10 @@ const showPeriod = (period: number[]): string => {
             ></div>
             {{ dayOfWeek[course.timePlace[0].day] }}
             {{ showPeriod(course.timePlace[0].period) }}
-
-            <v-icon>mdi-google-classroom</v-icon>
-            {{ course.timePlace[0].classroom }}
+            <div v-if="course.timePlace[0].classroom">
+              <v-icon>mdi-google-classroom</v-icon>
+              {{ course.timePlace[0].classroom }}
+            </div>
           </v-chip>
           <v-chip v-else class="time-place-name" color="grey">
             <v-icon>mdi-calendar-clock-outline</v-icon>

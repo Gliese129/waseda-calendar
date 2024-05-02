@@ -53,6 +53,7 @@ const clearForm = () => {
     form.dayOfWeek = null
     form.period = null
     form.pageId = 0
+    form.departmentId = null
     newSearch()
 }
 
