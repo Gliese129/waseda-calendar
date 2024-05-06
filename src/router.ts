@@ -5,10 +5,10 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            component: () => import('./pages/HelloWorld.vue'),
+            component: () => import('./pages/home/index.vue'),
         },
         {
-            path: '/courses',
+            path: '/search',
             component: () => import('@/pages/courses/index.vue'),
         },
     ],

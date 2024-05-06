@@ -1,17 +1,26 @@
+/**
+ * This store contains basic information about Waseda course system.
+ */
 import { fetchDepartments } from '@/api/syllabus/basic'
+import { searchLocalBeforeNetwork } from '@/utils/storage'
 
 export interface SyllabusState {
     departments: {
         title: string
         value: string
     }[]
+    periods: {
+        start: Date
+        end: Date
+    }[]
 }
 
-const baseFolder = 'syllabus'
+const baseFolder = 'syllabus/'
 
 export const syllabusStore = {
     state: {
         departments: [],
+        periods: [],
     },
     mutations: {
         setDepartments(state: SyllabusState, departments: any) {

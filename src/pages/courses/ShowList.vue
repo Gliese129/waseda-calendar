@@ -2,7 +2,7 @@
 import { fetchCoursesDetail } from '@/api/syllabus/course'
 import CourseOutline from '@/components/CourseOutline.vue'
 import CourseEdit from '@/components/CourseEdit.vue'
-import type { Course } from '@/model/course'
+import { Course } from '@/model/course'
 import { defineEmits, defineModel, ref } from 'vue'
 import { reactive } from 'vue'
 import TermOverview from '@/components/TermOverview.vue'
@@ -24,8 +24,8 @@ const selectedCourse: Course = reactive<Course>({} as any)
 const loadCourse = async (course: Course) => {
     console.log(`clicked course: ${course.name}`)
     dialogActive.value = true
-    Object.assign(selectedCourse, course)
-    await fetchCoursesDetail(course)
+    Course.deepCopy(selectedCourse, course)
+    await fetchCoursesDetail(selectedCourse)
 }
 
 const openInNew = (url: string | undefined) => {
@@ -81,7 +81,10 @@ const openInNew = (url: string | undefined) => {
             </template>
           </v-expansion-panel>
         </v-expansion-panels>
-        <course-edit :item="selectedCourse" />
+        <course-edit
+          :origin="selectedCourse"
+          @after-save="dialogActive = false"
+        />
       </div>
       <v-btn @click="dialogActive = false"> close </v-btn>
     </v-card>
@@ -93,7 +96,7 @@ const openInNew = (url: string | undefined) => {
     max-width: 80vw;
     vertical-align: top;
   }
- 
+
   .inner-content {
     width: 90%;
     margin: 0 auto;

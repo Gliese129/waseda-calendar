@@ -2,30 +2,32 @@ const dayOfWeek = [
     {
         title: 'Monday',
         value: 1,
+        abbr: 'Mon',
     },
     {
         title: 'Tuesday',
         value: 2,
+        abbr: 'Tue',
     },
     {
         title: 'Wednesday',
         value: 3,
+        abbr: 'Wed',
     },
     {
         title: 'Thursday',
         value: 4,
+        abbr: 'Thu',
     },
     {
         title: 'Friday',
         value: 5,
+        abbr: 'Fri',
     },
     {
         title: 'Saturday',
         value: 6,
-    },
-    {
-        title: 'Sunday',
-        value: 7,
+        abbr: 'Sat',
     },
 ]
 
@@ -87,4 +89,13 @@ const timeOfDay = [
     },
 ]
 
-export { dayOfWeek, term, timeOfDay }
+const initPeriodSetting = [
+    ['8:50', '10:30'],
+    ['10:40', '12:20'],
+    ['13:10', '14:50'],
+    ['15:05', '16:45'],
+    ['17:00', '18:40'],
+    ['18:55', '20:35'],
+    ['20:45', '21:35'],
+]
+export { dayOfWeek, term, timeOfDay, initPeriodSetting }

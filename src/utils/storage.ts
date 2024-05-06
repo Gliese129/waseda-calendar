@@ -8,3 +8,13 @@ const searchLocalBeforeNetwork = async (key: string, func: Function) => {
         return data
     }
 }
+
+const saveLocal = (key: string, data: any) => {
+    localStorage.setItem(key, JSON.stringify(data))
+}
+
+const getLocal = (key: string) => {
+    return JSON.parse(localStorage.getItem(key) || '')
+}
+
+export { searchLocalBeforeNetwork, saveLocal, getLocal }

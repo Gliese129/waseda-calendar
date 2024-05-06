@@ -2,7 +2,37 @@ import { semesterJp } from '@/resources/semester'
 import * as MathUtils from '@/utils/math'
 import { dayOfWeek } from '@/utils/locale'
 
+const _simpleArrayClone = (arr: any[]) => {
+    if (!arr) return []
+    return arr.map((x) => x)
+}
+
 export class Course {
+    public static deepCopy(target: Course, source: Course) {
+        target.code = source.code
+        target.name = source.name
+        target.teachers = _simpleArrayClone(source.teachers)
+        target.department = source.department
+        if (!source.timePlace) source.timePlace = []
+        target.timePlace = source.timePlace.map((tp) => {
+            return {
+                term: _simpleArrayClone(tp.term),
+                day: tp.day,
+                period: _simpleArrayClone(tp.period),
+                classroom: tp.classroom,
+            }
+        })
+        target.PeriodStr = source.PeriodStr
+        target.classroomStr = source.classroomStr
+        target.url = source.url
+        target.key = source.key
+        target.credits = source.credits
+        target.campus = source.campus
+        target.leastGrade = source.leastGrade
+        target.textbook = source.textbook
+        target.departmentFull = source.departmentFull
+    }
+
     public code: string
     public name: string
     public teachers: string[]
@@ -13,9 +43,9 @@ export class Course {
     public url: string
     public key: string
     // the following params are only shown in the detail page
-    public credits: number | null | undefined
+    public credits: number
     public campus: string | null | undefined
-    public leastGrade: string | null | undefined // the least grade to take this course
+    public leastGrade: string // the least grade to take this course
     public textbook: string | null | undefined
     public departmentFull: string | null | undefined
 
@@ -27,6 +57,9 @@ export class Course {
         this.timePlace = []
         this.url = ''
         this.key = ''
+        this.credits = 0
+        this.leastGrade = ''
+        this.textbook = ''
     }
 
     public termStr2Num(term: string): number[] {
@@ -96,30 +129,6 @@ export class Course {
             // "https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=11000012C001202411000012C011"
             this.url = `https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=${keyMatch[2]}`
         }
-    }
-
-    public deepCopy(): Course {
-        let course = new Course(this.code, this.name)
-        course.teachers = this.teachers.slice()
-        course.department = this.department
-        course.timePlace = this.timePlace.map((tp) => {
-            return {
-                term: tp.term.slice(),
-                day: tp.day,
-                period: tp.period.slice(),
-                classroom: tp.classroom,
-            }
-        })
-        course.PeriodStr = this.PeriodStr
-        course.classroomStr = this.classroomStr
-        course.url = this.url
-        course.key = this.key
-        course.credits = this.credits
-        course.campus = this.campus
-        course.leastGrade = this.leastGrade
-        course.textbook = this.textbook
-        course.departmentFull = this.departmentFull
-        return course
     }
 }
 

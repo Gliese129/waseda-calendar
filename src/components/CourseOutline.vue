@@ -21,7 +21,7 @@ const termShow = [
         color: '#2196F3',
     },
 ]
-const dayOfWeek = ['', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const showPeriod = (period: number[]): string => {
     if (period.length === 0) return ''

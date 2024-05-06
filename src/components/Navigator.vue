@@ -9,9 +9,9 @@ const router = useRouter()
     <v-icon>mdi-home</v-icon>
     <span>Home</span>
   </v-btn>
-  <v-btn @click="router.push('/courses')">
-    <v-icon>mdi-book-education</v-icon>
-    <span>Courses</span>
+  <v-btn @click="router.push('/search')">
+    <v-icon>mdi-book-search-outline</v-icon>
+    <span>Search</span>
   </v-btn>
 </template>
 

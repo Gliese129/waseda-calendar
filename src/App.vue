@@ -5,6 +5,7 @@ import { store } from '@/store/index'
 
 onMounted(() => {
     store.dispatch('syllabus/refresh')
+    store.dispatch('calendar/init')
 })
 </script>
 
