@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import Navigator from './components/Navigator.vue'
-import { store } from '@/store/index'
+import { useStore } from 'vuex'
+import { key } from '@/store'
+const store = useStore(key)
 
 onMounted(() => {
     store.dispatch('syllabus/refresh')
@@ -16,7 +18,7 @@ onMounted(() => {
     </v-app-bar>
 
     <v-main>
-      <v-container fluid>
+      <v-container>
         <router-view />
       </v-container>
     </v-main>

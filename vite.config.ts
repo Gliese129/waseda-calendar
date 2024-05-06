@@ -20,9 +20,13 @@ export default defineConfig({
             },
         },
     },
+    esbuild: {
+        jsxFactory: 'h',
+        jsxFragment: 'Fragment',
+    },
     css: {
-        preprocessorOptions: {
-            scss: {},
+        modules: {
+            localsConvention: 'camelCase',
         },
     },
 })

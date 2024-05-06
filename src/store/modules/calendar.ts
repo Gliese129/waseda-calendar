@@ -1,14 +1,14 @@
 /**
  * This store contains data of user's courses.
  */
-import { Course, TimePlaceInfo } from '@/model/course'
+import { Course } from '@/model/course'
 import { getLocal, saveLocal } from '@/utils/storage'
 import { initPeriodSetting } from '@/resources/courses-date'
 
 export interface CalendarState {
     courses: Course[]
     timetable: number[][][]
-    periods: string[][]
+    periodSettings: string[][]
 }
 
 const baseFolder = 'courses/'
@@ -17,7 +17,7 @@ export const calendarStore = {
     state: {
         courses: [],
         timetable: [],
-        periods: [],
+        periodSettings: [],
     },
     mutations: {
         addCourse(state: CalendarState, course: any) {
@@ -66,7 +66,7 @@ export const calendarStore = {
                 let termArray = []
                 for (let day = 0; day < 7; ++day) {
                     let dayArray = []
-                    for (const _ of state.periods) {
+                    for (const _ of state.periodSettings) {
                         dayArray.push(-1)
                     }
                     termArray.push(dayArray)
@@ -76,7 +76,7 @@ export const calendarStore = {
         },
         initPeriod(state: CalendarState) {
             // TODO fetch from network
-            state.periods = initPeriodSetting
+            state.periodSettings = initPeriodSetting
         },
     },
     actions: {

@@ -3,10 +3,12 @@ import type { SearchParams } from '@/api/syllabus/course'
 import { dayOfWeek, term, timeOfDay } from '@/resources/courses-date'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
+import { key } from '@/store'
 
 const emit = defineEmits(['search', 'clear'])
+const store = useStore(key)
+
 const form = defineModel<SearchParams>() as unknown as SearchParams
-const store = useStore()
 
 const clearForm = () => {
     emit('clear')
@@ -14,15 +16,21 @@ const clearForm = () => {
 }
 const isKeyword = ref(false)
 
-const departments = computed(() => store.state.syllabus.departments) as unknown as { name: string, value: number }[]
+const departments = computed(
+    () => store.state.syllabus.departments
+) as unknown as { name: string; value: number }[]
 </script>
 
 <template>
   <v-form id="courses-form">
     <v-container>
       <v-row>
-        <v-col cols="3" class="label"> 
-          <v-btn variant="text" class="text-none" @click="isKeyword = !isKeyword">
+        <v-col cols="3" class="label">
+          <v-btn
+            variant="text"
+            class="text-none"
+            @click="isKeyword = !isKeyword"
+          >
             {{ isKeyword ? 'Keyword' : 'Name' }}
           </v-btn>
         </v-col>

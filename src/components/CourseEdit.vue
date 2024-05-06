@@ -3,9 +3,10 @@ import { Course } from '@/model/course'
 import { reactive, ref } from 'vue'
 import { watch } from 'vue'
 import { useStore } from 'vuex'
+import { key } from '@/store'
 import TermOverview from '@/components/TermOverview.vue'
 const emits = defineEmits(['afterSave'])
-const store = useStore()
+const store = useStore(key)
 const origin = defineModel<Course>('origin')
 
 const course = reactive<Course>(new Course('', ''))
