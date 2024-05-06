@@ -19,93 +19,95 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
 
 <template>
   <v-form id="courses-form">
-    <v-row>
-      <v-col cols="3" class="label"> 
-        <v-btn variant="text" class="text-none" @click="isKeyword = !isKeyword">
-          {{ isKeyword ? 'Keyword' : 'Name' }}
-        </v-btn>
-      </v-col>
-      <v-col cols="9">
-        <v-text-field
-          v-show="isKeyword"
-          v-model="form.keyword"
-          label="Keyword"
-          density="compact"
-          clearable
-          class="text-medium-emphasis"
-          @update:model-value="$emit('search')"
-        ></v-text-field>
-        <v-text-field
-          v-show="!isKeyword"
-          v-model="form.name"
-          label="Name"
-          density="compact"
-          clearable
-          class="text-medium-emphasis"
-          @update:model-value="$emit('search')"
-        ></v-text-field>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="3" class="label"> Term </v-col>
-      <v-col cols="9">
-        <v-select
-          v-model="form.term"
-          label="Term"
-          :items="term"
-          density="compact"
-          clearable
-          @update:model-value="$emit('search')"
-        ></v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="3" class="label"> Period </v-col>
-      <v-col cols="5">
-        <v-select
-          v-model="form.dayOfWeek"
-          label="Day"
-          :items="dayOfWeek"
-          density="compact"
-          clearable
-          @update:model-value="$emit('search')"
-        ></v-select>
-      </v-col>
-      <v-col cols="4">
-        <v-select
-          v-model="form.period"
-          label="Period"
-          :items="timeOfDay"
-          density="compact"
-          clearable
-          @update:model-value="$emit('search')"
-        ></v-select>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="3" class="label"> Dept </v-col>
-      <v-col cols="9">
-        <v-autocomplete
-          v-model="form.departmentId"
-          label="Department"
-          :items="departments"
-          item-text="name"
-          item-value="value"
-          density="compact"
-          clearable
-          @update:model-value="$emit('search')"
-        ></v-autocomplete>
-      </v-col>
-    </v-row>
+    <v-container>
+      <v-row>
+        <v-col cols="3" class="label"> 
+          <v-btn variant="text" class="text-none" @click="isKeyword = !isKeyword">
+            {{ isKeyword ? 'Keyword' : 'Name' }}
+          </v-btn>
+        </v-col>
+        <v-col cols="9">
+          <v-text-field
+            v-show="isKeyword"
+            v-model="form.keyword"
+            label="Keyword"
+            density="compact"
+            clearable
+            class="text-medium-emphasis"
+            @update:model-value="$emit('search')"
+          ></v-text-field>
+          <v-text-field
+            v-show="!isKeyword"
+            v-model="form.name"
+            label="Name"
+            density="compact"
+            clearable
+            class="text-medium-emphasis"
+            @update:model-value="$emit('search')"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" class="label"> Term </v-col>
+        <v-col cols="9">
+          <v-select
+            v-model="form.term"
+            label="Term"
+            :items="term"
+            density="compact"
+            clearable
+            @update:model-value="$emit('search')"
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" class="label"> Period </v-col>
+        <v-col cols="5">
+          <v-select
+            v-model="form.dayOfWeek"
+            label="Day"
+            :items="dayOfWeek"
+            density="compact"
+            clearable
+            @update:model-value="$emit('search')"
+          ></v-select>
+        </v-col>
+        <v-col cols="4">
+          <v-select
+            v-model="form.period"
+            label="Period"
+            :items="timeOfDay"
+            density="compact"
+            clearable
+            @update:model-value="$emit('search')"
+          ></v-select>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="3" class="label"> Dept </v-col>
+        <v-col cols="9">
+          <v-autocomplete
+            v-model="form.departmentId"
+            label="Department"
+            :items="departments"
+            item-text="name"
+            item-value="value"
+            density="compact"
+            clearable
+            @update:model-value="$emit('search')"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col cols="6">
-        <v-btn color="error" @click="clearForm">Reset</v-btn>
-      </v-col>
-      <v-col cols="6">
-        <v-btn color="primary" @click="$emit('search')">Search</v-btn>
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-col cols="6">
+          <v-btn color="error" @click="clearForm">Reset</v-btn>
+        </v-col>
+        <v-col cols="6">
+          <v-btn color="primary" @click="$emit('search')">Search</v-btn>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-form>
 </template>
 

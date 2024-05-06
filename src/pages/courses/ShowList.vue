@@ -4,6 +4,8 @@ import CourseOutline from '@/components/CourseOutline.vue'
 import CourseEdit from '@/components/CourseEdit.vue'
 import type { Course } from '@/model/course'
 import { defineEmits, defineModel, ref } from 'vue'
+import { reactive } from 'vue'
+import TermOverview from '@/components/TermOverview.vue'
 const emit = defineEmits(['search'])
 const courses = defineModel<Course[]>()
 const isLastPage = defineModel('lastPage')
@@ -15,32 +17,14 @@ async function onLoad({ done }: { done: Function }) {
     done('ok')
 }
 
-const termShow = [
-    {
-        name: 'Spring',
-        color: '#4CAF50',
-    },
-    {
-        name: 'Summer',
-        color: '#FFC107',
-    },
-    {
-        name: 'Fall',
-        color: '#FF5722',
-    },
-    {
-        name: 'Winter',
-        color: '#2196F3',
-    },
-]
 // dialog
 const dialogActive = ref(false)
-const selectedCourse = ref<Course | null>(null)
+const selectedCourse: Course = reactive<Course>({} as any)
 
 const loadCourse = async (course: Course) => {
     console.log(`clicked course: ${course.name}`)
     dialogActive.value = true
-    selectedCourse.value = course
+    Object.assign(selectedCourse, course)
     await fetchCoursesDetail(course)
 }
 
@@ -51,14 +35,7 @@ const openInNew = (url: string | undefined) => {
 </script>
 
 <template>
-  <div>
-    Term color:
-    <div v-for="term in termShow" :key="term.name" class="term-group">
-      <v-chip :color="term.color">
-        {{ term.name }}
-      </v-chip>
-    </div>
-  </div>
+  <TermOverview intro></TermOverview>
   <v-infinite-scroll height="50vh" :items="courses" @load="onLoad">
     <template v-for="item in courses" :key="item.name">
       <course-outline :item="item" @click="loadCourse(item)" />
@@ -116,10 +93,7 @@ const openInNew = (url: string | undefined) => {
     max-width: 80vw;
     vertical-align: top;
   }
-  .term-group {
-    display: inline-block;
-    margin: 3px 0;
-  }
+ 
   .inner-content {
     width: 90%;
     margin: 0 auto;

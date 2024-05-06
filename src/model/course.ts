@@ -97,6 +97,30 @@ export class Course {
             this.url = `https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=${keyMatch[2]}`
         }
     }
+
+    public deepCopy(): Course {
+        let course = new Course(this.code, this.name)
+        course.teachers = this.teachers.slice()
+        course.department = this.department
+        course.timePlace = this.timePlace.map((tp) => {
+            return {
+                term: tp.term.slice(),
+                day: tp.day,
+                period: tp.period.slice(),
+                classroom: tp.classroom,
+            }
+        })
+        course.PeriodStr = this.PeriodStr
+        course.classroomStr = this.classroomStr
+        course.url = this.url
+        course.key = this.key
+        course.credits = this.credits
+        course.campus = this.campus
+        course.leastGrade = this.leastGrade
+        course.textbook = this.textbook
+        course.departmentFull = this.departmentFull
+        return course
+    }
 }
 
 export interface TimePlaceInfo {
