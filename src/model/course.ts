@@ -13,8 +13,8 @@ export class Course {
         target.name = source.name
         target.teachers = _simpleArrayClone(source.teachers)
         target.department = source.department
-        if (!source.timePlace) source.timePlace = []
-        target.timePlace = source.timePlace.map((tp) => {
+        if (!source.schedules) source.schedules = []
+        target.schedules = source.schedules.map((tp) => {
             return {
                 term: _simpleArrayClone(tp.term),
                 day: tp.day,
@@ -37,7 +37,7 @@ export class Course {
     public name: string
     public teachers: string[]
     public department: string
-    public timePlace: TimePlaceInfo[]
+    public schedules: SchedulesInfo[]
     public PeriodStr: string | null | undefined // this param is only used when period str cannot be parsed
     public classroomStr: string | null | undefined // this param is only used when period str cannot be parsed
     public url: string
@@ -54,7 +54,7 @@ export class Course {
         this.name = name
         this.teachers = []
         this.department = ''
-        this.timePlace = []
+        this.schedules = []
         this.url = ''
         this.key = ''
         this.credits = 0
@@ -68,7 +68,7 @@ export class Course {
         return semesterJp[termIndex].value
     }
 
-    public addTimePlace(
+    public addschedules(
         termStr: string,
         dayPeriodStr: string,
         classroomStr: string
@@ -94,7 +94,7 @@ export class Course {
         }
         let term = termStr.split('\n').map((t) => this.termStr2Num(t))
 
-        // broadcast the same term to all timePlace
+        // broadcast the same term to all schedules
         const lengths = [term.length, days.length, periods.length]
         let lca = MathUtils.lca(lengths)
         // the only case that could broadcast is when there is only 1 and lca in the lengths
@@ -111,7 +111,7 @@ export class Course {
             let dayIndex = i % days.length
             let periodIndex = i % periods.length
             let classroomIndex = i % classrooms.length
-            this.timePlace.push({
+            this.schedules.push({
                 term: term[termIndex],
                 day: days[dayIndex],
                 period: periods[periodIndex],
@@ -132,7 +132,7 @@ export class Course {
     }
 }
 
-export interface TimePlaceInfo {
+export interface SchedulesInfo {
     term: number[]
     day: number
     period: number[] // start period and end period

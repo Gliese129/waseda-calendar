@@ -48,19 +48,19 @@ const showPeriod = (period: number[]): string => {
           </v-chip>
         </div>
         <div class="time-place">
-          <v-chip v-if="course.timePlace.length" class="time-place-name">
+          <v-chip v-if="course.schedules.length" class="time-place-name">
             <v-icon>mdi-calendar-clock-outline</v-icon>
             <div
-              v-for="(term, index) in course.timePlace[0].term"
+              v-for="(term, index) in course.schedules[0].term"
               :key="index"
               :style="{ backgroundColor: termShow[term].color }"
               class="term-circle"
             ></div>
-            {{ dayOfWeek[course.timePlace[0].day] }}
-            {{ showPeriod(course.timePlace[0].period) }}
-            <div v-if="course.timePlace[0].classroom">
+            {{ dayOfWeek[course.schedules[0].day] }}
+            {{ showPeriod(course.schedules[0].period) }}
+            <div v-if="course.schedules[0].classroom">
               <v-icon>mdi-google-classroom</v-icon>
-              {{ course.timePlace[0].classroom }}
+              {{ course.schedules[0].classroom }}
             </div>
           </v-chip>
           <v-chip v-else class="time-place-name" color="grey">

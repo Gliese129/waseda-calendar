@@ -13,7 +13,7 @@ const full2Half = (str: string): string => {
         }
     }
     // full-width space and slash
-    res = res.replace('　', ' ').replace('／', '/')
+    res = res.replaceAll('　', ' ').replaceAll('／', '/')
     return res
 }
 

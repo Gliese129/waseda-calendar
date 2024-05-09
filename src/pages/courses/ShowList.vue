@@ -36,7 +36,12 @@ const openInNew = (url: string | undefined) => {
 
 <template>
   <TermOverview intro></TermOverview>
-  <v-infinite-scroll height="50vh" :items="courses" @load="onLoad">
+  <v-infinite-scroll
+    class="m-auto w-90vw"
+    height="45vh"
+    :items="courses"
+    @load="onLoad"
+  >
     <template v-for="item in courses" :key="item.name">
       <course-outline :item="item" @click="loadCourse(item)" />
     </template>
@@ -52,6 +57,7 @@ const openInNew = (url: string | undefined) => {
   <span style="color: gray; font-size: 0.8em">
     Tip: due to the size limit, only the first teacher and period will be shown
   </span>
+
   <v-dialog v-model="dialogActive" fullscreen>
     <v-card
       :title="selectedCourse?.name"
@@ -61,7 +67,7 @@ const openInNew = (url: string | undefined) => {
           : 'Unknown'
       "
     >
-      <div class="inner-content">
+      <div class="mx-auto" style="width: 90%">
         <v-expansion-panels>
           <v-expansion-panel>
             <template #title>
@@ -75,7 +81,7 @@ const openInNew = (url: string | undefined) => {
             <template #text>
               <iframe
                 :src="selectedCourse?.url"
-                class="raw-content"
+                class="mx-auto h-30vh"
                 frameborder="0"
               ></iframe>
             </template>
@@ -92,20 +98,6 @@ const openInNew = (url: string | undefined) => {
 </template>
 
 <style scoped>
-  .v-infinite-scroll {
-    max-width: 80vw;
-    vertical-align: top;
-  }
-
-  .inner-content {
-    width: 90%;
-    margin: 0 auto;
-  }
-  .raw-content {
-    width: 100%;
-    margin: auto;
-    height: 30vh;
-  }
   :deep(.v-expansion-panel-title) {
     padding-top: 5px;
     padding-bottom: 5px;

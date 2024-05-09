@@ -39,10 +39,10 @@ export const calendarStore = {
         updateTimetable(state: CalendarState) {
             for (let i = 0; i < state.courses.length; ++i) {
                 let course = state.courses[i]
-                course.timePlace.forEach((timePlace) => {
-                    timePlace.term.forEach((term) => {
-                        let day = timePlace.day
-                        let periodInterval = timePlace.period
+                course.schedules.forEach((schedules) => {
+                    schedules.term.forEach((term) => {
+                        let day = schedules.day
+                        let periodInterval = schedules.period
                         for (
                             let period = periodInterval[0];
                             period <= periodInterval[1];
@@ -99,8 +99,8 @@ export const calendarStore = {
             let courses = getLocal(baseFolder + 'courses')
             courses = courses === '' ? [] : courses
             commit('setCourses', courses)
-            commit('initTimetable')
             commit('initPeriod')
+            commit('initTimetable')
         },
     },
 }

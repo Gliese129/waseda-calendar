@@ -111,7 +111,7 @@ watch(
         color="blue"
         style="margin: auto; margin-right: 0"
         @click="
-          course.timePlace.push({
+          course.schedules.push({
             day: -1,
             period: [1, 1],
             term: [],
@@ -125,7 +125,7 @@ watch(
 
       <v-expansion-panels>
         <v-expansion-panel
-          v-for="(tp, index) in course.timePlace"
+          v-for="(tp, index) in course.schedules"
           :key="index"
           show-expand
           expand-on-click
@@ -146,7 +146,7 @@ watch(
             <v-btn
               color="red"
               class="del-btn"
-              @click.stop="course.timePlace.splice(index, 1)"
+              @click.stop="course.schedules.splice(index, 1)"
             >
               <v-icon>mdi-delete</v-icon>
               del

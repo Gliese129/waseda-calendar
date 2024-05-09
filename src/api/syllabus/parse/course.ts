@@ -16,9 +16,10 @@ const getCoursesList = async (html: string) => {
         )
         course.teachers = full2Half(cells.eq(3).text())
             .split('/')
-            .map((t) => full2Half(t))
+            .map((t) => t.trim())
+        console.log(full2Half(cells.eq(3).text()).split('/'))
         course.department = cells.eq(4).text()
-        course.addTimePlace(
+        course.addschedules(
             full2Half(cells.eq(5).html()?.replace(/<br>/g, '\n') || ''),
             full2Half(cells.eq(6).html()?.replace(/<br>/g, '\n') || ''),
             full2Half(cells.eq(7).html()?.replace(/<br>/g, '\n') || '')
