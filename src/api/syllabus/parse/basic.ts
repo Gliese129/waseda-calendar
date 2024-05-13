@@ -6,7 +6,7 @@ interface Department {
     value: string
 }
 
-const getDepartments = async (html: string): Promise<Department[]> => {
+const getDepartments = (html: string): Department[] => {
     const $ = load(html)
     const options = $('select[name="p_gakubu"] option').filter((_, option) => {
         return $(option).val() !== ''

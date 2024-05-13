@@ -19,6 +19,11 @@ export default defineConfig({
                 changeOrigin: true,
                 rewrite: (path) => path.replace(/^\/syllabus/, ''),
             },
+            '/official': {
+                target: 'https://www.waseda.jp/',
+                changeOrigin: true,
+                rewrite: (path) => path.replace(/^\/official/, ''),
+            },
         },
     },
     esbuild: {

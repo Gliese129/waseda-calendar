@@ -43,16 +43,10 @@ export const calendarStore = {
                     schedules.term.forEach((term) => {
                         let day = schedules.day
                         let periodInterval = schedules.period
-                        for (
-                            let period = periodInterval[0];
-                            period <= periodInterval[1];
-                            ++period
-                        ) {
+                        for (let period = periodInterval[0]; period <= periodInterval[1]; ++period) {
                             if (state.timetable[term][day][period] !== -1) {
                                 let conflictId = state.timetable[term][day][period]
-                                throw new Error(
-                                    'Conflict with ' + state.courses[conflictId].name
-                                )
+                                throw new Error('Conflict with ' + state.courses[conflictId].name)
                             }
                             state.timetable[term][day][period] = i
                         }
@@ -97,7 +91,8 @@ export const calendarStore = {
         async init({ commit }: { commit: any }) {
             // Fetch from network
             let courses = getLocal(baseFolder + 'courses')
-            courses = courses === '' ? [] : courses
+            console.log('Init courses:', courses)
+            courses = courses === null ? [] : courses
             commit('setCourses', courses)
             commit('initPeriod')
             commit('initTimetable')

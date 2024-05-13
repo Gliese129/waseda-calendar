@@ -1,3 +1,4 @@
+// basic information of syllabus
 import Http from './http'
 import { getDepartments } from './parse/basic'
 

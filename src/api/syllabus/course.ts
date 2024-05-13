@@ -1,3 +1,4 @@
+// course information from syllabus
 import type { Course } from '@/model/course'
 import Http from './http'
 
@@ -31,7 +32,7 @@ const fetchCoursesList = async (form: SearchParams) => {
 const fetchCoursesDetail = async (course: Course) => {
     let url = '/JAA104.php?pKey=' + course.key
     let html: string = await Http.get(url)
-    await getCourseDetail(html, course)
+    getCourseDetail(html, course)
     console.log('detailed course info: ', course)
     return course
 }

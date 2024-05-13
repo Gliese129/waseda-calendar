@@ -9,6 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@capacitor-community/sqlite": "^5.7.3-3",
         "@capacitor/android": "^6.0.0",
         "@capacitor/core": "^6.0.0",
         "@capacitor/ios": "^6.0.0",
@@ -16,6 +17,7 @@
         "@fullcalendar/daygrid": "^6.1.11",
         "@fullcalendar/timegrid": "^6.1.11",
         "@fullcalendar/vue3": "^6.1.11",
+        "@holiday-jp/holiday_jp": "^2.4.0",
         "@mdi/font": "^7.4.47",
         "axios": "^1.6.8",
         "cheerio": "^1.0.0-rc.12",

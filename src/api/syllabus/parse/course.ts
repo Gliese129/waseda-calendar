@@ -2,7 +2,7 @@ import { Course } from '@/model/course.ts'
 import { load } from 'cheerio'
 import { full2Half } from '@/utils/locale'
 
-const getCoursesList = async (html: string) => {
+const getCoursesList = (html: string) => {
     let $ = load(html)
     let table = $('.ct-vh').first()
     let courses: Course[] = []
@@ -27,11 +27,10 @@ const getCoursesList = async (html: string) => {
         course.setUrl(cells.eq(2).find('a').attr('onclick') || '')
         courses.push(course)
     })
-    console.log(courses)
     return courses
 }
 
-const getCourseDetail = async (html: string, course: Course) => {
+const getCourseDetail = (html: string, course: Course) => {
     let $ = load(html)
     let courseTable = $('.ct-sirabasu').first().children()
     let syllabusTable = $('.ct-sirabasu').eq(1).children()

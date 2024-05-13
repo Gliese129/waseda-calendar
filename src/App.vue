@@ -1,14 +1,19 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import Navigator from './components/Navigator.vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 const store = useStore(key)
 
-onMounted(() => {
-    store.dispatch('syllabus/refresh')
+onMounted(async () => {
+    console.log('App mounted')
+    store.dispatch('syllabus/forceRefresh')
     store.dispatch('calendar/init')
 })
+const ifDataLoaded = computed(() => 
+    store.state.calendar.periodSettings.length > 0 &&
+    store.state.syllabus.holidays.length > 0 
+)
 </script>
 
 <template>
@@ -17,7 +22,7 @@ onMounted(() => {
       <v-app-bar-title>Application</v-app-bar-title>
     </v-app-bar>
 
-    <v-main>
+    <v-main v-if="ifDataLoaded">
       <v-container>
         <router-view />
       </v-container>
