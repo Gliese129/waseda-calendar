@@ -17,7 +17,6 @@ const getCoursesList = (html: string) => {
         course.teachers = full2Half(cells.eq(3).text())
             .split('/')
             .map((t) => t.trim())
-        console.log(full2Half(cells.eq(3).text()).split('/'))
         course.department = cells.eq(4).text()
         course.addschedules(
             full2Half(cells.eq(5).html()?.replace(/<br>/g, '\n') || ''),
@@ -34,10 +33,7 @@ const getCourseDetail = (html: string, course: Course) => {
     let $ = load(html)
     let courseTable = $('.ct-sirabasu').first().children()
     let syllabusTable = $('.ct-sirabasu').eq(1).children()
-    course.credits = parseInt(
-        courseTable.children().eq(4).children().eq(5).text(),
-        10
-    )
+    course.credits = parseInt(courseTable.children().eq(4).children().eq(5).text(), 10)
     course.campus = courseTable.children().eq(5).children().eq(3).text()
     course.textbook = syllabusTable.children().eq(6).children().eq(1).text()
     course.departmentFull = courseTable.children().eq(0).children().eq(3).text()

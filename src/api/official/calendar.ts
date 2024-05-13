@@ -1,6 +1,6 @@
 // holidays & periods
 import Http from './http'
-import { getHolidays, getQuarters } from './parse/calendar'
+import { getHolidays, getPeriods, getQuarters } from './parse/calendar'
 
 const academicCalendarSubUrl =
   '/top/about/work/organizations/academic-affairs-division/academic-calendar'
@@ -17,4 +17,9 @@ const fetchQuarters = async () => {
     return getQuarters(html)
 }
 
-export { fetchHolidays, fetchQuarters }
+const fetchPeriods = async () => {
+    let html: string = await Http.get(academicCalendarSubUrl)
+    return getPeriods(html)
+}
+
+export { fetchHolidays, fetchQuarters, fetchPeriods }

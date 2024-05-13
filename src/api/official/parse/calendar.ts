@@ -42,9 +42,7 @@ const _getSpecialHolidays = (html: string): SchoolYearDate[] => {
 }
 
 const getHolidays = (html: string): SchoolYearDate[] => {
-    let specialWorkDays = _getSpecialWorkDays(html).map((date) =>
-        date.dateValueOf()
-    )
+    let specialWorkDays = _getSpecialWorkDays(html).map((date) => date.dateValueOf())
     let specialHolidays = _getSpecialHolidays(html)
 
     let japanHolidays = holiday_jp.between(
@@ -86,12 +84,8 @@ const getQuarters = (html: string): Quarter[] => {
     ]
 
     return dateReg.map((reg) => {
-        const start = content
-            .match(reg.start)
-            ?.map((str) => parseInt(full2Half(str), 10))
-        const end = content
-            .match(reg.end)
-            ?.map((str) => parseInt(full2Half(str), 10))
+        const start = content.match(reg.start)?.map((str) => parseInt(full2Half(str), 10))
+        const end = content.match(reg.end)?.map((str) => parseInt(full2Half(str), 10))
         return {
             start: new SchoolYearDate(start!![1], start!![2]),
             end: new SchoolYearDate(end!![1], end!![2]),
@@ -99,4 +93,23 @@ const getQuarters = (html: string): Quarter[] => {
     })
 }
 
-export { getHolidays, getQuarters }
+const getPeriods = (html: string) => {
+    const $ = load(html)
+    const content = $('.wp-text')
+        .eq(1)
+        .find('tr')
+        .slice(2)
+        .map((_, el) => $(el).find('td').eq(1).text())
+        .toArray()
+    console.log(content)
+    const periodReg = /(\d{1,2}:\d{2})～(\d{1,2}:\d{2})/g
+    return content.map((str) => {
+        const periods = str.match(periodReg)?.map((period) => period.split('～'))[0]
+        return {
+            start: periods!![0],
+            end: periods!![1],
+        }
+    })
+}
+
+export { getHolidays, getQuarters, getPeriods }

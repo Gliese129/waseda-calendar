@@ -9,7 +9,11 @@ const router = createRouter({
         },
         {
             path: '/search',
-            component: () => import('@/pages/courses/index.vue'),
+            component: () => import('@/pages/search/index.vue'),
+        },
+        {
+            path: '/my-courses/:keyword?',
+            component: () => import('@/pages/my-courses/index.vue'),
         },
     ],
 })

@@ -48,6 +48,7 @@ export class Course {
     public leastGrade: string // the least grade to take this course
     public textbook: string | null | undefined
     public departmentFull: string | null | undefined
+    public year: number | null | undefined // school year
 
     public constructor(code: string, name: string) {
         this.code = code

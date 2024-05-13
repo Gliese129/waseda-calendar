@@ -1,7 +1,7 @@
 /**
  * This store contains basic information about Waseda course system.
  */
-import { fetchHolidays, fetchQuarters } from '@/api/official/calendar'
+import { fetchHolidays, fetchPeriods, fetchQuarters } from '@/api/official/calendar'
 import { fetchDepartments } from '@/api/syllabus/basic'
 import type { SchoolYearDate } from '@/model/date'
 import { searchLocalBeforeNetwork } from '@/utils/storage'
@@ -44,6 +44,9 @@ export const syllabusStore = {
         setQuarters(state: SyllabusState, quarters: any) {
             state.quarters = quarters
         },
+        setPeriods(state: SyllabusState, periods: any) {
+            state.periods = periods
+        },
     },
     actions: {
         async refresh({ commit }: { commit: any }) {
@@ -60,11 +63,16 @@ export const syllabusStore = {
                 baseFolder + 'quarters',
                 fetchQuarters
             )
+            const periods = await searchLocalBeforeNetwork(
+                baseFolder + 'periods',
+                fetchQuarters
+            )
 
             // Commit to state
             commit('setDepartments', departments)
             commit('setHolidays', holidays)
             commit('setQuarters', quarters)
+            commit('setPeriods', periods)
         },
         async forceRefresh({ commit }: { commit: any }) {
             const departments = await searchLocalBeforeNetwork(
@@ -82,6 +90,11 @@ export const syllabusStore = {
                 fetchQuarters,
                 true
             )
+            const periods = await searchLocalBeforeNetwork(
+                baseFolder + 'periods',
+                fetchPeriods,
+                true
+            )
 
             console.log('Force Refreshed departments:', departments)
             console.log(
@@ -89,10 +102,12 @@ export const syllabusStore = {
                 holidays.map((x: any) => x.toString())
             )
             console.log('Force Refreshed Quarters:', quarters)
+            console.log('Force Refreshed Periods:', periods)
 
             commit('setDepartments', departments)
             commit('setHolidays', holidays)
             commit('setQuarters', quarters)
+            commit('setPeriods', periods)
         },
     },
 }

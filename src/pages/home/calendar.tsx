@@ -29,7 +29,7 @@ enum CellColor {
   CURRENT = '#D3EDDA',
   NORMAL = '#FFFFFF',
   CURRENT_PERIOD = '#F8D7DA',
-  CURRENT_DAY = '#F0C04F',
+  CURRENT_DAY = '#F2D99D',
   DISABLED = '#F5F5F5',
 }
 
@@ -134,8 +134,6 @@ export default defineComponent({
     })
     //
     const header = computed(() => {
-      console.log(courses.value)
-
       let thisWeek = Array.from(
         { length: 7 },
         (_, i) => new Date(Number(startOfWeek.value) + i * 24 * 60 * 60 * 1000)
