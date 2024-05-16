@@ -33,9 +33,15 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
+      "files": ["*.ts"],
       "rules": {
         "@typescript-eslint/indent": ["error", 4]
+      }
+    },
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "@typescript-eslint/indent": ["error", 2]
       }
     },
     {
