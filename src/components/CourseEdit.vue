@@ -69,6 +69,7 @@ watch(
           label="Name"
           variant="solo"
           density="comfortable"
+          readonly
         ></v-text-field>
       </v-col>
     </v-row>

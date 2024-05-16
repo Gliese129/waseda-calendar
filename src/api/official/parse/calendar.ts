@@ -7,7 +7,6 @@ import { SchoolYearDate } from '@/model/date'
 const _getSpecialWorkDays = (html: string): SchoolYearDate[] => {
     const $ = load(html)
     const content = $('.wp-text')
-        .eq(0)
         .find('p')
         .filter((_, el) => $(el).prev().text().includes('授業を行う祝日'))
         .text()
@@ -26,7 +25,6 @@ const _getSpecialWorkDays = (html: string): SchoolYearDate[] => {
 const _getSpecialHolidays = (html: string): SchoolYearDate[] => {
     const $ = load(html)
     const content = $('.wp-text')
-        .eq(0)
         .find('p')
         .filter((_, el) => $(el).prev().text().includes('臨時の休業日'))
         .text()
@@ -62,7 +60,7 @@ interface Quarter {
 }
 const getQuarters = (html: string): Quarter[] => {
     const $ = load(html)
-    const content = full2Half($('.wp-text').eq(0).text())
+    const content = full2Half($('.wp-text').text())
 
     const dateReg = [
         {
@@ -96,12 +94,11 @@ const getQuarters = (html: string): Quarter[] => {
 const getPeriods = (html: string) => {
     const $ = load(html)
     const content = $('.wp-text')
-        .eq(1)
+        .find('table')
         .find('tr')
         .slice(2)
         .map((_, el) => $(el).find('td').eq(1).text())
         .toArray()
-    console.log(content)
     const periodReg = /(\d{1,2}:\d{2})～(\d{1,2}:\d{2})/g
     return content.map((str) => {
         const periods = str.match(periodReg)?.map((period) => period.split('～'))[0]

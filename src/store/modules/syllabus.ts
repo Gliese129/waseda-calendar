@@ -3,7 +3,7 @@
  */
 import { fetchHolidays, fetchPeriods, fetchQuarters } from '@/api/official/calendar'
 import { fetchDepartments } from '@/api/syllabus/basic'
-import type { SchoolYearDate } from '@/model/date'
+import { SchoolYearDate } from '@/model/date'
 import { searchLocalBeforeNetwork } from '@/utils/storage'
 
 export interface SyllabusState {
@@ -39,9 +39,16 @@ export const syllabusStore = {
             state.departments = departments
         },
         setHolidays(state: SyllabusState, holidays: any) {
+            holidays.forEach((item: any) => {
+                Object.setPrototypeOf(item, SchoolYearDate.prototype)
+            })
             state.holidays = holidays
         },
         setQuarters(state: SyllabusState, quarters: any) {
+            quarters.forEach((item: any) => {
+                item.start = Object.setPrototypeOf(item.start, SchoolYearDate.prototype)
+                item.end = Object.setPrototypeOf(item.end, SchoolYearDate.prototype)
+            })
             state.quarters = quarters
         },
         setPeriods(state: SyllabusState, periods: any) {

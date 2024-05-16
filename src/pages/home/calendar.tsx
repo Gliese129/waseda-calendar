@@ -79,7 +79,7 @@ export default defineComponent({
       while (currTime.value > time2num(periodSettings.value[currPeriod][1])) {
         currPeriod++
       }
-      return currPeriod
+      return currPeriod + 1
     })
 
     const courses = computed(() => {
@@ -87,7 +87,9 @@ export default defineComponent({
         .map((course) => {
           // add some additional info
           let isNextOrCurrCourse =
-            currPeriod.value >= course.start && currPeriod.value <= course.end
+            course.day === props.currDate.getDay() &&
+            currPeriod.value >= course.start &&
+            currPeriod.value <= course.end
           let isRecess =
             currTime.value < time2num(periodSettings.value[course.start - 1][0])
           let isBreak = holidays.value.indexOf(course.day) !== -1
@@ -96,6 +98,7 @@ export default defineComponent({
           if (isNextOrCurrCourse) color = isRecess ? CellColor.RECESS : CellColor.CURRENT
           else if (isBreak) color = CellColor.BREAK
           else color = CellColor.NORMAL
+          console.log(course, isNextOrCurrCourse, isRecess, isBreak)
 
           return {
             ...course,
@@ -140,7 +143,7 @@ export default defineComponent({
       )
       return (
         <tr>
-          <th class="border border-slate-300 w-1/8"></th>
+          <th class="border border-slate-300 w-1/12"></th>
           {thisWeek
             .map((date) => (
               <th
@@ -150,7 +153,7 @@ export default defineComponent({
                       ? CellColor.CURRENT_DAY
                       : '',
                 }}
-                class="border border-slate-300  w-1/8"
+                class="border border-slate-300 w-1/8"
               >
                 {date.toLocaleDateString('en-US', { weekday: 'short' })}
                 <br />
@@ -166,9 +169,10 @@ export default defineComponent({
       // generate the period column
       let periods = periodSettings.value.map((periodInfo, index) => [
         <td
-          class="border border-slate-300 flex-col"
+          class="border border-slate-300 flex-col "
           style={{
-            backgroundColor: currPeriod.value === index ? CellColor.CURRENT_PERIOD : '',
+            backgroundColor:
+              currPeriod.value === index + 1 ? CellColor.CURRENT_PERIOD : '',
           }}
         >
           <div class="font-bold text-sm/6">{index + 1}</div>
@@ -184,20 +188,24 @@ export default defineComponent({
             col ? (
               <td
                 rowspan={col.course.length}
-                class="border border-slate-300 text-xs/3 p-px w-1/8"
+                class="border border-slate-300 text-xs/3 py-px px-1"
                 style={{
                   backgroundColor: col.course.bgcolor,
                   display: col.repeated === 0 ? '' : 'none',
                 }}
               >
-                <v-card>
-                  <div
-                    class="font-bold text-wrap break-all"
-                    style={`font-size: ${col.course.name.length >= 10 ? 80 : 100}%`}
-                  >
-                    {col.course.name}
-                  </div>
-                  <div>{col.course.classroom}</div>
+                <v-card class="flex m-auto hover:shadow-md transition ease-linear duration-300 rounded-sm">
+                  <v-card-text>
+                    <div
+                      class="font-bold text-wrap break-all"
+                      style={`font-size: ${
+                        100 - 10 * Math.floor(col.course.name.length / 10)
+                      }%`}
+                    >
+                      {col.course.name}
+                    </div>
+                    <div>{col.course.classroom}</div>
+                  </v-card-text>
                 </v-card>
               </td>
             ) : (
@@ -208,7 +216,7 @@ export default defineComponent({
       )
       return periods.map((period, index) => {
         return (
-          <tr>
+          <tr class="h-1/8">
             {period}
             {table[index]}
           </tr>
@@ -232,13 +240,13 @@ export default defineComponent({
     })
 
     return () => (
-      <table class="border-collapse border border-slate-400 rounded w-90vw m-auto table-fixed">
+      <v-table class="border-collapse border border-slate-400 rounded w-90vw m-auto table-fixed">
         <colgroup>
           <col />
           {headerColors.value}
         </colgroup>
         {header.value} {content.value}
-      </table>
+      </v-table>
     )
   },
 })

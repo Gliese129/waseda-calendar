@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Course } from '@/model/course'
 
-const course = defineModel<Course>('item') as unknown as Course
+const course = defineModel<Course>('item')
 
-const termShow = [
+const termColor = [
     {
         name: 'Spring',
         color: '#4CAF50',
@@ -30,40 +30,40 @@ const showPeriod = (period: number[]): string => {
 }
 </script>
 <template>
-  <v-card class="course" elevation="4" link>
+  <v-card class="min-h-22 my-1" elevation="4" link>
     <template v-slot:text>
-      <h2 class="name">{{ course.name }}</h2>
-      <div class="info">
-        <div class="teacher">
+      <h2 class="text-left overflow-hidden whitespace-nowrap text-base font-semibold">
+        {{ course?.name }}
+      </h2>
+      <div class="my-1 flex justify-between">
+        <div class="flex text-sm items-center">
           <v-icon>mdi-book-education-outline</v-icon>
-          <v-chip
-            v-if="course.teachers.length"
-            class="teacher-name"
-            variant="text"
-          >
+          <v-chip v-if="course?.teachers.length" class="px-1" variant="text">
             {{ course.teachers[0] }}
+            {{ course.teachers.length > 1 ? '...' : '' }}
           </v-chip>
-          <v-chip v-else class="teacher-name" color="grey" variant="text">
-            TBA
-          </v-chip>
+          <v-chip v-else class="px-1" color="grey" variant="text"> TBA </v-chip>
         </div>
-        <div class="time-place">
-          <v-chip v-if="course.schedules.length" class="time-place-name">
+        <div>
+          <v-chip
+            v-if="course?.schedules.length"
+            :class="[course.schedules.length > 1 ? 'rounded-r-lg' : '']"
+          >
             <v-icon>mdi-calendar-clock-outline</v-icon>
             <div
               v-for="(term, index) in course.schedules[0].term"
               :key="index"
-              :style="{ backgroundColor: termShow[term].color }"
-              class="term-circle"
+              :style="{ backgroundColor: termColor[term].color }"
+              class="rounded-full w-2.5 h-2.5"
             ></div>
             {{ dayOfWeek[course.schedules[0].day] }}
             {{ showPeriod(course.schedules[0].period) }}
-            <div v-if="course.schedules[0].classroom">
+            <div v-if="course.schedules[0].classroom" class="ml-1">
               <v-icon>mdi-google-classroom</v-icon>
               {{ course.schedules[0].classroom }}
             </div>
           </v-chip>
-          <v-chip v-else class="time-place-name" color="grey">
+          <v-chip v-else color="grey">
             <v-icon>mdi-calendar-clock-outline</v-icon>
             <span> TBA </span>
           </v-chip>
@@ -73,33 +73,4 @@ const showPeriod = (period: number[]): string => {
   </v-card>
 </template>
 
-<style scoped>
-  .course {
-    min-height: 90px !important;
-    margin: 5px 0;
-  }
-  .name {
-    text-align: start;
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: medium;
-  }
-  .info {
-    margin-top: 5px;
-    display: flex;
-    justify-content: space-between;
-  }
-  .teacher {
-    display: flex;
-    align-items: center;
-    font-size: 0.9em;
-  }
-  .teacher-name {
-    padding: 0 3px;
-  }
-  .term-circle {
-    border-radius: 50%;
-    width: 10px;
-    height: 10px;
-  }
-</style>
+<style scoped></style>

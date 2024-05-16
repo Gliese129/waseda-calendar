@@ -7,12 +7,13 @@ const store = useStore(key)
 
 onMounted(async () => {
     console.log('App mounted')
-    store.dispatch('syllabus/forceRefresh')
+    store.dispatch('syllabus/refresh')
     store.dispatch('calendar/init')
 })
-const ifDataLoaded = computed(() => 
-    store.state.calendar.periodSettings.length > 0 &&
-    store.state.syllabus.holidays.length > 0 
+const ifDataLoaded = computed(
+    () =>
+        store.state.calendar.periodSettings.length > 0 &&
+        store.state.syllabus.holidays.length > 0
 )
 </script>
 
