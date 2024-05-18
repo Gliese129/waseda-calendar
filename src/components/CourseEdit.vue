@@ -5,12 +5,17 @@ import { watch } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import TermOverview from '@/components/TermOverview.vue'
+const props = defineProps({
+    edit: {
+        type: Boolean,
+        default: false,
+    },
+})
 const emits = defineEmits(['afterSave'])
 const store = useStore(key)
 const origin = defineModel<Course>('origin')
 
 const course = reactive<Course>(new Course('', ''))
-
 watch(
     origin,
     (newCourse) => {
@@ -35,6 +40,9 @@ const showPeriod = (startPeriod: number, endPeriod: number) => {
 
 const save = async () => {
     try {
+        if (props.edit) {
+            await store.dispatch('calendar/deleteCourse', origin.value)
+        }
         await store.dispatch('calendar/addCourse', course)
 
         emits('afterSave')
@@ -69,7 +77,7 @@ watch(
           label="Name"
           variant="solo"
           density="comfortable"
-          readonly
+          :readonly="!props.edit"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -156,12 +164,7 @@ watch(
           <template #text>
             <v-row>
               <v-checkbox
-                v-for="(quarter, index) in [
-                  'Spring',
-                  'Summer',
-                  'Fall',
-                  'Winter',
-                ]"
+                v-for="(quarter, index) in ['Spring', 'Summer', 'Fall', 'Winter']"
                 :key="index"
                 v-model="tp.term"
                 class="term-checkbox"
@@ -171,12 +174,7 @@ watch(
               ></v-checkbox>
             </v-row>
             <v-row>
-              <v-btn-toggle
-                v-model="tp.day"
-                rounded="2"
-                group
-                density="compact"
-              >
+              <v-btn-toggle v-model="tp.day" rounded="2" group density="compact">
                 <v-btn
                   v-for="(day, index) in [1, 2, 3, 4, 5, 6]"
                   :key="index"

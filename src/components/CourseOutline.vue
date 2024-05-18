@@ -30,21 +30,38 @@ const showPeriod = (period: number[]): string => {
 }
 </script>
 <template>
-  <v-card class="min-h-22 my-1" elevation="4" link>
-    <template v-slot:text>
-      <h2 class="text-left overflow-hidden whitespace-nowrap text-base font-semibold">
+  <v-card class="m-1 flex flex-col min-h-20" elevation="4" link>
+    <template #title>
+      <h2 class="text-left text-base font-semibold">
         {{ course?.name }}
       </h2>
-      <div class="my-1 flex justify-between">
-        <div class="flex text-sm items-center">
+    </template>
+    <template #text>
+      <v-row>
+        <v-col cols="6" class="inline-flex text-sm items-center">
           <v-icon>mdi-book-education-outline</v-icon>
-          <v-chip v-if="course?.teachers.length" class="px-1" variant="text">
+          <v-chip v-if="course?.teachers.length" class="px-1" variant="text" size="small">
             {{ course.teachers[0] }}
-            {{ course.teachers.length > 1 ? '...' : '' }}
           </v-chip>
-          <v-chip v-else class="px-1" color="grey" variant="text"> TBA </v-chip>
-        </div>
-        <div>
+          <v-chip
+            v-if="(course?.teachers?.length ?? 0) > 1"
+            class="px-1"
+            color="grey"
+            variant="text"
+          >
+            ...
+          </v-chip>
+          <v-chip
+            v-if="!course?.teachers.length"
+            class="px-1 max-w-40"
+            color="grey"
+            variant="text"
+          >
+            TBA
+          </v-chip>
+        </v-col>
+        <v-spacer></v-spacer>
+        <v-col cols="6" class="inline-flex text-sm items-center">
           <v-chip
             v-if="course?.schedules.length"
             :class="[course.schedules.length > 1 ? 'rounded-r-lg' : '']"
@@ -67,8 +84,8 @@ const showPeriod = (period: number[]): string => {
             <v-icon>mdi-calendar-clock-outline</v-icon>
             <span> TBA </span>
           </v-chip>
-        </div>
-      </div>
+        </v-col>
+      </v-row>
     </template>
   </v-card>
 </template>

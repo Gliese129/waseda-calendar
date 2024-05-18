@@ -22,7 +22,7 @@ const fetchCoursesList = async (form: SearchParams) => {
     if (form.period) formData['p_jigen'] = form.period
     if (form.departmentId) formData['p_gakubu'] = form.departmentId
     formData['ControllerParameters'] = 'JAA103SubCon'
-    formData['p_number'] = 10
+    formData['p_number'] = 20
     if (form.pageId) formData['p_page'] = form.pageId
 
     let html: string = await Http.postForm('/index.php', formData)

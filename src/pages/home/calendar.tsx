@@ -1,6 +1,8 @@
 import { h, computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
+import { useRouter } from 'vue-router'
+import { OnLongPress } from '@vueuse/components'
 
 interface CourseInfo {
   name: string
@@ -47,12 +49,13 @@ export default defineComponent({
   emits: [],
   setup(props: CalendarProps, _) {
     const store = useStore(key)
+    const router = useRouter()
     const time2num = (time: string) => {
       let [hour, minute] = time.split(':').map(Number)
       return hour * 60 + minute
     }
     const hiddenDays = [0] // hide Sunday column to save space
-    const periodSettings = computed(() => store.state.calendar.periodSettings)
+    const periods = computed(() => store.state.calendar.periods)
     const startOfWeek = computed(() => {
       let currDay = props.currDate.getDay()
       return new Date(props.currDate.getTime() - currDay * 24 * 60 * 60 * 1000)
@@ -76,7 +79,10 @@ export default defineComponent({
     )
     const currPeriod = computed(() => {
       let currPeriod = 0
-      while (currTime.value > time2num(periodSettings.value[currPeriod][1])) {
+      while (
+        currPeriod < periods.value.length &&
+        currTime.value > time2num(periods.value[currPeriod][1])
+      ) {
         currPeriod++
       }
       return currPeriod + 1
@@ -90,8 +96,7 @@ export default defineComponent({
             course.day === props.currDate.getDay() &&
             currPeriod.value >= course.start &&
             currPeriod.value <= course.end
-          let isRecess =
-            currTime.value < time2num(periodSettings.value[course.start - 1][0])
+          let isRecess = currTime.value < time2num(periods.value[course.start - 1][0])
           let isBreak = holidays.value.indexOf(course.day) !== -1
 
           let color = CellColor.NORMAL
@@ -118,7 +123,7 @@ export default defineComponent({
         )
         .map((dayCol) => {
           // fill the table
-          let length = periodSettings.value.length
+          let length = periods.value.length
           let result = Array.from({ length }, () => null) as Array<{
             course: CourseInfo
             repeated: number
@@ -167,7 +172,7 @@ export default defineComponent({
 
     const content = computed(() => {
       // generate the period column
-      let periods = periodSettings.value.map((periodInfo, index) => [
+      let periodsTsx = periods.value.map((periodInfo, index) => [
         <td
           class="border border-slate-300 flex-col "
           style={{
@@ -182,7 +187,7 @@ export default defineComponent({
         </td>,
       ])
       // process the timetable
-      let table = courses.value.map((row) =>
+      let tableTsx = courses.value.map((row) =>
         row
           .map((col) =>
             col ? (
@@ -194,7 +199,12 @@ export default defineComponent({
                   display: col.repeated === 0 ? '' : 'none',
                 }}
               >
-                <v-card class="flex m-auto hover:shadow-md transition ease-linear duration-300 rounded-sm">
+                <OnLongPress
+                  onTrigger={() => router.push(`/my-courses/${col.course.name}`)}
+                  delay={2000}
+                  as="v-card"
+                  class="inline-flex m-auto hover:shadow-md transition ease-linear duration-300 rounded-sm"
+                >
                   <v-card-text>
                     <div
                       class="font-bold text-wrap break-all"
@@ -206,7 +216,7 @@ export default defineComponent({
                     </div>
                     <div>{col.course.classroom}</div>
                   </v-card-text>
-                </v-card>
+                </OnLongPress>
               </td>
             ) : (
               <td class="border border-slate-300 text-xs/3 p-px w-1/8"></td>
@@ -214,11 +224,11 @@ export default defineComponent({
           )
           .filter((_, index) => hiddenDays.indexOf(index) === -1)
       )
-      return periods.map((period, index) => {
+      return periodsTsx.map((periodTsx, index) => {
         return (
           <tr class="h-1/8">
-            {period}
-            {table[index]}
+            {periodTsx}
+            {tableTsx[index]}
           </tr>
         )
       })

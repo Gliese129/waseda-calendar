@@ -8,7 +8,7 @@ import { initPeriodSetting } from '@/resources/courses-date'
 export interface CalendarState {
     courses: Course[]
     timetable: number[][][]
-    periodSettings: string[][]
+    periods: string[][]
 }
 
 const baseFolder = 'courses/'
@@ -17,7 +17,7 @@ export const calendarStore = {
     state: {
         courses: [],
         timetable: [],
-        periodSettings: [],
+        periods: [],
     },
     mutations: {
         addCourse(state: CalendarState, course: any) {
@@ -34,6 +34,13 @@ export const calendarStore = {
         },
         setCourses(state: CalendarState, courses: any) {
             state.courses = courses
+            saveLocal(baseFolder + 'courses', state.courses)
+        },
+        deleteCourse(state: CalendarState, course: any) {
+            let idx = state.courses.findIndex(
+                (c) => c.code === course.code && c.name === course.name
+            )
+            state.courses.splice(idx, 1)
             saveLocal(baseFolder + 'courses', state.courses)
         },
         updateTimetable(state: CalendarState) {
@@ -60,7 +67,7 @@ export const calendarStore = {
                 let termArray = []
                 for (let day = 0; day < 7; ++day) {
                     let dayArray = []
-                    for (const _ of state.periodSettings) {
+                    for (const _ of state.periods) {
                         dayArray.push(-1)
                     }
                     termArray.push(dayArray)
@@ -68,13 +75,16 @@ export const calendarStore = {
                 state.timetable.push(termArray)
             }
         },
-        initPeriod(state: CalendarState) {
-            // TODO fetch from network
-            state.periodSettings = initPeriodSetting
+        initPeriods(state: CalendarState) {
+            state.periods = initPeriodSetting
+        },
+        setPeriods(state: CalendarState) {
+            // todo
+            state.periods = initPeriodSetting
         },
     },
     actions: {
-        async addCourse({ commit }: { commit: any }, course: any) {
+        async addCourse({ commit }: { commit: any }, course: Course) {
             let currCourse = new Course(course.code, course.name)
             Course.deepCopy(currCourse, course)
             commit('addCourse', course)
@@ -88,14 +98,21 @@ export const calendarStore = {
             }
             console.log('Added course:', course)
         },
+        async deleteCourse({ commit }: { commit: any }, course: Course) {
+            commit('deleteCourse', course)
+            commit('initTimetable')
+        },
         async init({ commit }: { commit: any }) {
             // Fetch from network
             let courses = getLocal(baseFolder + 'courses')
             console.log('Init courses:', courses)
             courses = courses === null ? [] : courses
             commit('setCourses', courses)
-            commit('initPeriod')
+            commit('initPeriods')
             commit('initTimetable')
+        },
+        async setPeriod({ commit }: { commit: any }, periods: string[][]) {
+            commit('setPeriods', periods)
         },
     },
 }

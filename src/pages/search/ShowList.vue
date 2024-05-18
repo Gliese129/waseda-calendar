@@ -40,6 +40,7 @@ const openInNew = (url: string | undefined) => {
     class="m-auto w-90vw"
     height="45vh"
     :items="courses"
+    mode="manual"
     @load="onLoad"
   >
     <template v-for="item in courses" :key="item.name">
@@ -87,10 +88,7 @@ const openInNew = (url: string | undefined) => {
             </template>
           </v-expansion-panel>
         </v-expansion-panels>
-        <course-edit
-          :origin="selectedCourse"
-          @after-save="dialogActive = false"
-        />
+        <course-edit :origin="selectedCourse" @after-save="dialogActive = false" />
       </div>
       <v-btn @click="dialogActive = false"> close </v-btn>
     </v-card>
