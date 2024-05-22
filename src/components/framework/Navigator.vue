@@ -28,7 +28,7 @@ watch(
     <v-btn class="flex-auto" density="default" @click="router.push('/my-courses')">
       <v-icon>mdi-book-open-variant</v-icon>
     </v-btn>
-    <v-btn class="flex-auto">
+    <v-btn class="flex-auto" @click="router.push('/settings')">
       <v-icon>mdi-account</v-icon>
     </v-btn>
   </v-btn-toggle>

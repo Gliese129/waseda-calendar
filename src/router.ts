@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { store } from '@/store'
+import { children } from 'node_modules/cheerio/lib/esm/api/traversing'
 
 const routes = [
     {
@@ -16,6 +17,17 @@ const routes = [
         path: '/my-courses/:keyword?',
         component: () => import('@/pages/my-courses/index.vue'),
         name: 'My Courses',
+    },
+    {
+        path: '/settings/:subRoute(.*)?',
+        component: () => import('@/pages/settings/index.vue'),
+        name: 'Settings',
+        children: [
+            {
+                path: '',
+                component: () => import('@/pages/settings/category.vue'),
+            },
+        ],
     },
 ]
 
