@@ -465,6 +465,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@capacitor/background-runner@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@capacitor/background-runner@npm:1.1.0"
+  peerDependencies:
+    "@capacitor/core": ^5.0.0
+  checksum: 10c0/4c2d5ecb4eb6d4316a58df918b112efdec22c5561839652d53f7845014687ce11c98e785720e74cf6dfaa4ee0cebf71956dc77ba87ef17042a89d0e24472b1d4
+  languageName: node
+  linkType: hard
+
 "@capacitor/cli@npm:^6.0.0":
   version: 6.0.0
   resolution: "@capacitor/cli@npm:6.0.0"
@@ -509,6 +518,15 @@ __metadata:
   peerDependencies:
     "@capacitor/core": ^6.0.0
   checksum: 10c0/c05f160ac69e6fb209be69ae8610facc9fd26a95c181950dc25a167eb8e609e7e3626617b3cfcf01a495f173542102282d56dd8a1eb56c6dd9005eda9f0414f4
+  languageName: node
+  linkType: hard
+
+"@capacitor/preferences@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@capacitor/preferences@npm:6.0.0"
+  peerDependencies:
+    "@capacitor/core": ^6.0.0
+  checksum: 10c0/ec9f3473421055c68147df38a06c858907fd02211f822b566e099825f2525a250fddb313b9c2c20af71bd7b7d33e5f142d289fae2f90959ff7cf6e8bc5c583c9
   languageName: node
   linkType: hard
 
@@ -6142,9 +6160,11 @@ __metadata:
     "@babel/eslint-parser": "npm:^7.24.1"
     "@capacitor-community/sqlite": "npm:^5.7.3-3"
     "@capacitor/android": "npm:^6.0.0"
+    "@capacitor/background-runner": "npm:^1.1.0"
     "@capacitor/cli": "npm:^6.0.0"
     "@capacitor/core": "npm:^6.0.0"
     "@capacitor/ios": "npm:^6.0.0"
+    "@capacitor/preferences": "npm:^6.0.0"
     "@eslint/js": "npm:^9.1.1"
     "@fullcalendar/core": "npm:^6.1.11"
     "@fullcalendar/daygrid": "npm:^6.1.11"

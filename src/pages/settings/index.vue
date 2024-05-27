@@ -1,7 +1,6 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div></div>
   <RouterView v-slot="{ Component }">
     <Transition name="fade" mode="out-in">
       <component :is="Component" />

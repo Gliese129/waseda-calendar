@@ -11,8 +11,10 @@
     "dependencies": {
         "@capacitor-community/sqlite": "^5.7.3-3",
         "@capacitor/android": "^6.0.0",
+        "@capacitor/background-runner": "^1.1.0",
         "@capacitor/core": "^6.0.0",
         "@capacitor/ios": "^6.0.0",
+        "@capacitor/preferences": "^6.0.0",
         "@fullcalendar/core": "^6.1.11",
         "@fullcalendar/daygrid": "^6.1.11",
         "@fullcalendar/timegrid": "^6.1.11",

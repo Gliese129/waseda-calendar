@@ -104,7 +104,7 @@ export const calendarStore = {
         },
         async init({ commit }: { commit: any }) {
             // Fetch from network
-            let courses = getLocal(baseFolder + 'courses')
+            let courses = await getLocal(baseFolder + 'courses')
             console.log('Init courses:', courses)
             courses = courses === null ? [] : courses
             commit('setCourses', courses)

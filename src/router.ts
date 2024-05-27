@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { store } from '@/store'
-import { children } from 'node_modules/cheerio/lib/esm/api/traversing'
 
 const routes = [
     {
@@ -25,7 +23,13 @@ const routes = [
         children: [
             {
                 path: '',
+                name: 'Settings Home',
                 component: () => import('@/pages/settings/category.vue'),
+            },
+            {
+                path: 'periods',
+                name: 'Periods Edit',
+                component: () => import('@/pages/settings/sub/period.vue'),
             },
         ],
     },
@@ -34,15 +38,6 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
-})
-
-router.afterEach((to, _) => {
-    const currRoute = routes.filter((route) => route.name === to.name)[0]
-    store.dispatch('system/updateRoute', {
-        name: currRoute.name,
-        path: currRoute.path,
-        index: routes.indexOf(currRoute),
-    })
 })
 
 export { router }

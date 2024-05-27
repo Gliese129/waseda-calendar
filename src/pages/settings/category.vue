@@ -1,49 +1,39 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { computed } from 'vue'
 
 const router = useRouter()
-const currPage = computed(() => router.currentRoute.value.path)
-const settings: Settings[] = [
-    {
-        name: 'User Settings',
-        path: '/user',
-        children: [],
-    },
+const infoSettings = [
     {
         name: 'Schedule',
-        path: '/schedule',
-        children: [
+        items: [
             {
-                name: 'Periods',
-                path: '/periods',
+                title: 'Periods',
+                subtitle: 'Set up your school periods',
+                icon: 'mdi-clock-time-four-outline',
+                href: '/settings/periods',
             },
         ],
     },
 ]
-interface Settings {
-    name: string
-    path: string
-    children?: Settings[]
-}
-
-const navItems = computed(() => {
-    let items = settings
-    let prefix = '/settings'
-    currPage.value.split('/').every((path) => {
-        let route = items.filter((item) => item.path === `/${path}`)[0]
-        if (route && route.children) {
-            items = route.children
-            prefix += `/${path}`
-            return true
-        } else return false
-    })
-    return items
-})
 </script>
 
 <template>
-  <div></div>
+  <v-list lines="three" select-strategy="classic" class="w-90vw">
+    <div v-for="group in infoSettings" :key="group.name">
+      <v-list-subheader>{{ group.name }}</v-list-subheader>
+      <v-list-item
+        v-for="item in group.items"
+        :key="item.title"
+        :prepend-icon="item.icon"
+        :title="item.title"
+        :subtitle="item.subtitle"
+        class="text-left"
+        @click="router.push(item.href)"
+      ></v-list-item>
+    </div>
+    <v-divider inset></v-divider>
+    <v-list-subheader>General</v-list-subheader>
+  </v-list>
 </template>
 
 <style scoped></style>

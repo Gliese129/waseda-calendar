@@ -3,27 +3,15 @@
  */
 
 export interface SystemState {
-    currRoute: {
-        name: string
-        path: string
-        index: number
-    }
+    language: string
 }
 
 // const baseFolder = 'system/'
 
 export const systemStore = {
     state: {
-        currRoute: {},
+        language: 'en',
     },
-    mutations: {
-        setCurrRoute(state: SystemState, currRoute: any) {
-            state.currRoute = currRoute
-        },
-    },
-    actions: {
-        async updateRoute({ commit }: { commit: any }, currRoute: any) {
-            commit('setCurrRoute', currRoute)
-        },
-    },
+    mutations: {},
+    actions: {},
 }

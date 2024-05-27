@@ -1,15 +1,13 @@
 <script setup lang="ts">
-import { useStore } from 'vuex'
-import { key } from '@/store'
-import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 
-const store = useStore(key)
-
-const title = computed(() => store.state.system.currRoute.name)
+const router = useRouter()
 </script>
 
 <template>
-  <v-app-bar-title class="font-bold">{{ title }}</v-app-bar-title>
+  <v-app-bar-title class="font-bold">{{
+    router.currentRoute.value.name
+  }}</v-app-bar-title>
 </template>
 
 <style scoped></style>

@@ -26,7 +26,7 @@ const ifDataLoaded = computed(
     </v-app-bar>
 
     <v-main v-if="ifDataLoaded">
-      <v-container>
+      <v-container fluid>
         <router-view />
       </v-container>
     </v-main>
