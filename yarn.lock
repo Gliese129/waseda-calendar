@@ -747,45 +747,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fullcalendar/core@npm:^6.1.11":
-  version: 6.1.11
-  resolution: "@fullcalendar/core@npm:6.1.11"
-  dependencies:
-    preact: "npm:~10.12.1"
-  checksum: 10c0/24f945d359aa8813496176a29690559842f542a56f91cf89d35261ab98efdeecee506aa0b64d6f561cf2cd9e86259c1997164515c2d593f6067e99b578eb94d3
-  languageName: node
-  linkType: hard
-
-"@fullcalendar/daygrid@npm:^6.1.11, @fullcalendar/daygrid@npm:~6.1.11":
-  version: 6.1.11
-  resolution: "@fullcalendar/daygrid@npm:6.1.11"
-  peerDependencies:
-    "@fullcalendar/core": ~6.1.11
-  checksum: 10c0/c09bf896f44541f6a1cbbcc332c5acbb5166b63b813792ea3d7320992333f504ee2d397c8352c19fc609762c6f952bf4011143966635f9961012ff1807cf93f2
-  languageName: node
-  linkType: hard
-
-"@fullcalendar/timegrid@npm:^6.1.11":
-  version: 6.1.11
-  resolution: "@fullcalendar/timegrid@npm:6.1.11"
-  dependencies:
-    "@fullcalendar/daygrid": "npm:~6.1.11"
-  peerDependencies:
-    "@fullcalendar/core": ~6.1.11
-  checksum: 10c0/4a065089d90b7c03bd89f30091f7b5f7af83a3f0ce6fe5c4de954b32af6c353f0c7fdf15cddf5cc55f1531cba7db282e978f8b45ee817f203218bc252ba6d935
-  languageName: node
-  linkType: hard
-
-"@fullcalendar/vue3@npm:^6.1.11":
-  version: 6.1.11
-  resolution: "@fullcalendar/vue3@npm:6.1.11"
-  peerDependencies:
-    "@fullcalendar/core": ~6.1.11
-    vue: ^3.0.11
-  checksum: 10c0/45472768e9ee20008b941cfc88e4c354931346d7b991c46120a2589ee271f777c16cfa6e9c9eb55b9ae49cffecac3617e7f6651df4a6ac8cbfe74ec81629335f
-  languageName: node
-  linkType: hard
-
 "@holiday-jp/holiday_jp@npm:^2.4.0":
   version: 2.4.0
   resolution: "@holiday-jp/holiday_jp@npm:2.4.0"
@@ -4973,13 +4934,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preact@npm:~10.12.1":
-  version: 10.12.1
-  resolution: "preact@npm:10.12.1"
-  checksum: 10c0/c77a55e897dcf298b7aa13637fed29744d3cf6c083f2832856e8551dbf27303c8b6946569736de16b05cba15c0e44ad404beb236ad9e36583a6fc5e2efad7777
-  languageName: node
-  linkType: hard
-
 "prelude-ls@npm:^1.2.1":
   version: 1.2.1
   resolution: "prelude-ls@npm:1.2.1"
@@ -6119,9 +6073,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vuetify@npm:^3.5.17":
-  version: 3.5.17
-  resolution: "vuetify@npm:3.5.17"
+"vuetify@npm:^3.6.7":
+  version: 3.6.7
+  resolution: "vuetify@npm:3.6.7"
   peerDependencies:
     typescript: ">=4.7"
     vite-plugin-vuetify: ">=1.0.0"
@@ -6137,7 +6091,7 @@ __metadata:
       optional: true
     webpack-plugin-vuetify:
       optional: true
-  checksum: 10c0/19f590a3ee52ef297d966c90e3a599ab36085dfceed3d60c59311d22f1e51a5a6f90f97fb174405e0c0c3452ac8cb2ddf34f744725f422b1b1d824d95488eb80
+  checksum: 10c0/7449a292a464a6c2150a2f1d8791d55fcbbafe6481a97a9f479d1ca60402d7434426872dde603e71c60dbfef491233b4bc26c3622b496a1f77587c9ac96d4c4e
   languageName: node
   linkType: hard
 
@@ -6166,10 +6120,6 @@ __metadata:
     "@capacitor/ios": "npm:^6.0.0"
     "@capacitor/preferences": "npm:^6.0.0"
     "@eslint/js": "npm:^9.1.1"
-    "@fullcalendar/core": "npm:^6.1.11"
-    "@fullcalendar/daygrid": "npm:^6.1.11"
-    "@fullcalendar/timegrid": "npm:^6.1.11"
-    "@fullcalendar/vue3": "npm:^6.1.11"
     "@holiday-jp/holiday_jp": "npm:^2.4.0"
     "@mdi/font": "npm:^7.4.47"
     "@typescript-eslint/eslint-plugin": "npm:^7.8.0"
@@ -6200,7 +6150,7 @@ __metadata:
     vue-eslint-parser: "npm:8.0.0"
     vue-router: "npm:4"
     vue-tsc: "npm:^2.0.6"
-    vuetify: "npm:^3.5.17"
+    vuetify: "npm:^3.6.7"
     vuex: "npm:^4.0.2"
   languageName: unknown
   linkType: soft

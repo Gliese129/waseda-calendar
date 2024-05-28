@@ -70,10 +70,7 @@ export const syllabusStore = {
                 baseFolder + 'quarters',
                 fetchQuarters
             )
-            const periods = await searchLocalBeforeNetwork(
-                baseFolder + 'periods',
-                fetchQuarters
-            )
+            const periods = await searchLocalBeforeNetwork(baseFolder + 'periods', fetchPeriods)
 
             // Commit to state
             commit('setDepartments', departments)

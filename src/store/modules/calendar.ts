@@ -78,9 +78,9 @@ export const calendarStore = {
         initPeriods(state: CalendarState) {
             state.periods = initPeriodSetting
         },
-        setPeriods(state: CalendarState) {
+        setPeriods(state: CalendarState, periods: string[][]) {
             // todo
-            state.periods = initPeriodSetting
+            state.periods = periods
         },
     },
     actions: {
@@ -112,7 +112,10 @@ export const calendarStore = {
             commit('initTimetable')
         },
         async setPeriod({ commit }: { commit: any }, periods: string[][]) {
-            commit('setPeriods', periods)
+            commit(
+                'setPeriods',
+                periods.map((x) => x.slice())
+            )
         },
     },
 }

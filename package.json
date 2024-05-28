@@ -15,10 +15,6 @@
         "@capacitor/core": "^6.0.0",
         "@capacitor/ios": "^6.0.0",
         "@capacitor/preferences": "^6.0.0",
-        "@fullcalendar/core": "^6.1.11",
-        "@fullcalendar/daygrid": "^6.1.11",
-        "@fullcalendar/timegrid": "^6.1.11",
-        "@fullcalendar/vue3": "^6.1.11",
         "@holiday-jp/holiday_jp": "^2.4.0",
         "@mdi/font": "^7.4.47",
         "@vueuse/components": "^10.9.0",
@@ -56,7 +52,7 @@
         "vite-plugin-vuetify": "^2.0.3",
         "vue-eslint-parser": "8.0.0",
         "vue-tsc": "^2.0.6",
-        "vuetify": "^3.5.17"
+        "vuetify": "^3.6.7"
     },
     "main": "index.js",
     "license": "MIT",

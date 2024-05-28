@@ -7,7 +7,7 @@ import { store, key } from './store'
 // Vuetify
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
-import { VNumberInput } from 'vuetify/labs/VNumberInput'
+import { VNumberInput, VTimePicker } from 'vuetify/labs/components'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 
@@ -17,6 +17,7 @@ import 'virtual:uno.css'
 const vuetify = createVuetify({
     components: {
         VNumberInput,
+        VTimePicker,
         ...components,
     },
     directives,
