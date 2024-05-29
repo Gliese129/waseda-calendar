@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, provide } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { router } from './router'
@@ -29,5 +29,10 @@ const vuetify = createVuetify({
 const app = createApp(App)
 
 app.use(router).use(store, key).use(vuetify)
+
+app.config.errorHandler = (err, vm, info) => {
+    console.error(err, vm, info)
+    provide('error', err)
+}
 
 app.mount('#app')

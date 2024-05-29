@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { store } from '@/store'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -33,6 +34,15 @@ const infoSettings = [
     </div>
     <v-divider inset></v-divider>
     <v-list-subheader>General</v-list-subheader>
+    <v-divider inset></v-divider>
+    <v-list-subheader color="red">Danger Zone</v-list-subheader>
+    <v-list-item
+      title="Clear Cache"
+      subtitle="If you have any problem, try this"
+      prepend-icon="mdi-delete"
+      class="text-left"
+      @click="store.dispatch('syllabus/forceRefresh')"
+    ></v-list-item>
   </v-list>
 </template>
 
