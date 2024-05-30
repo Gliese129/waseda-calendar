@@ -1,4 +1,4 @@
-import { createApp, provide } from 'vue'
+import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
 import { router } from './router'
@@ -13,6 +13,9 @@ import * as directives from 'vuetify/directives'
 
 import '@mdi/font/css/materialdesignicons.css'
 import 'virtual:uno.css'
+
+// Plugins
+import { globalNotifyPlugin } from '@/components/plugins/message-alert'
 
 const vuetify = createVuetify({
     components: {
@@ -30,9 +33,6 @@ const app = createApp(App)
 
 app.use(router).use(store, key).use(vuetify)
 
-app.config.errorHandler = (err, vm, info) => {
-    console.error(err, vm, info)
-    provide('error', err)
-}
+app.use(globalNotifyPlugin)
 
 app.mount('#app')

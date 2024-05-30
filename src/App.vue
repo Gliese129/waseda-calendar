@@ -2,6 +2,7 @@
 import { computed, onMounted } from 'vue'
 import Navigator from './components/framework/Navigator.vue'
 import Header from './components/framework/Header.vue'
+import ErrorMsg from './components/framework/ErrorMsg.vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 const store = useStore(key)
@@ -26,6 +27,8 @@ const ifDataLoaded = computed(
     </v-app-bar>
 
     <v-main v-if="ifDataLoaded">
+      <ErrorMsg class="" />
+
       <v-container fluid>
         <router-view />
       </v-container>

@@ -1,23 +1,34 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { inject, watch } from 'vue'
+import type { Ref } from 'vue'
+import { inject } from 'vue'
+import type { CustomNotification } from '@/components/plugins/message-alert'
 
-const error = inject<Error>('error')
-
-const errorStack = ref<Error[]>([])
-watch(
-    () => error as Error,
-    (newError: Error) => {
-        errorStack.value.push(newError)
-        setInterval(() => {
-            errorStack.value.shift()
-        }, 3000)
-    }
-)
+const msgStack = inject<Ref<CustomNotification[]>>('$msgStack')
 </script>
 
 <template>
-  <div>{{ error }}</div>
+  <div class="absolute z-9999 w-full">
+    <transition-group name="list">
+      <v-alert
+        v-for="msg in msgStack"
+        :key="msg.message"
+        :text="msg.message"
+        :type="msg.type"
+        density="comfortable"
+        class="w-full mx-auto my-2"
+      ></v-alert>
+    </transition-group>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.25s ease;
+  }
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+</style>

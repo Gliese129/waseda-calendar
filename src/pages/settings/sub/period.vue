@@ -2,8 +2,10 @@
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import { ref } from 'vue'
+import { inject } from 'vue'
 
 const store = useStore(key)
+const $message = inject<Function>('$message') as Function
 
 const periods = ref(store.state.calendar.periods.map((period: string[]) => [...period]))
 
@@ -28,16 +30,12 @@ const reset = () => {
     ])
 }
 
-let _clearInterval: any
 const update = async () => {
     // check if the periods are valid
     const time2num = (time: string) => {
         const [hour, minute] = time.split(':').map(Number)
         return hour * 60 + minute
     }
-    if (_clearInterval) clearInterval(_clearInterval)
-    msgText.value = ''
-    msgTitle.value = ''
     try {
         // check if any period is empty
         if (periods.value.some((period) => period[0] === '' || period[1] === ''))
@@ -65,22 +63,10 @@ const update = async () => {
             throw new Error(`End time should be smaller then next start time`)
         // passed
         store.dispatch('calendar/setPeriods', periods.value)
-        msgTitle.value = 'Success'
-        msgText.value = 'Periods Updated'
-        msgType.value = 'success'
-        _clearInterval = setInterval(() => {
-            msgText.value = ''
-            msgTitle.value = ''
-        }, 3000)
+        $message('Periods Updated', 'success')
     } catch (e: any) {
         console.log(e)
-        msgTitle.value = 'Invalid Periods'
-        msgText.value = e.message
-        msgType.value = 'error'
-        _clearInterval = setInterval(() => {
-            msgText.value = ''
-            msgTitle.value = ''
-        }, 3000)
+        $message(e.message, 'error')
     }
 }
 
@@ -94,23 +80,10 @@ const periodInsertAt = (index: number, newItem: any) => {
 const periodDeleteAt = (index: number) => {
     periods.value = [...periods.value.slice(0, index), ...periods.value.slice(index + 1)]
 }
-const msgTitle = ref('')
-const msgText = ref('')
-const msgType = ref<any>('error')
 </script>
 
 <template>
   <div>
-    <v-alert
-      :text="msgText"
-      :title="msgTitle"
-      density="compact"
-      :type="msgType"
-      :class="[
-        'absolute z-9999 w-90vw transition-top',
-        msgText === '' ? 'top-neg-50' : 'top-5',
-      ]"
-    ></v-alert>
     <v-card class="w-90vw py-4">
       <template #text>
         <v-row v-for="(period, index) in periods" :key="index" class="flex space-between">

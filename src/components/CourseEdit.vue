@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Course } from '@/model/course'
-import { reactive, ref } from 'vue'
+import { inject, reactive } from 'vue'
 import { watch } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
@@ -12,7 +12,9 @@ const props = defineProps({
     },
 })
 const emits = defineEmits(['afterSave'])
+const $message = inject<Function>('$message') as Function
 const store = useStore(key)
+
 const origin = defineModel<Course>('origin')
 
 const course = reactive<Course>(new Course('', ''))
@@ -47,24 +49,12 @@ const save = async () => {
 
         emits('afterSave')
     } catch (e: any) {
-        errorMessage.value = e.message
+        $message({
+            message: e.message,
+            type: 'warning',
+        })
     }
 }
-
-const errorMessage = ref('')
-let alertDelInterval: any
-watch(
-    errorMessage,
-    (newVal) => {
-        if (newVal) {
-            clearTimeout(alertDelInterval)
-            alertDelInterval = setTimeout(() => {
-                errorMessage.value = ''
-            }, 2000)
-        }
-    },
-    { immediate: true }
-)
 </script>
 
 <template>
@@ -265,14 +255,6 @@ watch(
       </v-col>
     </v-row>
   </v-form>
-  <v-alert
-    :style="{ top: errorMessage ? '20px' : '-80px' }"
-    density="compact"
-    :text="errorMessage"
-    title="Course Conflict"
-    type="warning"
-    class="conflict-alert"
-  ></v-alert>
 </template>
 
 <style lang="scss" scoped>
@@ -305,13 +287,5 @@ watch(
   .del-btn {
     margin: auto;
     margin-right: 0;
-  }
-  .conflict-alert {
-    transition: all 0.5s;
-    position: absolute;
-    top: -80px;
-    z-index: 100;
-    width: 90%;
-    margin: auto;
   }
 </style>
