@@ -3,39 +3,21 @@ PODS:
     - CapacitorCordova
   - CapacitorBackgroundRunner (1.1.0):
     - Capacitor
-  - CapacitorCommunitySqlite (5.7.3-3):
-    - Capacitor
-    - SQLCipher
-    - ZIPFoundation
   - CapacitorCordova (6.0.0)
   - CapacitorPreferences (6.0.0):
     - Capacitor
-  - SQLCipher (4.5.7):
-    - SQLCipher/standard (= 4.5.7)
-  - SQLCipher/common (4.5.7)
-  - SQLCipher/standard (4.5.7):
-    - SQLCipher/common
-  - ZIPFoundation (0.9.19)
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorBackgroundRunner (from `../../node_modules/@capacitor/background-runner`)"
-  - "CapacitorCommunitySqlite (from `../../node_modules/@capacitor-community/sqlite`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
-
-SPEC REPOS:
-  trunk:
-    - SQLCipher
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorBackgroundRunner:
     :path: "../../node_modules/@capacitor/background-runner"
-  CapacitorCommunitySqlite:
-    :path: "../../node_modules/@capacitor-community/sqlite"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorPreferences:
@@ -44,12 +26,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
   CapacitorBackgroundRunner: 270b88dd7ba6631b22f17ab4f10422834d82c1aa
-  CapacitorCommunitySqlite: 51e28e15b178468ff8761d4ac21feaf074b6c125
   CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
   CapacitorPreferences: c9b839a80baa72e4ed4bdb117618e1950d3046b5
-  SQLCipher: 5e6bfb47323635c8b657b1b27d25c5f1baf63bf5
-  ZIPFoundation: b8c29ea7ae353b309bc810586181fd073cb3312c
 
-PODFILE CHECKSUM: 19d8b37163c1b6fadd889bf08ffdf332fdd0fd3d
+PODFILE CHECKSUM: 2af3134d86af7f9daa3f252c8b975dd13f6b87f5
 
 COCOAPODS: 1.15.2

@@ -200,6 +200,7 @@ export default defineComponent({
                 }}
               >
                 <OnLongPress
+                  // @ts-ignore
                   onTrigger={() => router.push(`/my-courses/${col.course.name}`)}
                   delay={2000}
                   as="v-card"
