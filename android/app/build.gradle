@@ -1,6 +1,13 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
     namespace "org.wasedacalendar.app"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {

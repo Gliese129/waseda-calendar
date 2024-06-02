@@ -10,7 +10,9 @@ let currQuarter = computed(() => {
     let quarters = store.state.syllabus.quarters
     console.log(quarters)
     let now = new SchoolYearDate()
-    let quarter = quarters.findIndex((quarter) => now.isBetween(quarter.start, quarter.end))
+    let quarter = quarters.findIndex((quarter) =>
+        now.isBetween(quarter.start, quarter.end)
+    )
     return quarter
 })
 const courses = computed(() =>
@@ -20,6 +22,7 @@ const courses = computed(() =>
                 .filter((schedule) => schedule.term.indexOf(currQuarter.value) !== -1)
                 .map((schedule) => {
                     return {
+                        code: course.code,
                         name: course.name,
                         day: schedule.day,
                         start: schedule.period[0],

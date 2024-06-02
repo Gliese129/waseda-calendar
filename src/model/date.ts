@@ -9,10 +9,6 @@ class SimpleDate {
     public valueOf(): number {
         return this.month * 100 + this.day
     }
-
-    public toString(): string {
-        return `${this.month}/${this.day}`
-    }
 }
 
 export class SchoolYearDate {
@@ -67,15 +63,16 @@ export class SchoolYearDate {
     public getAdjustedDate(): Date {
         const month = this.date.month
         const day = this.date.day
-        if (this.date < SchoolYearDate.newYearStart) {
-            return new Date(this.schoolYear - 1, month - 1, day)
+        if (this.dateValueOf() < SchoolYearDate.newYearStart.valueOf()) {
+            return new Date(this.schoolYear + 1, month - 1, day)
         } else {
             return new Date(this.schoolYear, month - 1, day)
         }
     }
 
-    public toString(isSchoolYear = true): string {
-        if (isSchoolYear) return `${this.date.toString()}(${this.schoolYear})`
+    public toString(isSchoolYear = true, onlyDate = false): string {
+        if (isSchoolYear)
+            return this.date.toString() + (onlyDate ? '' : `(${this.schoolYear})`)
         return this.getAdjustedDate().toLocaleDateString()
     }
 
@@ -83,12 +80,11 @@ export class SchoolYearDate {
         return this.getAdjustedDate().valueOf()
     }
     public dateValueOf(): number {
-        return this.date.valueOf()
+        return this.date.month * 100 + this.date.day
     }
     public equals(other: SchoolYearDate): boolean {
         return (
-            this.schoolYear === other.schoolYear &&
-      this.date.valueOf() === other.date.valueOf()
+            this.schoolYear === other.schoolYear && this.date.valueOf() === other.date.valueOf()
         )
     }
     public isBetween(start: SchoolYearDate, end: SchoolYearDate): boolean {

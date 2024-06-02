@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { OnLongPress } from '@vueuse/components'
 
 interface CourseInfo {
+  code: string
   name: string
   classroom: string
   start: number
@@ -17,6 +18,7 @@ h('div') // for h to be recognized
 
 interface CalendarProps {
   courses: {
+    code: string
     name: string
     classroom: string
     start: number
@@ -193,7 +195,7 @@ export default defineComponent({
             col ? (
               <td
                 rowspan={col.course.length}
-                class="border border-slate-300 text-xs/3 py-px px-1"
+                class="border border-slate-300 text-xs/3 py-px px-1 content-center"
                 style={{
                   backgroundColor: col.course.bgcolor,
                   display: col.repeated === 0 ? '' : 'none',
@@ -201,7 +203,7 @@ export default defineComponent({
               >
                 <OnLongPress
                   // @ts-ignore
-                  onTrigger={() => router.push(`/my-courses/${col.course.name}`)}
+                  onTrigger={() => router.push(`/my-courses/${col.course.code}`)}
                   delay={2000}
                   as="v-card"
                   class="inline-flex m-auto hover:shadow-md transition ease-linear duration-300 rounded-sm"

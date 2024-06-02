@@ -5,6 +5,9 @@ import Header from './components/framework/Header.vue'
 import ErrorMsg from './components/framework/ErrorMsg.vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
+import { watch } from 'vue'
+
+import courseNotification from '@/native/tasks/course-notification'
 const store = useStore(key)
 
 onMounted(async () => {
@@ -18,6 +21,31 @@ const ifDataLoaded = computed(
         store.state.syllabus.holidays.length > 0 &&
         store.state.calendar.periods.length > 0
 )
+// course notification
+watch(
+    () => store.state.system.coursePush,
+    (val) => {
+        if (val) {
+            let periods = store.state.calendar.periods
+            let courses = store.state.calendar.courses
+            let holidays = store.state.syllabus.holidays
+            courseNotification.startPush(periods, courses, holidays)
+        } else {
+            courseNotification.stopPush()
+        }
+    }
+)
+watch(
+    () => store.state.calendar,
+    () => {
+        if (!store.state.system.coursePush) return
+        let periods = store.state.calendar.periods
+        let courses = store.state.calendar.courses
+        let holidays = store.state.syllabus.holidays
+        courseNotification.updatePush(periods, courses, holidays)
+    },
+    { deep: true }
+)
 </script>
 
 <template>
@@ -27,7 +55,7 @@ const ifDataLoaded = computed(
     </v-app-bar>
 
     <v-main v-if="ifDataLoaded">
-      <ErrorMsg class="" />
+      <ErrorMsg />
 
       <v-container fluid>
         <router-view />
@@ -46,4 +74,4 @@ const ifDataLoaded = computed(
     height: fit-content;
   }
 </style>
-<style></style>
+@/native/native-tasks/course-notification

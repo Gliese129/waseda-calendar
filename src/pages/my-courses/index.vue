@@ -16,7 +16,9 @@ const keyword = ref('')
 const courses = computed(() =>
     store.state.calendar.courses.filter(
         (course) =>
-            keyword.value === '' || course.name.toLowerCase().includes(keyword.value)
+            keyword.value === '' ||
+            course.name.toLowerCase().includes(keyword.value.toLowerCase()) ||
+            course.code.toLowerCase().includes(keyword.value.toLowerCase())
     )
 )
 
@@ -60,58 +62,56 @@ const deleteCourse = async () => {
 </script>
 
 <template>
-  <v-container>
-    <v-row class="w-80vw m-auto">
-      <v-text-field
-        v-model="keyword"
-        label="Course Name"
-        outlined
-        dense
-        clearable
-        prepend-icon="mdi-filter-menu-outline"
-        @click:clear="keyword = ''"
-      ></v-text-field>
-    </v-row>
-    <v-row>
-      <div v-if="courses.length">
-        <CourseOutline
-          v-for="course in courses"
-          :key="course.name"
-          :item="course"
-          class="w-90vw"
-          @click="loadCourse(course)"
-        ></CourseOutline>
+  <v-row class="w-80vw m-auto">
+    <v-text-field
+      v-model="keyword"
+      label="Course Name or Code"
+      outlined
+      dense
+      clearable
+      prepend-icon="mdi-filter-menu-outline"
+      @click:clear="keyword = ''"
+    ></v-text-field>
+  </v-row>
+  <v-row class="max-h-">
+    <div v-if="courses.length">
+      <CourseOutline
+        v-for="course in courses"
+        :key="course.name"
+        :item="course"
+        class="w-90vw"
+        @click="loadCourse(course)"
+      ></CourseOutline>
+    </div>
+    <v-alert v-else type="info">
+      <template #title> Oops, we found nothing </template>
+      <template #text>
+        Maybe you need to
+        <v-btn variant="outlined" slim size="small" @click="router.push('/search')">
+          add some courses
+        </v-btn>
+        first.
+      </template>
+    </v-alert>
+  </v-row>
+  <v-dialog v-model="dialogActive" fullscreen>
+    <v-card :title="selectedCourse?.name">
+      <div class="mx-auto" style="width: 90%">
+        <course-edit edit :origin="selectedCourse" @after-save="afterSave" />
       </div>
-      <v-alert v-else type="info">
-        <template #title> Oops, we found nothing </template>
-        <template #text>
-          Maybe you need to
-          <v-btn variant="outlined" slim size="small" @click="router.push('/search')">
-            add some courses
-          </v-btn>
-          first.
-        </template>
-      </v-alert>
-    </v-row>
-    <v-dialog v-model="dialogActive" fullscreen>
-      <v-card :title="selectedCourse?.name">
-        <div class="mx-auto" style="width: 90%">
-          <course-edit edit :origin="selectedCourse" @after-save="afterSave" />
-        </div>
 
-        <v-divider class="m-auto"></v-divider>
+      <v-divider class="m-auto"></v-divider>
 
-        <v-row class="w-90vw m-auto max-h-8vw">
-          <v-col cols="6">
-            <v-btn class="w-full" color="red" @click="deleteCourse">delete</v-btn>
-          </v-col>
-          <v-col cols="6">
-            <v-btn class="w-full" @click="dialogActive = false"> close </v-btn>
-          </v-col>
-        </v-row>
-      </v-card>
-    </v-dialog>
-  </v-container>
+      <v-row class="w-90vw m-auto max-h-8vw">
+        <v-col cols="6">
+          <v-btn class="w-full" color="red" @click="deleteCourse">delete</v-btn>
+        </v-col>
+        <v-col cols="6">
+          <v-btn class="w-full" @click="dialogActive = false"> close </v-btn>
+        </v-col>
+      </v-row>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped></style>

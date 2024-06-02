@@ -9,8 +9,8 @@ android {
 
 apply from: "../capacitor-cordova-android-plugins/cordova.variables.gradle"
 dependencies {
-    implementation project(':capacitor-background-runner')
     implementation project(':capacitor-preferences')
+    implementation 'androidx.core:core-ktx:1.13.1'
 
 }
 

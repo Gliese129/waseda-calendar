@@ -3,7 +3,7 @@ import { fetchCoursesDetail } from '@/api/syllabus/course'
 import CourseOutline from '@/components/CourseOutline.vue'
 import CourseEdit from '@/components/CourseEdit.vue'
 import { Course } from '@/model/course'
-import { defineEmits, defineModel, ref } from 'vue'
+import { defineModel, ref } from 'vue'
 import { reactive } from 'vue'
 import TermOverview from '@/components/TermOverview.vue'
 const emit = defineEmits(['search'])
