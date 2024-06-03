@@ -12,6 +12,7 @@ import android.icu.util.Calendar
 import android.os.IBinder
 import com.getcapacitor.Logger
 import org.wasedacalendar.app.R
+import org.wasedacalendar.plugins.CourseNotification.model.Course
 
 class CourseNotificationService: Service() {
     companion object {
@@ -44,7 +45,7 @@ class CourseNotificationService: Service() {
             ACTION_SCHEDULE_NOTIFICATIONS -> {
                 Logger.debug("Scheduling notifications")
                 scheduleDailyCalculation()
-                notifyNextCourse()
+                notifyNearestCourse()
             }
             ACTION_STOP_SERVICE -> {
                 Logger.debug("Stopping service")
@@ -56,7 +57,7 @@ class CourseNotificationService: Service() {
             }
             ACTION_UPDATE_NOTIFICATIONS -> {
                 Logger.debug("Updating notifications")
-                notifyNextCourse()
+                notifyNearestCourse()
             }
         }
         return START_STICKY
@@ -68,7 +69,7 @@ class CourseNotificationService: Service() {
     }
 
     private fun createNotificationChannel() {
-        val notificationChannel = NotificationChannel(CHANNEL_ID, "Notification Service Channel",
+        val notificationChannel = NotificationChannel(CHANNEL_ID, "Course Notifications",
             NotificationManager.IMPORTANCE_MIN).apply {
             setSound(null, null)
         }
@@ -107,17 +108,31 @@ class CourseNotificationService: Service() {
     private fun notifyNextCourse() {
         val course = data.getNextCourse()
         if (course != null) {
-            CourseNotificationHelper.showCourseNotification(
-                this,
-                course
-            )
-            scheduleNextCourse(course.schedules[0].endPeriod.let {
-                data.getPeriodEndTimeMillis(it)
-            })
+            notifyCourse(course)
         } else {
             Logger.debug("No course to notify")
             CourseNotificationHelper.showBreakNotification(this)
         }
+    }
+
+    private fun notifyNearestCourse() {
+        val course = data.getCurrentCourse(true)
+        if (course != null) {
+            notifyCourse(course)
+        } else {
+            Logger.debug("No course to notify")
+            CourseNotificationHelper.showBreakNotification(this)
+        }
+    }
+
+    private fun notifyCourse(course: Course) {
+        CourseNotificationHelper.showCourseNotification(
+            this,
+            course
+        )
+        scheduleNextCourse(course.schedules[0].endPeriod.let {
+            data.getPeriodEndTimeMillis(it)
+        })
     }
 
     private fun scheduleNextCourse(endTime: Long) {

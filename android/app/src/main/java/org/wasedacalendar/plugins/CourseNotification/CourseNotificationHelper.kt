@@ -10,13 +10,16 @@ import org.wasedacalendar.plugins.CourseNotification.model.Course
 object CourseNotificationHelper {
     private const val CHANNEL_ID = "NotificationServiceChannel"
     private const val NOTIFICATION_ID = 1
+    private val data = CourseNotification
 
     fun showCourseNotification(context: Context, course: Course) {
         val layout = RemoteViews(context.packageName, R.layout.course_notification).apply {
             setTextViewText(R.id.title, course.name)
             setTextViewText(R.id.position_info, course.schedules[0].classroom)
             setTextViewText(R.id.time_info, course.schedules[0].let {
-                "${it.startPeriod} - ${it.endPeriod}"
+                val start = data.periods[it.startPeriod - 1].start
+                val end = data.periods[it.endPeriod - 1].end
+                return@let "$start - $end"
             })
         }
 

@@ -46,43 +46,87 @@ object CourseNotification{
         if (holidays.contains(today)) {
             return null
         }
-        // current or next period
         val now = LocalTime.now()
-        val nextPeriod = let find@{
-            for (i in 0 until periods.size - 1) {
-                if (periods[i + 1].isAfter(now) && periods[i].isBefore(now)) {
-                    return@find periods[i]
-                }
+        // find index of current period, if current time is before the first period, return 0
+        val period = periods.indexOfFirst { period ->
+            period.isDuring(now)
+        }.takeIf {
+            it != -1 || now < periods[0].start
+        }?.let {
+            it + 1 + 1 // since it's 0-indexed and we want the next period
+        }?: return null
+        return courses.find { course ->
+            course.schedules.any {
+                it.day == today.dayOfWeek.value &&
+                it.startPeriod > period
             }
-            return null
-        }
-        return courses.find {
-            it.isDuring(today.dayOfWeek.value, periods.indexOf(nextPeriod))
         }?.let { course ->
             Course(
                 course.name,
-                course.schedules.find {
+                course.schedules.filter {
                     it.day == today.dayOfWeek.value &&
-                    it.startPeriod <= periods.indexOf(nextPeriod) &&
-                    it.endPeriod >= periods.indexOf(nextPeriod)
-                }?.let {
-                    mutableListOf(it)
-                } ?: mutableListOf()
+                    it.startPeriod > period
+                }.toMutableList()
+            )
+        }
+    }
+
+    fun getCurrentCourse(useNextIfNotFound: Boolean = true): Course? {
+        // skip holidays
+        val today = LocalDate.now()
+        if (holidays.contains(today)) {
+            return null
+        }
+        val now = LocalTime.now()
+        // find index of current period, if current time is before the first period, return 0
+        val period = periods.indexOfFirst { period ->
+            if (useNextIfNotFound)
+                period.isBefore(now)
+            else period.isDuring(now)
+        }.takeIf {
+            it != -1 || now < periods[0].start
+        }?.let {
+            it + 1 // since it's 0-indexed
+        }?: return null
+        val result = courses.find { course ->
+            course.schedules.any {
+                it.day == today.dayOfWeek.value &&
+                it.startPeriod <= period &&
+                it.endPeriod >= period
+            }
+        } ?: let {
+            if(useNextIfNotFound) {
+                courses.find { course ->
+                    course.schedules.any {
+                        it.day == today.dayOfWeek.value &&
+                        it.startPeriod > period
+                    }
+                }
+            } else {
+                null
+            }
+        }
+        return result?.let { course ->
+            Course(
+                course.name,
+                course.schedules.filter {
+                    it.day == today.dayOfWeek.value &&
+                    it.endPeriod >= period
+                }.toMutableList()
             )
         }
     }
 
     fun getPeriodEndTimeMillis(period: Int): Long {
-        val now = LocalTime.now()
         val endTime = periods[period - 1].end.let {
             LocalDateTime.of(LocalDate.now(), it)
         }
         return endTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     }
 
-    private val courses: MutableList<Course> = ArrayList()
-    private val periods: MutableList<PeriodInfo> = ArrayList()
-    private val holidays: MutableList<LocalDate> = ArrayList() // month, day
+    val courses: MutableList<Course> = ArrayList()
+    val periods: MutableList<PeriodInfo> = ArrayList()
+    val holidays: MutableList<LocalDate> = ArrayList() // month, day
 
 
 }
