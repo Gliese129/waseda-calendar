@@ -22,9 +22,9 @@ data class PeriodInfo(
     }
 
     fun isAfter(time: LocalTime): Boolean {
-        return time.isAfter(end)
+        return start.isAfter(time)
     }
     fun isBefore(time: LocalTime): Boolean {
-        return time.isBefore(start)
+        return end.isBefore(time)
     }
 }

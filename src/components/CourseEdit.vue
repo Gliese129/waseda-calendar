@@ -11,7 +11,7 @@ const props = defineProps({
         default: false,
     },
 })
-const emits = defineEmits(['afterSave'])
+const emits = defineEmits(['afterSave', 'close'])
 const $message = inject<Function>('$message') as Function
 const store = useStore(key)
 
@@ -48,19 +48,65 @@ const save = async () => {
         await store.dispatch('calendar/addCourse', course)
 
         emits('afterSave')
+        $message('Saved successfully', 'success')
     } catch (e: any) {
-        $message({
-            message: e.message,
-            type: 'warning',
-        })
+        $message(e.message, 'warning')
     }
+}
+const addPeriod = () => {
+    course.schedules.push({
+        day: -1,
+        period: [1, 1],
+        term: [],
+        classroom: '',
+    })
+}
+const deleteEmpty = () => {
+    course.schedules = course.schedules.filter((tp) => tp.day !== -1)
+}
+
+const openInNew = (url: string | undefined) => {
+    if (!url) return
+    window.open(url, '_blank')
 }
 </script>
 
 <template>
-  <v-form>
+  <v-toolbar>
+    <v-btn icon="mdi-close" @click="$emit('close')"></v-btn>
+
+    <v-toolbar-title>{{ origin?.name }}</v-toolbar-title>
+
+    <v-spacer></v-spacer>
+
+    <v-toolbar-items>
+      <slot name="extra-actions">
+        <v-btn text="Reset" color="red" variant="text" @click="reset"></v-btn>
+      </slot>
+      <v-btn text="Save" color="blue" variant="text" @click="save"></v-btn>
+    </v-toolbar-items>
+  </v-toolbar>
+
+  <v-expansion-panels elevation="1" class="w-full mb-5">
+    <v-expansion-panel>
+      <v-expansion-panel-title class="py-1">
+        <p>Syllabus Raw Content</p>
+        <v-btn
+          class="ml-1"
+          variant="text"
+          icon="mdi-open-in-new"
+          @click.stop="openInNew(origin?.url)"
+        ></v-btn>
+      </v-expansion-panel-title>
+      <v-expansion-panel-text>
+        <iframe :src="origin?.url" class="mx-auto h-30vh w-full" frameborder="0"></iframe>
+      </v-expansion-panel-text>
+    </v-expansion-panel>
+  </v-expansion-panels>
+
+  <v-form class="w-90vw mx-auto">
     <v-row>
-      <v-col cols="12">
+      <v-col>
         <v-text-field
           v-model="course.name"
           prepend-icon="mdi-rename-box-outline"
@@ -105,104 +151,92 @@ const save = async () => {
       </v-col>
     </v-row>
     <v-row>
-      <TermOverview intro style="margin: auto"></TermOverview>
-      <v-btn
-        color="blue"
-        style="margin: auto; margin-right: 0"
-        @click="
-          course.schedules.push({
-            day: -1,
-            period: [1, 1],
-            term: [],
-            classroom: '',
-          })
-        "
-      >
-        <v-icon>mdi-plus</v-icon>
-        Add
-      </v-btn>
-
-      <v-expansion-panels>
+      <TermOverview intro class="mx-auto"></TermOverview>
+    </v-row>
+    <v-row>
+      <v-expansion-panels class="mx-4">
         <v-expansion-panel
           v-for="(tp, index) in course.schedules"
           :key="index"
           show-expand
           expand-on-click
         >
-          <template #title>
-            <div v-show="tp.day !== -1">
-              <span style="font-weight: bold; margin-right: 20px">
-                Period {{ index + 1 }}
+          <v-expansion-panel-title class="py-1">
+            <div>
+              <span class="font-bold mr-4"> Period {{ index + 1 }} </span>
+              <span v-if="tp.day !== -1">
+                {{ showDay(tp.day) }} {{ showPeriod(tp.period[0], tp.period[1]) }}
               </span>
-              {{ showDay(tp.day) }} {{ showPeriod(tp.period[0], tp.period[1]) }}
+              <span v-else> Not set </span>
             </div>
-            <div v-show="tp.day === -1">
-              <span style="font-weight: bold; margin-right: 20px">
-                Period {{ index + 1 }}
-              </span>
-              <span style="color: gray">Not set</span>
-            </div>
-            <v-btn
-              color="red"
-              class="del-btn"
-              @click.stop="course.schedules.splice(index, 1)"
-            >
-              <v-icon>mdi-delete</v-icon>
-              del
-            </v-btn>
-          </template>
-          <template #text>
+
+            <template v-slot:actions>
+              <v-btn
+                color="red"
+                class="del-btn"
+                @click.stop="course.schedules.splice(index, 1)"
+              >
+                <v-icon>mdi-delete</v-icon>
+                del
+              </v-btn>
+            </template>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
             <v-row>
               <v-checkbox
                 v-for="(quarter, index) in ['Spring', 'Summer', 'Fall', 'Winter']"
                 :key="index"
                 v-model="tp.term"
-                class="term-checkbox"
+                class="mx-auto"
+                hide-details
                 :value="index"
                 :label="quarter"
                 @update:model-value="tp.term.sort((a, b) => a - b)"
               ></v-checkbox>
             </v-row>
             <v-row>
-              <v-btn-toggle v-model="tp.day" rounded="2" group density="compact">
+              <v-btn-toggle
+                v-model="tp.day"
+                class="mx-auto"
+                rounded="2"
+                group
+                density="compact"
+              >
                 <v-btn
                   v-for="(day, index) in [1, 2, 3, 4, 5, 6]"
                   :key="index"
-                  class="day-button"
                   :value="day"
-                  size="small"
                 >
                   {{ showDay(day) }}
                 </v-btn>
               </v-btn-toggle>
             </v-row>
             <v-row>
-              <v-col cols="1">
-                <v-icon>mdi-clock-time-four-outline</v-icon>
-              </v-col>
-              <v-col cols="5">
+              <v-col cols="6" class="flex">
+                <v-icon class="m-auto">mdi-clock-time-four-outline</v-icon>
+
                 <v-number-input
                   v-model="tp.period[0]"
                   label="Start"
                   variant="solo"
                   density="compact"
                   control-variant="stacked"
-                  :max="7"
+                  hide-details
+                  :max="store.state.calendar.periods.length"
                   :min="1"
                   @update:model-value="
                     tp.period[1] = Math.max(tp.period[0], tp.period[1])
                   "
                 >
                 </v-number-input>
-              </v-col>
-              <v-col cols="5">
                 <v-number-input
                   v-model="tp.period[1]"
                   label="End"
                   variant="solo"
                   density="compact"
                   control-variant="stacked"
-                  :max="7"
+                  hide-details
+                  :max="store.state.calendar.periods.length"
                   :min="1"
                   @update:model-value="
                     tp.period[0] = Math.min(tp.period[0], tp.period[1])
@@ -210,17 +244,32 @@ const save = async () => {
                 >
                 </v-number-input>
               </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="tp.classroom"
+                  prepend-icon="mdi-door"
+                  label="Room"
+                  variant="solo"
+                  density="compact"
+                  hide-details
+                ></v-text-field>
+              </v-col>
             </v-row>
-            <v-row>
-              <v-text-field
-                v-model="tp.classroom"
-                prepend-icon="mdi-door"
-                label="Room"
-                variant="solo"
-                density="compact"
-              ></v-text-field>
-            </v-row>
-          </template>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+        <v-expansion-panel readonly>
+          <v-expansion-panel-title class="py-1 flex justify-around">
+            <v-btn color="orange" prepend-icon="mdi-delete" @click.stop="deleteEmpty">
+              Delete Empty
+            </v-btn>
+
+            <template v-slot:actions>
+              <v-btn color="blue" @click.stop="addPeriod">
+                <v-icon>mdi-plus</v-icon>
+                Add
+              </v-btn>
+            </template>
+          </v-expansion-panel-title>
         </v-expansion-panel>
       </v-expansion-panels>
     </v-row>
@@ -246,46 +295,7 @@ const save = async () => {
         ></v-text-field>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="6">
-        <v-btn color="red" width="100%" @click="reset">Reset</v-btn>
-      </v-col>
-      <v-col cols="6">
-        <v-btn color="blue" width="100%" @click="save"> Save </v-btn>
-      </v-col>
-    </v-row>
   </v-form>
 </template>
 
-<style lang="scss" scoped>
-  .v-form {
-    margin: 20px auto;
-  }
-  .v-row {
-    margin: 5px auto;
-  }
-  :deep(.v-data-table-footer) {
-    display: none;
-  }
-  :deep(.v-input__details) {
-    display: none;
-  }
-  .label {
-    font-weight: bold;
-    text-align: center;
-    margin: auto;
-  }
-  .term-checkbox {
-    font-size: 0.8rem;
-    :deep(.v-label) {
-      font-size: 0.9rem !important;
-    }
-  }
-  .day-button {
-    margin-bottom: 5px;
-  }
-  .del-btn {
-    margin: auto;
-    margin-right: 0;
-  }
-</style>
+<style lang="scss" scoped></style>

@@ -1,6 +1,7 @@
 import { Course } from '@/model/course.ts'
 import { load } from 'cheerio'
 import { full2Half } from '@/utils/locale'
+import { SchoolYearDate } from '@/model/date'
 
 const getCoursesList = (html: string) => {
     let $ = load(html)
@@ -18,12 +19,14 @@ const getCoursesList = (html: string) => {
             .split('/')
             .map((t) => t.trim())
         course.department = cells.eq(4).text()
-        course.addschedules(
+        course.addSchedules(
             full2Half(cells.eq(5).html()?.replace(/<br>/g, '\n') || ''),
             full2Half(cells.eq(6).html()?.replace(/<br>/g, '\n') || ''),
             full2Half(cells.eq(7).html()?.replace(/<br>/g, '\n') || '')
         )
         course.setUrl(cells.eq(2).find('a').attr('onclick') || '')
+        course.year = new SchoolYearDate().schoolYear
+
         courses.push(course)
     })
     return courses

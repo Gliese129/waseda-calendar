@@ -116,7 +116,7 @@ class CourseNotificationService: Service() {
     }
 
     private fun notifyNearestCourse() {
-        val course = data.getCurrentCourse(true)
+        val course = data.getNearestCourse()
         if (course != null) {
             notifyCourse(course)
         } else {

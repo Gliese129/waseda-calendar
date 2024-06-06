@@ -16,30 +16,23 @@ const clearForm = () => {
 }
 const isKeyword = ref(false)
 
-const departments = computed(
-    () => store.state.syllabus.departments
-) as unknown as { name: string; value: number }[]
+const departments = computed(() => store.state.syllabus.departments) as unknown as {
+    name: string
+    value: number
+}[]
 </script>
 
 <template>
-  <v-form id="courses-form">
+  <v-form class="m-auto">
     <v-container>
       <v-row>
-        <v-col cols="3" class="label">
-          <v-btn
-            variant="text"
-            class="text-none"
-            @click="isKeyword = !isKeyword"
-          >
-            {{ isKeyword ? 'Keyword' : 'Name' }}
-          </v-btn>
-        </v-col>
-        <v-col cols="9">
+        <v-col cols="8">
           <v-text-field
             v-show="isKeyword"
             v-model="form.keyword"
             label="Keyword"
             density="compact"
+            hide-details
             clearable
             class="text-medium-emphasis"
             @update:model-value="$emit('search')"
@@ -49,51 +42,57 @@ const departments = computed(
             v-model="form.name"
             label="Name"
             density="compact"
+            hide-details
             clearable
             class="text-medium-emphasis"
             @update:model-value="$emit('search')"
           ></v-text-field>
         </v-col>
+        <v-col cols="4">
+          <v-btn class="capitalize" @click="isKeyword = !isKeyword">
+            {{ isKeyword ? 'Name' : 'Keyword' }}
+          </v-btn>
+        </v-col>
       </v-row>
       <v-row>
-        <v-col cols="3" class="label"> Term </v-col>
-        <v-col cols="9">
+        <v-col>
           <v-select
             v-model="form.term"
             label="Term"
             :items="term"
             density="compact"
+            hide-details
             clearable
             @update:model-value="$emit('search')"
           ></v-select>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="3" class="label"> Period </v-col>
-        <v-col cols="5">
+        <v-col cols="6">
           <v-select
             v-model="form.dayOfWeek"
             label="Day"
             :items="dayOfWeek"
             density="compact"
+            hide-details
             clearable
             @update:model-value="$emit('search')"
           ></v-select>
         </v-col>
-        <v-col cols="4">
+        <v-col cols="6">
           <v-select
             v-model="form.period"
             label="Period"
             :items="timeOfDay"
             density="compact"
+            hide-details
             clearable
             @update:model-value="$emit('search')"
           ></v-select>
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="3" class="label"> Dept </v-col>
-        <v-col cols="9">
+        <v-col>
           <v-autocomplete
             v-model="form.departmentId"
             label="Department"
@@ -101,6 +100,7 @@ const departments = computed(
             item-text="name"
             item-value="value"
             density="compact"
+            hide-details
             clearable
             @update:model-value="$emit('search')"
           ></v-autocomplete>
@@ -119,27 +119,4 @@ const departments = computed(
   </v-form>
 </template>
 
-<style scoped>
-  #courses-form {
-    margin: auto;
-    width: 80vw;
-    margin-bottom: 10px;
-  }
-  .v-row {
-    margin: 0 !important;
-  }
-  .v-col {
-    padding: 0 !important;
-  }
-  .label {
-    vertical-align: middle;
-    font-size: 1.1em;
-    margin: auto;
-  }
-  .v-text-field {
-    margin-bottom: 5px;
-  }
-  :deep(.v-input__details) {
-    display: none;
-  }
-</style>
+<style scoped></style>

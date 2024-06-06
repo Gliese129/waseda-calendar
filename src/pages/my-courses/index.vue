@@ -7,10 +7,13 @@ import { watch } from 'vue'
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import { inject } from 'vue'
+import { SchoolYearDate } from '@/model/date'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore(key)
+const $message = inject<Function>('$message') as Function
 
 const keyword = ref('')
 const courses = computed(() =>
@@ -58,11 +61,12 @@ const afterSave = () => {
 const deleteCourse = async () => {
     await store.dispatch('calendar/deleteCourse', selectedCourse.value)
     dialogActive.value = false
+    $message('Course deleted', 'success')
 }
 </script>
 
 <template>
-  <v-row class="w-80vw m-auto">
+  <v-row class="m-auto">
     <v-text-field
       v-model="keyword"
       label="Course Name or Code"
@@ -73,43 +77,34 @@ const deleteCourse = async () => {
       @click:clear="keyword = ''"
     ></v-text-field>
   </v-row>
-  <v-row class="max-h-">
-    <div v-if="courses.length">
-      <CourseOutline
+  <v-row>
+    <div v-if="courses.length" class="flex flex-wrap w-90vw">
+      <course-outline
         v-for="course in courses"
         :key="course.name"
+        class="mx-auto"
         :item="course"
-        class="w-90vw"
+        :disable="course.year !== new SchoolYearDate().schoolYear"
         @click="loadCourse(course)"
-      ></CourseOutline>
+      ></course-outline>
     </div>
-    <v-alert v-else type="info">
+    <v-alert v-else type="info" @click="router.push('/search')">
       <template #title> Oops, we found nothing </template>
-      <template #text>
-        Maybe you need to
-        <v-btn variant="outlined" slim size="small" @click="router.push('/search')">
-          add some courses
-        </v-btn>
-        first.
-      </template>
+      <template #text> Maybe you need to add some courses first </template>
     </v-alert>
   </v-row>
   <v-dialog v-model="dialogActive" fullscreen>
-    <v-card :title="selectedCourse?.name">
-      <div class="mx-auto" style="width: 90%">
-        <course-edit edit :origin="selectedCourse" @after-save="afterSave" />
-      </div>
-
-      <v-divider class="m-auto"></v-divider>
-
-      <v-row class="w-90vw m-auto max-h-8vw">
-        <v-col cols="6">
-          <v-btn class="w-full" color="red" @click="deleteCourse">delete</v-btn>
-        </v-col>
-        <v-col cols="6">
-          <v-btn class="w-full" @click="dialogActive = false"> close </v-btn>
-        </v-col>
-      </v-row>
+    <v-card>
+      <course-edit
+        edit
+        :origin="selectedCourse"
+        @after-save="afterSave"
+        @close="dialogActive = false"
+      >
+        <template #extra-actions>
+          <v-btn variant="text" color="red" @click="deleteCourse">Delete</v-btn>
+        </template>
+      </course-edit>
     </v-card>
   </v-dialog>
 </template>

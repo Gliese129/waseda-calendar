@@ -1,23 +1,18 @@
 PODS:
   - Capacitor (6.0.0):
     - CapacitorCordova
-  - CapacitorBackgroundRunner (1.1.0):
-    - Capacitor
   - CapacitorCordova (6.0.0)
   - CapacitorPreferences (6.0.0):
     - Capacitor
 
 DEPENDENCIES:
   - "Capacitor (from `../../node_modules/@capacitor/ios`)"
-  - "CapacitorBackgroundRunner (from `../../node_modules/@capacitor/background-runner`)"
   - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
 
 EXTERNAL SOURCES:
   Capacitor:
     :path: "../../node_modules/@capacitor/ios"
-  CapacitorBackgroundRunner:
-    :path: "../../node_modules/@capacitor/background-runner"
   CapacitorCordova:
     :path: "../../node_modules/@capacitor/ios"
   CapacitorPreferences:
@@ -25,10 +20,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Capacitor: 559d073c4ca6c27f8e7002c807eea94c3ba435a9
-  CapacitorBackgroundRunner: 270b88dd7ba6631b22f17ab4f10422834d82c1aa
   CapacitorCordova: 8c4bfdf69368512e85b1d8b724dd7546abeb30af
   CapacitorPreferences: c9b839a80baa72e4ed4bdb117618e1950d3046b5
 
-PODFILE CHECKSUM: 2af3134d86af7f9daa3f252c8b975dd13f6b87f5
+PODFILE CHECKSUM: 769e120bf4dfe4ef1095b83775e36bafeeeb3cdd
 
 COCOAPODS: 1.15.2

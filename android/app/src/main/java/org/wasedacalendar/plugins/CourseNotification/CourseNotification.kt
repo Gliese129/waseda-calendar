@@ -71,7 +71,7 @@ object CourseNotification{
         }
     }
 
-    fun getCurrentCourse(useNextIfNotFound: Boolean = true): Course? {
+    fun getNearestCourse(): Course? {
         // skip holidays
         val today = LocalDate.now()
         if (holidays.contains(today)) {
@@ -80,13 +80,9 @@ object CourseNotification{
         val now = LocalTime.now()
         // find index of current period, if current time is before the first period, return 0
         val period = periods.indexOfFirst { period ->
-            if (useNextIfNotFound)
-                period.isBefore(now)
-            else period.isDuring(now)
+            period.isAfter(now)
         }.takeIf {
             it != -1 || now < periods[0].start
-        }?.let {
-            it + 1 // since it's 0-indexed
         }?: return null
         val result = courses.find { course ->
             course.schedules.any {
@@ -95,15 +91,11 @@ object CourseNotification{
                 it.endPeriod >= period
             }
         } ?: let {
-            if(useNextIfNotFound) {
-                courses.find { course ->
-                    course.schedules.any {
-                        it.day == today.dayOfWeek.value &&
-                        it.startPeriod > period
-                    }
+            courses.find { course ->
+                course.schedules.any {
+                    it.day == today.dayOfWeek.value &&
+                    it.startPeriod > period
                 }
-            } else {
-                null
             }
         }
         return result?.let { course ->

@@ -27,20 +27,15 @@ const loadCourse = async (course: Course) => {
     Course.deepCopy(selectedCourse, course)
     await fetchCoursesDetail(selectedCourse)
 }
-
-const openInNew = (url: string | undefined) => {
-    if (!url) return
-    window.open(url, '_blank')
-}
 </script>
 
 <template>
   <TermOverview intro></TermOverview>
   <v-infinite-scroll
-    class="m-auto w-90vw"
-    height="45vh"
+    class="m-auto flex flex-wrap justify-around"
+    height="40vh"
+    direction="horizontal"
     :items="courses"
-    mode="manual"
     @load="onLoad"
   >
     <template v-for="item in courses" :key="item.name">
@@ -54,50 +49,33 @@ const openInNew = (url: string | undefined) => {
         Too many courses to show, please use stricter search criteria
       </v-alert>
     </template>
+    <template #loading>
+      <v-progress-circular
+        class="w-full"
+        indeterminate
+        color="primary"
+      ></v-progress-circular>
+    </template>
   </v-infinite-scroll>
-  <span style="color: gray; font-size: 0.8em">
+  <span class="text-sm text-slate-400">
     Tip: due to the size limit, only the first teacher and period will be shown
   </span>
 
   <v-dialog v-model="dialogActive" fullscreen>
-    <v-card
-      :title="selectedCourse?.name"
-      :subtitle="
-        selectedCourse
-          ? selectedCourse.departmentFull || selectedCourse.department
-          : 'Unknown'
-      "
-    >
-      <div class="mx-auto" style="width: 90%">
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <template #title>
-              <p>Syllabus Raw Content</p>
-              <v-btn
-                icon="mdi-open-in-new"
-                style="margin-left: 10px"
-                @click.stop="openInNew(selectedCourse?.url)"
-              ></v-btn>
-            </template>
-            <template #text>
-              <iframe
-                :src="selectedCourse?.url"
-                class="mx-auto h-30vh"
-                frameborder="0"
-              ></iframe>
-            </template>
-          </v-expansion-panel>
-        </v-expansion-panels>
-        <course-edit :origin="selectedCourse" @after-save="dialogActive = false" />
-      </div>
-      <v-btn @click="dialogActive = false"> close </v-btn>
+    <v-card>
+      <course-edit
+        :origin="selectedCourse"
+        @after-save="dialogActive = false"
+        @close="dialogActive = false"
+      >
+      </course-edit>
     </v-card>
   </v-dialog>
 </template>
 
 <style scoped>
-  :deep(.v-expansion-panel-title) {
-    padding-top: 5px;
-    padding-bottom: 5px;
+  :deep(.v-infinite-scroll__side) {
+    display: block;
+    width: 90%;
   }
 </style>

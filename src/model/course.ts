@@ -31,6 +31,7 @@ export class Course {
         target.leastGrade = source.leastGrade
         target.textbook = source.textbook
         target.departmentFull = source.departmentFull
+        target.year = source.year
     }
 
     public code: string
@@ -69,11 +70,7 @@ export class Course {
         return semesterJp[termIndex].value
     }
 
-    public addschedules(
-        termStr: string,
-        dayPeriodStr: string,
-        classroomStr: string
-    ) {
+    public addSchedules(termStr: string, dayPeriodStr: string, classroomStr: string) {
         let timeGroupRegex = /([月火水木金土日])\s*([\d-]+)(時限)?/g
         let classGroupRegex = /\d+\-B?\d+/g
         let timeMatch = timeGroupRegex.exec(dayPeriodStr)
