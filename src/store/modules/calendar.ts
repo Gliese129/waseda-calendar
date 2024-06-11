@@ -2,13 +2,16 @@
  * This store contains data of user's courses.
  */
 import { Course } from '@/model/course'
+import { SimpleTime } from '@/model/date'
 import { getLocal, saveLocal } from '@/utils/storage'
-import { initPeriodSetting } from '@/resources/courses-date'
 
 export interface CalendarState {
     courses: Course[]
     timetable: number[][][]
-    periods: string[][]
+    periods: {
+        start: SimpleTime
+        end: SimpleTime
+    }[]
 }
 
 const baseFolder = 'courses/'
@@ -33,6 +36,9 @@ export const calendarStore = {
             saveLocal(baseFolder + 'courses', state.courses)
         },
         setCourses(state: CalendarState, courses: any) {
+            courses.forEach((course: any) => {
+                Object.setPrototypeOf(course, Course.prototype)
+            })
             state.courses = courses
             saveLocal(baseFolder + 'courses', state.courses)
         },
@@ -42,6 +48,14 @@ export const calendarStore = {
             )
             state.courses.splice(idx, 1)
             saveLocal(baseFolder + 'courses', state.courses)
+        },
+        setPeriods(state: CalendarState, periods: any) {
+            periods.forEach((period: any) => {
+                Object.setPrototypeOf(period.start, SimpleTime.prototype)
+                Object.setPrototypeOf(period.end, SimpleTime.prototype)
+            })
+            state.periods = periods
+            saveLocal(baseFolder + 'periods', state.periods)
         },
         updateTimetable(state: CalendarState) {
             for (let i = 0; i < state.courses.length; ++i) {
@@ -75,12 +89,6 @@ export const calendarStore = {
                 state.timetable.push(termArray)
             }
         },
-        initPeriods(state: CalendarState) {
-            state.periods = initPeriodSetting
-        },
-        setPeriods(state: CalendarState, periods: string[][]) {
-            state.periods = periods
-        },
     },
     actions: {
         async addCourse({ commit }: { commit: any }, course: Course) {
@@ -102,18 +110,24 @@ export const calendarStore = {
             commit('initTimetable')
         },
         async init({ commit }: { commit: any }) {
-            // Fetch from network
-            let courses = await getLocal(baseFolder + 'courses')
-            console.log('Init courses:', courses)
-            courses = courses === null ? [] : courses
+            let courses = (await getLocal(baseFolder + 'courses')) ?? []
             commit('setCourses', courses)
-            commit('initPeriods')
+            let periods =
+        (await getLocal(baseFolder + 'periods')) ??
+        (await getLocal('syllabus/periods')) ??
+        []
+            commit('setPeriods', periods)
             commit('initTimetable')
         },
         async setPeriods({ commit }: { commit: any }, periods: string[][]) {
             commit(
                 'setPeriods',
-                periods.map((x) => x.slice())
+                periods.map((x) => {
+                    return {
+                        start: new SimpleTime(x[0]),
+                        end: new SimpleTime(x[1]),
+                    }
+                })
             )
         },
     },

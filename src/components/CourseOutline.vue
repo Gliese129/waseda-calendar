@@ -46,7 +46,7 @@ const showPeriod = (period: number[]): string => {
     <template #title>
       <h2 class="text-left text-base font-semibold">
         {{ course?.name }}
-        <span class="font-normal text-slate-400 text-sm">{{ course?.year }}</span>
+        <span class="font-normal text-slate-400 text-sm">{{ course?.academicYear }}</span>
       </h2>
     </template>
     <template #text>

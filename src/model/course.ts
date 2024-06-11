@@ -31,7 +31,7 @@ export class Course {
         target.leastGrade = source.leastGrade
         target.textbook = source.textbook
         target.departmentFull = source.departmentFull
-        target.year = source.year
+        target.academicYear = source.academicYear
     }
 
     public code: string
@@ -49,7 +49,7 @@ export class Course {
     public leastGrade: string // the least grade to take this course
     public textbook: string | null | undefined
     public departmentFull: string | null | undefined
-    public year: number | null | undefined // school year
+    public academicYear: number | null | undefined // school academicYear
 
     public constructor(code: string, name: string) {
         this.code = code

@@ -13,7 +13,8 @@ const store = useStore(key)
 onMounted(async () => {
     console.log('App mounted')
     await store.dispatch('syllabus/refresh')
-    store.dispatch('calendar/init')
+    console.log(store.state.syllabus.periods)
+    store.dispatch('calendar/init', store.state.syllabus.holidays)
 })
 const ifDataLoaded = computed(
     () =>
@@ -26,7 +27,10 @@ watch(
     () => store.state.system.coursePush,
     (val) => {
         if (val) {
-            let periods = store.state.calendar.periods
+            let periods = store.state.calendar.periods.map((p) => [
+                p.start.toString(),
+                p.end.toString(),
+            ])
             let courses = store.state.calendar.courses
             let holidays = store.state.syllabus.holidays
             courseNotification.startPush(periods, courses, holidays)
@@ -39,7 +43,10 @@ watch(
     () => store.state.calendar,
     () => {
         if (!store.state.system.coursePush) return
-        let periods = store.state.calendar.periods
+        let periods = store.state.calendar.periods.map((p) => [
+            p.start.toString(),
+            p.end.toString(),
+        ])
         let courses = store.state.calendar.courses
         let holidays = store.state.syllabus.holidays
         courseNotification.updatePush(periods, courses, holidays)
@@ -58,7 +65,11 @@ watch(
       <ErrorMsg />
 
       <v-container fluid>
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <KeepAlive include="SearchPage">
+            <component :is="Component" />
+          </KeepAlive>
+        </router-view>
       </v-container>
     </v-main>
 
@@ -74,4 +85,3 @@ watch(
     height: fit-content;
   }
 </style>
-@/native/native-tasks/course-notification

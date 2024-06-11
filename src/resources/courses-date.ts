@@ -89,13 +89,4 @@ const timeOfDay = [
     },
 ]
 
-const initPeriodSetting = [
-    ['8:50', '10:30'],
-    ['10:40', '12:20'],
-    ['13:10', '14:50'],
-    ['15:05', '16:45'],
-    ['17:00', '18:40'],
-    ['18:55', '20:35'],
-    ['20:45', '21:35'],
-]
-export { dayOfWeek, term, timeOfDay, initPeriodSetting }
+export { dayOfWeek, term, timeOfDay }

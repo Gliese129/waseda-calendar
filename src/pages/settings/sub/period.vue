@@ -3,53 +3,60 @@ import { useStore } from 'vuex'
 import { key } from '@/store'
 import { ref } from 'vue'
 import { inject } from 'vue'
+import { SimpleTime } from '@/model/date'
 
 const store = useStore(key)
 const $message = inject<Function>('$message') as Function
 
-const periods = ref(store.state.calendar.periods.map((period: string[]) => [...period]))
+const periods = ref(
+    store.state.calendar.periods.map((period) => {
+        return {
+            start: period.start,
+            end: period.end,
+        }
+    })
+)
 
-const editPos = ref({ index: -1, pos: -1 })
+const editPos = ref({ index: -1, pos: 'start' as 'start' | 'end' })
 const pickedTime = ref('')
 const dialog = ref(false)
-const editTime = (index: number, pos: number) => {
+const editTime = (index: number, pos: 'start' | 'end') => {
     editPos.value = { index, pos }
     dialog.value = true
-    pickedTime.value = periods.value[index][pos]
+    pickedTime.value = periods.value[index][pos].toString()
 }
 const closeDialog = () => {
     dialog.value = false
-    if (editPos.value.index !== -1 && editPos.value.pos !== -1) {
-        periods.value[editPos.value.index][editPos.value.pos] = pickedTime.value
+    if (editPos.value.index !== -1) {
+        periods.value[editPos.value.index][editPos.value.pos] = new SimpleTime(
+            pickedTime.value
+        )
     }
 }
 const reset = () => {
-    periods.value = store.state.syllabus.periods.map((period) => [
-        period.start,
-        period.end,
-    ])
+    periods.value = store.state.syllabus.periods.map((period) => {
+        return {
+            start: period.start,
+            end: period.end,
+        }
+    })
 }
 
 const update = async () => {
     // check if the periods are valid
-    const time2num = (time: string) => {
-        const [hour, minute] = time.split(':').map(Number)
-        return hour * 60 + minute
-    }
     try {
         // check if any period is empty
-        if (periods.value.some((period) => period[0] === '' || period[1] === ''))
+        if (periods.value.some((period) => !period.start || !period.end))
             throw new Error('Empty Time')
         // check if start time is greater than end time
-        if (periods.value.some((period) => time2num(period[0]) >= time2num(period[1])))
+        if (periods.value.some((period) => period.start >= period.end))
             throw new Error(`Start time should be smaller then end time`)
         // check if any period is duplicate
-
         if (
             periods.value.some((period, index) =>
                 periods.value
                     .slice(index + 1)
-                    .some((p) => p[0] === period[0] || p[1] === period[1])
+                    .some((p) => p.start === period.start && p.end === period.end)
             )
         )
             throw new Error('Duplicate Time')
@@ -57,7 +64,7 @@ const update = async () => {
         if (
             periods.value.some((period, index) => {
                 if (index === periods.value.length - 1) return false
-                return time2num(period[1]) >= time2num(periods.value[index + 1][0])
+                return period.end >= periods.value[index + 1].start
             })
         )
             throw new Error(`End time should be smaller then next start time`)
@@ -89,12 +96,12 @@ const periodDeleteAt = (index: number) => {
         <v-row v-for="(period, index) in periods" :key="index" class="flex space-between">
           <v-col cols="2"> {{ index + 1 }} </v-col>
           <v-col cols="7" class="flex items-center justify-between justify-items-center">
-            <v-chip class="m-0" outlined @click.prevent="editTime(index, 0)">
-              {{ period[0] }}
+            <v-chip class="m-0" outlined @click.prevent="editTime(index, 'start')">
+              {{ period.start.toString() }}
             </v-chip>
             <div>~</div>
-            <v-chip class="m-0" outlined @click.prevent="editTime(index, 1)">
-              {{ period[1] }}
+            <v-chip class="m-0" outlined @click.prevent="editTime(index, 'end')">
+              {{ period.end.toString() }}
             </v-chip>
           </v-col>
           <v-col class="flex">
@@ -117,7 +124,7 @@ const periodDeleteAt = (index: number) => {
       <v-card
         max-width="400"
         prepend-icon="mdi-update"
-        :title="`Edit Period ${editPos.index + 1} ${editPos.pos === 0 ? 'Start' : 'End'}`"
+        :title="`Edit Period ${editPos.index + 1} ${editPos.pos}`"
       >
         <v-switch label=""></v-switch>
         <v-time-picker v-model="pickedTime" format="24hr"></v-time-picker>

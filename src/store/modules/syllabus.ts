@@ -3,7 +3,7 @@
  */
 import { fetchHolidays, fetchPeriods, fetchQuarters } from '@/api/official/calendar'
 import { fetchDepartments } from '@/api/syllabus/basic'
-import { SchoolYearDate } from '@/model/date'
+import { AcademicDate, SimpleTime } from '@/model/date'
 import { searchLocalBeforeNetwork } from '@/utils/storage'
 
 export interface SyllabusState {
@@ -12,16 +12,16 @@ export interface SyllabusState {
         value: string
     }[]
     periods: {
-        start: string
-        end: string
+        start: SimpleTime
+        end: SimpleTime
     }[]
-    holidays: SchoolYearDate[]
+    holidays: AcademicDate[]
     breaks: {
         start: string
     }[]
     quarters: {
-        start: SchoolYearDate
-        end: SchoolYearDate
+        start: AcademicDate
+        end: AcademicDate
     }[]
 }
 
@@ -40,19 +40,24 @@ export const syllabusStore = {
         },
         setHolidays(state: SyllabusState, holidays: any) {
             holidays.forEach((item: any) => {
-                Object.setPrototypeOf(item, SchoolYearDate.prototype)
+                Object.setPrototypeOf(item, AcademicDate.prototype)
             })
             state.holidays = holidays
         },
         setQuarters(state: SyllabusState, quarters: any) {
             quarters.forEach((item: any) => {
-                item.start = Object.setPrototypeOf(item.start, SchoolYearDate.prototype)
-                item.end = Object.setPrototypeOf(item.end, SchoolYearDate.prototype)
+                item.start = Object.setPrototypeOf(item.start, AcademicDate.prototype)
+                item.end = Object.setPrototypeOf(item.end, AcademicDate.prototype)
             })
             state.quarters = quarters
         },
         setPeriods(state: SyllabusState, periods: any) {
-            state.periods = periods
+            state.periods = periods.map((item: any) => {
+                return {
+                    start: new SimpleTime(item.start.hour, item.start.minute),
+                    end: new SimpleTime(item.end.hour, item.end.minute),
+                }
+            })
         },
     },
     actions: {
@@ -106,7 +111,10 @@ export const syllabusStore = {
                 holidays.map((x: any) => x.toString())
             )
             console.log('Force Refreshed Quarters:', quarters)
-            console.log('Force Refreshed Periods:', periods)
+            console.log(
+                'Force Refreshed Periods:',
+                periods.map((x: any) => x.toString())
+            )
 
             commit('setDepartments', departments)
             commit('setHolidays', holidays)

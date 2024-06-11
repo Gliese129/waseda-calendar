@@ -61,6 +61,10 @@ const courses = reactive<Course[]>([])
 const isLastPage = ref(false)
 
 const lock = ref(false)
+
+defineOptions({
+    name: 'SearchPage',
+})
 </script>
 
 <template>

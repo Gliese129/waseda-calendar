@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({
+    name: 'SettingsPage',
+})
+</script>
 
 <template>
   <RouterView v-slot="{ Component }">

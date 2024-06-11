@@ -8,7 +8,7 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { inject } from 'vue'
-import { SchoolYearDate } from '@/model/date'
+import { AcademicDate } from '@/model/date'
 
 const route = useRoute()
 const router = useRouter()
@@ -63,6 +63,10 @@ const deleteCourse = async () => {
     dialogActive.value = false
     $message('Course deleted', 'success')
 }
+
+defineOptions({
+    name: 'MyCoursesPage',
+})
 </script>
 
 <template>
@@ -84,7 +88,7 @@ const deleteCourse = async () => {
         :key="course.name"
         class="mx-auto"
         :item="course"
-        :disable="course.year !== new SchoolYearDate().schoolYear"
+        :disable="course.academicYear !== new AcademicDate().academicYear"
         @click="loadCourse(course)"
       ></course-outline>
     </div>

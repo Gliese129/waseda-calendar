@@ -1,3 +1,5 @@
+import { App } from '@capacitor/app'
+import { Toast } from '@capacitor/toast'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const routes = [
@@ -38,6 +40,24 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
+})
+
+let exitLock = false
+App.addListener('backButton', (event) => {
+    if (!event.canGoBack) {
+        if (exitLock) {
+            App.exitApp()
+        } else {
+            exitLock = true
+            setTimeout(() => {
+                exitLock = false
+            }, 3000)
+        }
+        Toast.show({
+            text: 'Press back again to exit',
+            duration: 'short',
+        })
+    } else router.back()
 })
 
 export { router }

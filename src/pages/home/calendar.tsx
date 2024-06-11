@@ -1,8 +1,12 @@
-import { h, computed, defineComponent } from 'vue'
+import { h, computed, defineComponent, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import { useRouter } from 'vue-router'
 import { OnLongPress } from '@vueuse/components'
+import { SimpleTime } from '@/model/date'
+import { VCard } from 'vuetify/components'
+
+h('div') // for h to be recognized
 
 interface CourseInfo {
   code: string
@@ -10,22 +14,15 @@ interface CourseInfo {
   classroom: string
   start: number
   end: number
-  length: number
-  bgcolor: string
+  day: number
 }
 
-h('div') // for h to be recognized
-
 interface CalendarProps {
-  courses: {
-    code: string
-    name: string
-    classroom: string
-    start: number
-    end: number
-    day: number
-  }[]
-  currDate: Date
+  courses: CourseInfo[]
+  dateRange: {
+    start: Date
+    end: Date
+  }
 }
 enum CellColor {
   BREAK = '#D1ECF1',
@@ -34,17 +31,17 @@ enum CellColor {
   NORMAL = '#FFFFFF',
   CURRENT_PERIOD = '#F8D7DA',
   CURRENT_DAY = '#F2D99D',
-  DISABLED = '#F5F5F5',
 }
 
 export default defineComponent({
+  name: 'Calendar',
   props: {
     courses: {
-      type: Array<any>,
+      type: Array as () => CalendarProps['courses'],
       required: true,
     },
-    currDate: {
-      type: Date,
+    dateRange: {
+      type: Object as () => CalendarProps['dateRange'],
       required: true,
     },
   },
@@ -52,214 +49,148 @@ export default defineComponent({
   setup(props: CalendarProps, _) {
     const store = useStore(key)
     const router = useRouter()
-    const time2num = (time: string) => {
-      let [hour, minute] = time.split(':').map(Number)
-      return hour * 60 + minute
-    }
     const hiddenDays = [0] // hide Sunday column to save space
+    const now = ref(new Date())
+    // onMounted(() => {
+    //   setInterval(() => {
+    //     now.value = new Date()
+    //   }, 1000)
+    // })
+
     const periods = computed(() => store.state.calendar.periods)
-    const startOfWeek = computed(() => {
-      let currDay = props.currDate.getDay()
-      return new Date(props.currDate.getTime() - currDay * 24 * 60 * 60 * 1000)
-    })
-    //
     const holidays = computed(() =>
       store.state.syllabus.holidays
         .filter((holiday) =>
-          holiday.isBetweenDate(
-            startOfWeek.value,
-            new Date(startOfWeek.value.getTime() + 7 * 24 * 60 * 60 * 1000)
-          )
+          holiday.isBetweenDate(props.dateRange.start, props.dateRange.end)
         )
         .map((holiday) => {
-          // get the dayOfWeek of the holiday
           return holiday.getAdjustedDate().getDay()
         })
     )
-    const currTime = computed(
-      () => props.currDate.getHours() * 60 + props.currDate.getMinutes()
-    )
-    const currPeriod = computed(() => {
-      let currPeriod = 0
-      while (
-        currPeriod < periods.value.length &&
-        currTime.value > time2num(periods.value[currPeriod][1])
-      ) {
-        currPeriod++
+    const currentTime = computed(() => new SimpleTime(now.value))
+    const currentPeriod = computed(() => {
+      let nextPeriodIndex =
+        periods.value.findIndex((period) => currentTime.value < period.start) + 1
+      let currentPeriodIndex =
+        periods.value.findIndex(
+          (period) => currentTime.value >= period.start && currentTime.value <= period.end
+        ) + 1
+
+      if (currentPeriodIndex === 0) {
+        return nextPeriodIndex === 0 ? periods.value.length : nextPeriodIndex
       }
-      return currPeriod + 1
+      return currentPeriodIndex
     })
+
+    const computeCellColor = (day: number, startPeriod: number, _endPeriod?: number) => {
+      const endPeriod = _endPeriod || startPeriod
+      if (holidays.value.includes(day)) return CellColor.BREAK
+      if (
+        now.value.getDay() === day &&
+        startPeriod <= currentPeriod.value &&
+        currentPeriod.value <= endPeriod
+      ) {
+        if (currentPeriod.value >= startPeriod && currentPeriod.value <= endPeriod)
+          if (currentTime.value < periods.value[startPeriod - 1].start)
+            return CellColor.RECESS
+        return CellColor.CURRENT
+      }
+      return CellColor.NORMAL
+    }
 
     const courses = computed(() => {
-      let table = props.courses
-        .map((course) => {
-          // add some additional info
-          let isNextOrCurrCourse =
-            course.day === props.currDate.getDay() &&
-            currPeriod.value >= course.start &&
-            currPeriod.value <= course.end
-          let isRecess = currTime.value < time2num(periods.value[course.start - 1][0])
-          let isBreak = holidays.value.indexOf(course.day) !== -1
-
-          let color = CellColor.NORMAL
-          if (isNextOrCurrCourse) color = isRecess ? CellColor.RECESS : CellColor.CURRENT
-          else if (isBreak) color = CellColor.BREAK
-          else color = CellColor.NORMAL
-          console.log(course, isNextOrCurrCourse, isRecess, isBreak)
-
-          return {
-            ...course,
-            length: course.end - course.start + 1,
-            bgcolor: color,
-          }
-        })
-        .reduce(
-          // group courses by day
-          (acc, course) => {
-            let day = course.day
-            if (!acc[day]) acc[day] = []
-            acc[day].push(course)
-            return acc
-          },
-          Array.from({ length: 7 }, () => [] as CourseInfo[])
-        )
-        .map((dayCol) => {
-          // fill the table
-          let length = periods.value.length
-          let result = Array.from({ length }, () => null) as Array<{
-            course: CourseInfo
-            repeated: number
-          } | null>
-          dayCol.forEach((course) => {
-            let repeated = 0
-            for (let i = course.start - 1; i < course.end; i++) {
-              result[i] = { course, repeated }
-              repeated++
-            }
-          })
-          return result
-        })
-      // transpose the table
-      return table[0].map((_, colIndex) => table.map((row) => row[colIndex]))
-    })
-    //
-    const header = computed(() => {
-      let thisWeek = Array.from(
-        { length: 7 },
-        (_, i) => new Date(Number(startOfWeek.value) + i * 24 * 60 * 60 * 1000)
-      )
-      return (
-        <tr>
-          <th class="border border-slate-300 w-1/12"></th>
-          {thisWeek
-            .map((date) => (
-              <th
-                style={{
-                  backgroundColor:
-                    date.getDay() === props.currDate.getDay()
-                      ? CellColor.CURRENT_DAY
-                      : '',
-                }}
-                class="border border-slate-300 w-1/8"
-              >
-                {date.toLocaleDateString('en-US', { weekday: 'short' })}
-                <br />
-                {date.getMonth() + 1}/{date.getDate()}
-              </th>
-            ))
-            .filter((_, index) => hiddenDays.indexOf(index) === -1)}
-        </tr>
-      )
-    })
-
-    const content = computed(() => {
-      // generate the period column
-      let periodsTsx = periods.value.map((periodInfo, index) => [
-        <td
-          class="border border-slate-300 flex-col "
-          style={{
-            backgroundColor:
-              currPeriod.value === index + 1 ? CellColor.CURRENT_PERIOD : '',
-          }}
-        >
-          <div class="font-bold text-sm/6">{index + 1}</div>
-          <div class="text-sm/3">{periodInfo[0]}</div>
-          <div class="rotate-90 text-xs/2">~</div>
-          <div class="text-sm/4">{periodInfo[1]}</div>
-        </td>,
-      ])
-      // process the timetable
-      let tableTsx = courses.value.map((row) =>
-        row
-          .map((col) =>
-            col ? (
-              <td
-                rowspan={col.course.length}
-                class="border border-slate-300 text-xs/3 py-px px-1 content-center"
-                style={{
-                  backgroundColor: col.course.bgcolor,
-                  display: col.repeated === 0 ? '' : 'none',
-                }}
-              >
-                <OnLongPress
-                  // @ts-ignore
-                  onTrigger={() => router.push(`/my-courses/${col.course.code}`)}
-                  delay={2000}
-                  as="v-card"
-                  class="inline-flex m-auto hover:shadow-md transition ease-linear duration-300 rounded-sm"
-                >
-                  <v-card-text>
-                    <div
-                      class="font-bold text-wrap break-all"
-                      style={`font-size: ${
-                        100 - 10 * Math.floor(col.course.name.length / 10)
-                      }%`}
-                    >
-                      {col.course.name}
-                    </div>
-                    <div>{col.course.classroom}</div>
-                  </v-card-text>
-                </OnLongPress>
-              </td>
-            ) : (
-              <td class="border border-slate-300 text-xs/3 p-px w-1/8"></td>
-            )
-          )
-          .filter((_, index) => hiddenDays.indexOf(index) === -1)
-      )
-      return periodsTsx.map((periodTsx, index) => {
-        return (
-          <tr class="h-1/8">
-            {periodTsx}
-            {tableTsx[index]}
-          </tr>
-        )
+      // Group courses by day
+      const groupedCourses = Array.from({ length: 7 }, () => [] as CourseInfo[])
+      props.courses.forEach((course) => {
+        groupedCourses[course.day].push(course)
       })
+
+      // Fill the table and transpose
+      const filledTable = Array.from({ length: periods.value.length }, (_, periodIndex) =>
+        groupedCourses.map((dayCourses) => {
+          const course = dayCourses.find(
+            // eslint-disable-next-line max-nested-callbacks
+            (course) => course.start <= periodIndex + 1 && periodIndex + 1 <= course.end
+          )
+          if (course) {
+            const repeated = periodIndex - (course.start - 1)
+            return { course, repeated }
+          }
+          return null
+        })
+      )
+      return filledTable
     })
 
-    // disable holidays
-    const headerColors = computed(() => {
-      return new Array(7)
-        .fill(0)
-        .map((_, index) => (
-          <col
-            style={{
-              backgroundColor:
-                holidays.value.indexOf(index) !== -1 ? CellColor.DISABLED : '',
-            }}
-          />
-        ))
-        .filter((_, index) => hiddenDays.indexOf(index) === -1)
+    const header = computed(() => {
+      const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+      const days = Array.from({ length: 7 }, (_, i) => {
+        let day = new Date(props.dateRange.start.getTime() + i * 24 * 60 * 60 * 1000)
+        if (hiddenDays.includes(day.getDay())) return null
+        return (
+          <VCard
+            class="w-full h-full border border-slate-400 p-1 text-center flex flex-col"
+            color={computeCellColor(day.getDay(), 1, periods.value.length)}
+          >
+            <span class="font-bold">{dayName[day.getDay()]}</span>
+            <span class="text-sm">
+              {day.getMonth() + 1}/{day.getDate()}
+            </span>
+          </VCard>
+        )
+      }).filter((cell) => cell)
+      days.unshift(
+        <VCard class="w-full h-full border border-slate-400 p-2 text-center"></VCard>
+      )
+      return days
     })
+    const table = computed(() =>
+      courses.value.map((courseInfo, periodIndex) => {
+        const row = courseInfo
+          .map((cellData, day) => {
+            if (hiddenDays.includes(day)) return null
+            if (!cellData) return <VCard class="border border-slate-400 p-1"></VCard>
+            const { course, repeated } = cellData
+            if (repeated) return null
+            const repeatClass = `row-span-${course.end - course.start + 1}`
+            return (
+              <VCard
+                class={
+                  'flex flex-col justify-around border border-slate-400 p-2 text-xs ' +
+                  repeatClass
+                }
+                color={computeCellColor(day, course.start, course.end)}
+              >
+                <div>{course.name}</div>
+                <div class="">{course.classroom}</div>
+              </VCard>
+            )
+          })
+          .filter((cell) => cell)
+        row.unshift(
+          <VCard
+            class="border border-slate-400 p-1 flex flex-col justify-center"
+            color={computeCellColor(now.value.getDay(), periodIndex + 1)}
+          >
+            <div class="font-bold">{periodIndex + 1}</div>
+            <div class="flex flex-col">
+              <span class="text-sm ">{periods.value[periodIndex].start.toString()}</span>
+              <span class="rotate-90 leading-none">~</span>
+              <span class="text-sm leading-tight">
+                {periods.value[periodIndex].end.toString()}
+              </span>
+            </div>
+          </VCard>
+        )
+        return row
+      })
+    )
 
     return () => (
-      <v-table class="border-collapse border border-slate-400 rounded w-90vw m-auto table-fixed">
-        <colgroup>
-          <col />
-          {headerColors.value}
-        </colgroup>
-        {header.value} {content.value}
-      </v-table>
+      <div class="grid grid-cols-7 gap-1">
+        {header.value}
+        {table.value}
+      </div>
     )
   },
 })

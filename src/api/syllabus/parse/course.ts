@@ -1,7 +1,7 @@
 import { Course } from '@/model/course.ts'
 import { load } from 'cheerio'
 import { full2Half } from '@/utils/locale'
-import { SchoolYearDate } from '@/model/date'
+import { AcademicDate } from '@/model/date'
 
 const getCoursesList = (html: string) => {
     let $ = load(html)
@@ -25,7 +25,7 @@ const getCoursesList = (html: string) => {
             full2Half(cells.eq(7).html()?.replace(/<br>/g, '\n') || '')
         )
         course.setUrl(cells.eq(2).find('a').attr('onclick') || '')
-        course.year = new SchoolYearDate().schoolYear
+        course.academicYear = new AcademicDate().academicYear
 
         courses.push(course)
     })

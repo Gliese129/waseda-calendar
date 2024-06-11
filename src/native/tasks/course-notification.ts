@@ -1,15 +1,15 @@
 import type { Course } from '@/model/course'
-import { SchoolYearDate } from '@/model/date'
+import { AcademicDate } from '@/model/date'
 import { CourseNotification } from '@/native/plugins'
 import { store } from '@/store'
 
 const formatParams = (
     periods: string[][],
     courses: Course[],
-    holidays: SchoolYearDate[]
+    holidays: AcademicDate[]
 ) => {
     let quarters = store.state.syllabus.quarters
-    let now = new SchoolYearDate()
+    let now = new AcademicDate()
     let currQuarter = quarters.findIndex((quarter) =>
         now.isBetween(quarter.start, quarter.end)
     )
@@ -46,7 +46,7 @@ const formatParams = (
 export const startPush = async (
     periods: string[][],
     courses: Course[],
-    holidays: SchoolYearDate[]
+    holidays: AcademicDate[]
 ) => {
     await CourseNotification.start(formatParams(periods, courses, holidays))
 }
@@ -56,7 +56,7 @@ export const stopPush = async () => {
 export const updatePush = async (
     periods: string[][],
     courses: Course[],
-    holidays: SchoolYearDate[]
+    holidays: AcademicDate[]
 ) => {
     if (periods.length === 0 || courses.length === 0 || holidays.length === 0) {
         return
