@@ -28,7 +28,7 @@ enum CellColor {
   BREAK = '#D1ECF1',
   RECESS = '#FFF3CD',
   CURRENT = '#D3EDDA',
-  NORMAL = '#FFFFFF',
+  NORMAL = '#F0F9FF',
   CURRENT_PERIOD = '#F8D7DA',
   CURRENT_DAY = '#F2D99D',
 }
@@ -51,11 +51,11 @@ export default defineComponent({
     const router = useRouter()
     const hiddenDays = [0] // hide Sunday column to save space
     const now = ref(new Date())
-    // onMounted(() => {
-    //   setInterval(() => {
-    //     now.value = new Date()
-    //   }, 1000)
-    // })
+    onMounted(() => {
+      setInterval(() => {
+        now.value = new Date()
+      }, 1000)
+    })
 
     const periods = computed(() => store.state.calendar.periods)
     const holidays = computed(() =>
@@ -77,7 +77,7 @@ export default defineComponent({
         ) + 1
 
       if (currentPeriodIndex === 0) {
-        return nextPeriodIndex === 0 ? periods.value.length : nextPeriodIndex
+        return nextPeriodIndex === 0 ? -1 : nextPeriodIndex
       }
       return currentPeriodIndex
     })
@@ -129,7 +129,7 @@ export default defineComponent({
         if (hiddenDays.includes(day.getDay())) return null
         return (
           <VCard
-            class="w-full h-full border border-slate-400 p-1 text-center flex flex-col"
+            class="border border-slate-400 p-1 text-center flex flex-col"
             color={computeCellColor(day.getDay(), 1, periods.value.length)}
           >
             <span class="font-bold">{dayName[day.getDay()]}</span>
@@ -139,9 +139,7 @@ export default defineComponent({
           </VCard>
         )
       }).filter((cell) => cell)
-      days.unshift(
-        <VCard class="w-full h-full border border-slate-400 p-2 text-center"></VCard>
-      )
+      days.unshift(<VCard class="border border-slate-400 p-2 text-center"></VCard>)
       return days
     })
     const table = computed(() =>
@@ -149,21 +147,45 @@ export default defineComponent({
         const row = courseInfo
           .map((cellData, day) => {
             if (hiddenDays.includes(day)) return null
-            if (!cellData) return <VCard class="border border-slate-400 p-1"></VCard>
+            if (!cellData)
+              return (
+                <OnLongPress
+                  as={VCard}
+                  options={{ delay: 1000 }}
+                  // @ts-ignore-next-line
+                  onTrigger={() =>
+                    router.push({
+                      name: 'Search',
+                      query: { dayOfWeek: day, period: (periodIndex + 1) * 11 },
+                    })
+                  }
+                  class="border border-slate-400 p-1 select-none backdrop-blur-md"
+                >
+                  &nbsp;
+                </OnLongPress>
+              )
             const { course, repeated } = cellData
             if (repeated) return null
-            const repeatClass = `row-span-${course.end - course.start + 1}`
             return (
-              <VCard
-                class={
-                  'flex flex-col justify-around border border-slate-400 p-2 text-xs ' +
-                  repeatClass
+              <OnLongPress
+                as={VCard}
+                options={{ delay: 1000 }}
+                // @ts-ignore-next-line
+                onTrigger={() =>
+                  router.push({
+                    name: 'My Courses',
+                    params: { keyword: course.code },
+                  })
                 }
+                class="flex flex-col justify-around border border-slate-400 p-2 text-xs"
+                style={{ gridRow: `span ${course.end - course.start + 1}` }}
                 color={computeCellColor(day, course.start, course.end)}
               >
-                <div>{course.name}</div>
-                <div class="">{course.classroom}</div>
-              </VCard>
+                <div>
+                  <div class="font-semibold mb-2">{course.name}</div>
+                  <div class="rounded-md shadow-inner shadow">{course.classroom}</div>
+                </div>
+              </OnLongPress>
             )
           })
           .filter((cell) => cell)
@@ -174,11 +196,9 @@ export default defineComponent({
           >
             <div class="font-bold">{periodIndex + 1}</div>
             <div class="flex flex-col">
-              <span class="text-sm ">{periods.value[periodIndex].start.toString()}</span>
+              <span class="text-sm">{periods.value[periodIndex].start}</span>
               <span class="rotate-90 leading-none">~</span>
-              <span class="text-sm leading-tight">
-                {periods.value[periodIndex].end.toString()}
-              </span>
+              <span class="text-sm leading-tight">{periods.value[periodIndex].end}</span>
             </div>
           </VCard>
         )

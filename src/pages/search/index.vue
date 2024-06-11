@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import Search from './Search.vue'
 import ShowList from './ShowList.vue'
 import { fetchCoursesList } from '@/api/syllabus/course'
 import type { SearchParams } from '@/api/syllabus/course'
 import type { Course } from '@/model/course'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
 const form = reactive<SearchParams>({
     keyword: '',
@@ -15,6 +18,22 @@ const form = reactive<SearchParams>({
     pageId: 0,
     departmentId: null,
 })
+
+watch(
+    () => route.query,
+    (query) => {
+        form.keyword = query.keyword?.toString() || ''
+        form.name = query.name?.toString() || ''
+        form.term = query.term ? parseInt(query.term.toString(), 10) : null
+        form.dayOfWeek = query.dayOfWeek ? parseInt(query.dayOfWeek.toString(), 10) : null
+        form.period = query.period ? parseInt(query.period.toString(), 10) : null
+        form.pageId = query.pageId ? parseInt(query.pageId.toString(), 10) : 0
+        form.departmentId = query.departmentId
+            ? parseInt(query.departmentId.toString(), 10)
+            : null
+    },
+    { immediate: true, deep: true }
+)
 
 const newSearch = async () => {
     if (lock.value) return
