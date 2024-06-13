@@ -35,4 +35,10 @@ app.use(router).use(store, key).use(vuetify)
 
 app.use(globalNotifyPlugin)
 
+app.config.warnHandler = (msg, vm, trace) => {
+    // ignore Non-function value encountered for default slot. Prefer function slots for better performance.
+    if (msg.includes('Non-function value encountered for default slot')) return
+    console.error(msg, vm, trace)
+}
+
 app.mount('#app')
