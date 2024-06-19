@@ -17,7 +17,7 @@ const full2Half = (str: string): string => {
     return res
 }
 
-const dayOfWeek = {
+const weekday = {
     日: 7,
     月: 1,
     火: 2,
@@ -27,4 +27,4 @@ const dayOfWeek = {
     土: 6,
 }
 
-export { full2Half, dayOfWeek }
+export { full2Half, weekday }

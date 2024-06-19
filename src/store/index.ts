@@ -1,25 +1,22 @@
 import type { Store } from 'vuex'
 import { createStore } from 'vuex'
-import type { SyllabusState } from './modules/syllabus'
-import { syllabusStore } from './modules/syllabus'
-import type { CalendarState } from './modules/calendar'
-import { calendarStore } from './modules/calendar'
-import type { SystemState } from './modules/system'
-import { systemStore } from './modules/system'
+import { syllabusStore, type SyllabusState } from './modules/syllabus'
+import { calendarStore, type CalendarState } from './modules/calendar'
+import { userStore, type UserState } from './modules/user'
 import type { InjectionKey } from 'vue'
 
-export const key: InjectionKey<
-Store<{
+interface State {
     syllabus: SyllabusState
     calendar: CalendarState
-    system: SystemState
-}>
-> = Symbol('store')
+    user: UserState
+}
+
+export const key: InjectionKey<Store<State>> = Symbol('store')
 
 export const store = createStore<{
     syllabus: SyllabusState
     calendar: CalendarState
-    system: SystemState
+    user: UserState
 }>({
     modules: {
         syllabus: {
@@ -30,9 +27,9 @@ export const store = createStore<{
             namespaced: true,
             ...calendarStore,
         },
-        system: {
+        user: {
             namespaced: true,
-            ...systemStore,
+            ...userStore,
         },
     },
 })

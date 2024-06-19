@@ -6,14 +6,17 @@ import { fetchCoursesList } from '@/api/syllabus/course'
 import type { SearchParams } from '@/api/syllabus/course'
 import type { Course } from '@/model/course'
 import { useRoute } from 'vue-router'
+import { key } from '@/store'
+import { useStore } from 'vuex'
 
 const route = useRoute()
+const store = useStore(key)
 
 const form = reactive<SearchParams>({
     keyword: '',
     name: '',
-    term: null,
-    dayOfWeek: null,
+    semester: null,
+    weekday: null,
     period: null,
     pageId: 0,
     departmentId: null,
@@ -24,13 +27,11 @@ watch(
     (query) => {
         form.keyword = query.keyword?.toString() || ''
         form.name = query.name?.toString() || ''
-        form.term = query.term ? parseInt(query.term.toString(), 10) : null
-        form.dayOfWeek = query.dayOfWeek ? parseInt(query.dayOfWeek.toString(), 10) : null
+        form.semester = query.semester ? parseInt(query.semester.toString(), 10) : null
+        form.weekday = query.weekday ? parseInt(query.weekday.toString(), 10) : null
         form.period = query.period ? parseInt(query.period.toString(), 10) : null
         form.pageId = query.pageId ? parseInt(query.pageId.toString(), 10) : 0
-        form.departmentId = query.departmentId
-            ? parseInt(query.departmentId.toString(), 10)
-            : null
+        form.departmentId = query.departmentId?.toString() ?? store.state.user.department
     },
     { immediate: true, deep: true }
 )
@@ -68,8 +69,8 @@ const appendSearch = async () => {
 const clearForm = () => {
     form.keyword = ''
     form.name = ''
-    form.term = null
-    form.dayOfWeek = null
+    form.semester = null
+    form.weekday = null
     form.period = null
     form.pageId = 0
     form.departmentId = null

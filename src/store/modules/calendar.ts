@@ -61,15 +61,15 @@ export const calendarStore = {
             for (let i = 0; i < state.courses.length; ++i) {
                 let course = state.courses[i]
                 course.schedules.forEach((schedules) => {
-                    schedules.term.forEach((term) => {
+                    schedules.semester.forEach((semester) => {
                         let day = schedules.day
                         let periodInterval = schedules.period
                         for (let period = periodInterval[0]; period <= periodInterval[1]; ++period) {
-                            if (state.timetable[term][day][period] !== -1) {
-                                let conflictId = state.timetable[term][day][period]
+                            if (state.timetable[semester][day][period] !== -1) {
+                                let conflictId = state.timetable[semester][day][period]
                                 throw new Error('Conflict with ' + state.courses[conflictId].name)
                             }
-                            state.timetable[term][day][period] = i
+                            state.timetable[semester][day][period] = i
                         }
                     })
                 })
@@ -77,16 +77,16 @@ export const calendarStore = {
         },
         initTimetable(state: CalendarState) {
             state.timetable = []
-            for (let term = 0; term < 4; ++term) {
-                let termArray = []
+            for (let semester = 0; semester < 4; ++semester) {
+                let semesterArray = []
                 for (let day = 0; day < 7; ++day) {
                     let dayArray = []
                     for (const _ of state.periods) {
                         dayArray.push(-1)
                     }
-                    termArray.push(dayArray)
+                    semesterArray.push(dayArray)
                 }
-                state.timetable.push(termArray)
+                state.timetable.push(semesterArray)
             }
         },
     },

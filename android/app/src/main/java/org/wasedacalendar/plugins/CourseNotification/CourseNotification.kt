@@ -57,14 +57,14 @@ object CourseNotification{
         }?: return null
         return courses.find { course ->
             course.schedules.any {
-                it.day == today.dayOfWeek.value &&
+                it.day == today.weekday.value &&
                 it.startPeriod > period
             }
         }?.let { course ->
             Course(
                 course.name,
                 course.schedules.filter {
-                    it.day == today.dayOfWeek.value &&
+                    it.day == today.weekday.value &&
                     it.startPeriod > period
                 }.toMutableList()
             )
@@ -86,14 +86,14 @@ object CourseNotification{
         }?: return null
         val result = courses.find { course ->
             course.schedules.any {
-                it.day == today.dayOfWeek.value &&
+                it.day == today.weekday.value &&
                 it.startPeriod <= period &&
                 it.endPeriod >= period
             }
         } ?: let {
             courses.find { course ->
                 course.schedules.any {
-                    it.day == today.dayOfWeek.value &&
+                    it.day == today.weekday.value &&
                     it.startPeriod > period
                 }
             }
@@ -102,7 +102,7 @@ object CourseNotification{
             Course(
                 course.name,
                 course.schedules.filter {
-                    it.day == today.dayOfWeek.value &&
+                    it.day == today.weekday.value &&
                     it.endPeriod >= period
                 }.toMutableList()
             )

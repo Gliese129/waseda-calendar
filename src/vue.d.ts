@@ -13,5 +13,6 @@ declare module 'vue' {
             type: 'info' | 'success' | 'warning' | 'error',
             showTime?: number
         ) => void
+        onClick?: (e: MouseEvent) => void
     }
 }

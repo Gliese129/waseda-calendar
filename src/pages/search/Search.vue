@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { SearchParams } from '@/api/syllabus/course'
-import { dayOfWeek, term, timeOfDay } from '@/resources/courses-date'
+import { weekday, semester, period } from '@/assets/courses-date'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
+import { useLocale } from 'vuetify'
 
 const emit = defineEmits(['search', 'clear'])
 const store = useStore(key)
+const { t } = useLocale()
 
-const form = defineModel<SearchParams>() as unknown as SearchParams
+const form = defineModel<SearchParams>()
 
 const clearForm = () => {
     emit('clear')
@@ -16,21 +18,23 @@ const clearForm = () => {
 }
 const isKeyword = ref(false)
 
-const departments = computed(() => store.state.syllabus.departments) as unknown as {
-    name: string
-    value: number
-}[]
+const departments = computed(() =>
+    store.state.syllabus.departments.map((item) => ({
+        title: item.name,
+        value: item.value,
+    }))
+)
 </script>
 
 <template>
-  <v-form class="m-auto">
+  <v-form v-if="form" class="m-auto">
     <v-container>
       <v-row>
         <v-col cols="8">
           <v-text-field
             v-show="isKeyword"
             v-model="form.keyword"
-            label="Keyword"
+            :label="t('form.keyword')"
             density="compact"
             hide-details
             clearable
@@ -40,7 +44,7 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
           <v-text-field
             v-show="!isKeyword"
             v-model="form.name"
-            label="Name"
+            :label="t('form.name')"
             density="compact"
             hide-details
             clearable
@@ -50,16 +54,16 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
         </v-col>
         <v-col cols="4">
           <v-btn class="capitalize" @click="isKeyword = !isKeyword">
-            {{ isKeyword ? 'Name' : 'Keyword' }}
+            {{ isKeyword ? t('form.name') : t('form.keyword') }}
           </v-btn>
         </v-col>
       </v-row>
       <v-row>
         <v-col>
           <v-select
-            v-model="form.term"
-            label="Term"
-            :items="term"
+            v-model="form.semester"
+            :label="t('form.semester')"
+            :items="semester"
             density="compact"
             hide-details
             clearable
@@ -70,9 +74,9 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
       <v-row>
         <v-col cols="6">
           <v-select
-            v-model="form.dayOfWeek"
-            label="Day"
-            :items="dayOfWeek"
+            v-model="form.weekday"
+            :label="t('form.weekday')"
+            :items="weekday"
             density="compact"
             hide-details
             clearable
@@ -82,8 +86,8 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
         <v-col cols="6">
           <v-select
             v-model="form.period"
-            label="Period"
-            :items="timeOfDay"
+            :label="t('form.period')"
+            :items="period"
             density="compact"
             hide-details
             clearable
@@ -95,7 +99,7 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
         <v-col>
           <v-autocomplete
             v-model="form.departmentId"
-            label="Department"
+            :label="t('form.department')"
             :items="departments"
             item-text="name"
             item-value="value"
@@ -109,10 +113,10 @@ const departments = computed(() => store.state.syllabus.departments) as unknown 
 
       <v-row>
         <v-col cols="6">
-          <v-btn color="error" @click="clearForm">Reset</v-btn>
+          <v-btn color="error" @click="clearForm">{{ t('form.reset') }}</v-btn>
         </v-col>
         <v-col cols="6">
-          <v-btn color="primary" @click="$emit('search')">Search</v-btn>
+          <v-btn color="primary" @click="$emit('search')">{{ t('form.search') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>

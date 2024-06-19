@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import { OnLongPress } from '@vueuse/components'
 import { SimpleTime } from '@/model/date'
 import { VCard } from 'vuetify/components'
+import { useI18n } from 'vue-i18n'
 
 h('div') // for h to be recognized
 
@@ -49,6 +50,8 @@ export default defineComponent({
   setup(props: CalendarProps, _) {
     const store = useStore(key)
     const router = useRouter()
+    const { d } = useI18n()
+
     const hiddenDays = [0] // hide Sunday column to save space
     const now = ref(new Date())
     onMounted(() => {
@@ -123,7 +126,6 @@ export default defineComponent({
     })
 
     const header = computed(() => {
-      const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
       const days = Array.from({ length: 7 }, (_, i) => {
         let day = new Date(props.dateRange.start.getTime() + i * 24 * 60 * 60 * 1000)
         if (hiddenDays.includes(day.getDay())) return null
@@ -132,10 +134,8 @@ export default defineComponent({
             class="border border-slate-400 p-1 text-center flex flex-col"
             color={computeCellColor(day.getDay(), 1, periods.value.length)}
           >
-            <span class="font-bold">{dayName[day.getDay()]}</span>
-            <span class="text-sm">
-              {day.getMonth() + 1}/{day.getDate()}
-            </span>
+            <span class="font-bold">{d(day, 'weekday')}</span>
+            <span class="text-sm">{d(day, 'date')}</span>
           </VCard>
         )
       }).filter((cell) => cell)
@@ -156,7 +156,7 @@ export default defineComponent({
                   onTrigger={() =>
                     router.push({
                       name: 'Search',
-                      query: { dayOfWeek: day, period: (periodIndex + 1) * 11 },
+                      query: { weekday: day, period: (periodIndex + 1) * 11 },
                     })
                   }
                   class="border border-slate-400 p-1 select-none backdrop-blur-md"
@@ -196,9 +196,11 @@ export default defineComponent({
           >
             <div class="font-bold">{periodIndex + 1}</div>
             <div class="flex flex-col">
-              <span class="text-sm">{periods.value[periodIndex].start}</span>
+              <span class="text-sm">{periods.value[periodIndex].start.toString()}</span>
               <span class="rotate-90 leading-none">~</span>
-              <span class="text-sm leading-tight">{periods.value[periodIndex].end}</span>
+              <span class="text-sm leading-tight">
+                {periods.value[periodIndex].end.toString()}
+              </span>
             </div>
           </VCard>
         )
@@ -207,7 +209,7 @@ export default defineComponent({
     )
 
     return () => (
-      <div class="grid grid-cols-7 gap-1">
+      <div class="grid grid-cols-7 gap-1 min-w-80vw sm:w-full">
         {header.value}
         {table.value}
       </div>

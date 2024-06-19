@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Course } from '@/model/course'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
     disabled: {
@@ -9,26 +10,27 @@ const props = defineProps({
     },
 })
 
+const { d } = useI18n()
+
 const course = defineModel<Course>('item')
-const termColor = [
+const semesterColor = [
     {
-        name: 'Spring',
+        name: 'spring',
         color: '#4CAF50',
     },
     {
-        name: 'Summer',
+        name: 'summer',
         color: '#FFC107',
     },
     {
-        name: 'Fall',
+        name: 'fall',
         color: '#FF5722',
     },
     {
-        name: 'Winter',
+        name: 'winter',
         color: '#2196F3',
     },
 ]
-const dayOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const showPeriod = (period: number[]): string => {
     if (period.length === 0) return ''
@@ -62,12 +64,12 @@ const showPeriod = (period: number[]): string => {
           <v-chip class="rounded-r-none m-r-px">
             <v-icon>mdi-calendar-clock-outline</v-icon>
             <div
-              v-for="(term, index) in course.schedules[0].term"
+              v-for="(semester, index) in course.schedules[0].semester"
               :key="index"
-              :style="{ backgroundColor: termColor[term].color }"
+              :style="{ backgroundColor: semesterColor[semester].color }"
               class="rounded-full w-2.5 h-2.5"
             ></div>
-            {{ dayOfWeek[course.schedules[0].day] }}
+            {{ d(course.schedules[0].day, 'weekday') }}
             {{ showPeriod(course.schedules[0].period) }}
           </v-chip>
           <v-chip class="rounded-l-none">

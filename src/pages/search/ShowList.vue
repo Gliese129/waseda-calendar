@@ -5,8 +5,11 @@ import CourseEdit from '@/components/CourseEdit.vue'
 import { Course } from '@/model/course'
 import { defineModel, ref } from 'vue'
 import { reactive } from 'vue'
-import TermOverview from '@/components/TermOverview.vue'
+import { useLocale } from 'vuetify'
+import SemesterOverview from '@/components/SemesterOverview.vue'
+
 const emit = defineEmits(['search'])
+const { t } = useLocale()
 const courses = defineModel<Course[]>()
 const isLastPage = defineModel('lastPage')
 
@@ -30,7 +33,7 @@ const loadCourse = async (course: Course) => {
 </script>
 
 <template>
-  <TermOverview intro></TermOverview>
+  <SemesterOverview intro></SemesterOverview>
   <v-infinite-scroll
     class="m-auto flex flex-wrap justify-around"
     height="40vh"
@@ -42,11 +45,11 @@ const loadCourse = async (course: Course) => {
       <course-outline :item="item" @click="loadCourse(item)" />
     </template>
     <template #empty>
-      <v-alert color="info" dense> No more courses to show </v-alert>
+      <v-alert color="info" dense> {{ t('searchPage.no_course_warn') }}</v-alert>
     </template>
     <template #error>
       <v-alert color="error" dense>
-        Too many courses to show, please use stricter search criteria
+        {{ t('searchPage.too_many_courses_warn') }}
       </v-alert>
     </template>
     <template #loading>
@@ -58,7 +61,7 @@ const loadCourse = async (course: Course) => {
     </template>
   </v-infinite-scroll>
   <span class="text-sm text-slate-400">
-    Tip: due to the size limit, only the first teacher and period will be shown
+    {{ t('searchPage.overflow_tip') }}
   </span>
 
   <v-dialog v-model="dialogActive" fullscreen>

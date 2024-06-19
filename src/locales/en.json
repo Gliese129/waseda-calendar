@@ -1,0 +1,54 @@
+{
+    "navigation": {
+        "calendar": "Calendar",
+        "search": "Search",
+        "my_courses": "My Courses",
+        "settings": "Settings",
+        "period_edit": "Period Editor",
+        "start": "Start"
+    },
+    "form": {
+        "name": "Name",
+        "keyword": "Keyword",
+        "semester": "Semester",
+        "weekday": "Weekday",
+        "period": "Period",
+        "department": "Department",
+        "reset": "Reset",
+        "search": "Search",
+        "displayLanguage": "Display Language",
+        "searchLanguage": "Search Language"
+    },
+    "searchPage": {
+        "semester_color": "Semester Color",
+        "overflow_tip": "Tip: due to the size limit, only the first teacher and period will be shown",
+        "too_many_courses_warn": "Too many courses, please use stricter search criteria",
+        "no_course_warn": "No course found"
+    },
+    "semester": {
+        "spring": "Spring",
+        "summer": "Summer",
+        "fall": "Fall",
+        "winter": "Winter"
+    },
+    "settings": {
+        "periods": "Periods",
+        "periodsDescription": "Set up your periods",
+        "courseNotification": "Course Notification",
+        "courseNotificationDescription": "Get notifications of the current course",
+        "clearCache": "Clear Cache",
+        "clearCacheDescription": "If you have any problem, try this"
+    },
+    "settingGroup": {
+        "schedule": "Schedule",
+        "general": "General",
+        "dangerZone": "Danger Zone",
+        "beta": "Beta Features"
+    },
+    "notifications": {
+        "cacheCleared": "Cache cleared"
+    },
+    "description": {
+        "syllabusRaw": "Syllabus Raw Content"
+    }
+}

@@ -8,7 +8,8 @@ import { getLocal, searchLocalBeforeNetwork } from '@/utils/storage'
 
 export interface SyllabusState {
     departments: {
-        title: string
+        name: string
+        abbr: string
         value: string
     }[]
     periods: {

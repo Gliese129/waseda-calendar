@@ -14,8 +14,56 @@ import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import 'virtual:uno.css'
 
+// i18n
+import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
+// @ts-ignore-next-line
+import { createI18n, useI18n } from 'vue-i18n'
+import { en } from 'vuetify/locale'
+
+import enUs from './locales/en.json'
+
+type MessageSchema = typeof enUs
+
 // Plugins
 import { globalNotifyPlugin } from '@/components/plugins/message-alert'
+
+const i18n = createI18n<[MessageSchema], 'en' | 'ja' | 'zhHans'>({
+    legacy: false,
+    locale: 'en',
+    fallbackLocale: 'en',
+    messages: {
+        en: {
+            $vuetify: {
+                ...en,
+            },
+            ...enUs,
+        },
+    },
+    datetimeFormats: {
+        en: {
+            short: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            },
+            long: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                weekday: 'short',
+                hour: 'numeric',
+                minute: 'numeric',
+            },
+            weekday: {
+                weekday: 'short',
+            },
+            date: {
+                month: 'numeric',
+                day: 'numeric',
+            },
+        },
+    },
+})
 
 const vuetify = createVuetify({
     components: {
@@ -27,11 +75,14 @@ const vuetify = createVuetify({
     display: {
         mobileBreakpoint: 'sm',
     },
+    locale: {
+        adapter: createVueI18nAdapter({ i18n, useI18n }),
+    },
 })
 
 const app = createApp(App)
 
-app.use(router).use(store, key).use(vuetify)
+app.use(router).use(store, key).use(i18n).use(vuetify)
 
 app.use(globalNotifyPlugin)
 

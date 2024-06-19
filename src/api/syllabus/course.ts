@@ -5,11 +5,11 @@ import Http from './http'
 export interface SearchParams {
     keyword: string | null
     name: string | null
-    term: number | null
-    dayOfWeek: number | null
+    semester: number | null
+    weekday: number | null
     period: number | null
     pageId: number
-    departmentId: number | null
+    departmentId: string | null
 }
 
 import { getCourseDetail, getCoursesList } from './parse/course'
@@ -17,8 +17,8 @@ const fetchCoursesList = async (form: SearchParams) => {
     const formData: any = {}
     if (form.keyword) formData['keyword'] = form.keyword
     if (form.name) formData['kamoku'] = form.name
-    if (form.term) formData['p_gakki'] = form.term
-    if (form.dayOfWeek) formData['p_youbi'] = form.dayOfWeek
+    if (form.semester) formData['p_gakki'] = form.semester
+    if (form.weekday) formData['p_youbi'] = form.weekday
     if (form.period) formData['p_jigen'] = form.period
     if (form.departmentId) formData['p_gakubu'] = form.departmentId
     formData['ControllerParameters'] = 'JAA103SubCon'

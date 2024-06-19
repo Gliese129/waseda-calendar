@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Course } from '@/model/course'
-import { inject, reactive } from 'vue'
+import { computed, inject, reactive } from 'vue'
 import { watch } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
-import TermOverview from '@/components/TermOverview.vue'
+import SemesterOverview from '@/components/SemesterOverview.vue'
+
 const props = defineProps({
     edit: {
         type: Boolean,
@@ -18,6 +19,14 @@ const store = useStore(key)
 const origin = defineModel<Course>('origin')
 
 const course = reactive<Course>(new Course('', ''))
+const departments = computed(() =>
+    store.state.syllabus.departments.map((item) => {
+        return {
+            title: item.name,
+            value: item.value,
+        }
+    })
+)
 watch(
     origin,
     (newCourse) => {
@@ -57,7 +66,7 @@ const addPeriod = () => {
     course.schedules.push({
         day: -1,
         period: [1, 1],
-        term: [],
+        semester: [],
         classroom: '',
     })
 }
@@ -121,7 +130,7 @@ const openInNew = (url: string | undefined) => {
       <v-col cols="6">
         <v-select
           v-model="course.department"
-          :items="store.state.syllabus.departments"
+          :items="departments"
           prepend-icon="mdi-school-outline"
           label="Department"
           variant="solo"
@@ -151,7 +160,7 @@ const openInNew = (url: string | undefined) => {
       </v-col>
     </v-row>
     <v-row>
-      <TermOverview intro class="mx-auto"></TermOverview>
+      <SemesterOverview intro class="mx-auto"></SemesterOverview>
     </v-row>
     <v-row>
       <v-expansion-panels class="mx-4">
@@ -186,12 +195,12 @@ const openInNew = (url: string | undefined) => {
               <v-checkbox
                 v-for="(quarter, index) in ['Spring', 'Summer', 'Fall', 'Winter']"
                 :key="index"
-                v-model="tp.term"
+                v-model="tp.semester"
                 class="mx-auto"
                 hide-details
                 :value="index"
                 :label="quarter"
-                @update:model-value="tp.term.sort((a, b) => a - b)"
+                @update:model-value="tp.semester.sort((a, b) => a - b)"
               ></v-checkbox>
             </v-row>
             <v-row>

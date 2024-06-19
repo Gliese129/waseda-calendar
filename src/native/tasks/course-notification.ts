@@ -18,7 +18,7 @@ const formatParams = (
         courses: courses
             .filter((course) => {
                 return course.schedules
-                    .map((item) => item.term)
+                    .map((item) => item.semester)
                     .flat()
                     .includes(currQuarter)
             })
@@ -26,7 +26,7 @@ const formatParams = (
                 return {
                     name: course.name,
                     schedules: course.schedules
-                        .filter((schedule) => schedule.term.includes(currQuarter))
+                        .filter((schedule) => schedule.semester.includes(currQuarter))
                         .map((schedule) => {
                             return {
                                 classroom: schedule.classroom,

@@ -10,5 +10,8 @@
     "eslint.format.enable": true,
     "[vue]": {
         "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
-    }
+    },
+    "background.customImages": [
+        "file:///e/Pictures/twitter/{48E82246-89BB-C050-1B67-F4E1D71C82F6}.jpg"
+    ]
 }

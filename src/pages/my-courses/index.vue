@@ -9,11 +9,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { inject } from 'vue'
 import { AcademicDate } from '@/model/date'
+import { useLocale } from 'vuetify'
 
 const route = useRoute()
 const router = useRouter()
 const store = useStore(key)
 const $message = inject<Function>('$message') as Function
+const { t } = useLocale()
 
 const keyword = ref('')
 const courses = computed(() =>

@@ -1,6 +1,6 @@
-import { semesterJp } from '@/resources/semester'
+import { semesterJp } from '@/assets/semester'
 import * as MathUtils from '@/utils/math'
-import { dayOfWeek } from '@/utils/locale'
+import { weekday } from '@/utils/locale'
 
 const _simpleArrayClone = (arr: any[]) => {
     if (!arr) return []
@@ -16,7 +16,7 @@ export class Course {
         if (!source.schedules) source.schedules = []
         target.schedules = source.schedules.map((tp) => {
             return {
-                term: _simpleArrayClone(tp.term),
+                semester: _simpleArrayClone(tp.semester),
                 day: tp.day,
                 period: _simpleArrayClone(tp.period),
                 classroom: tp.classroom,
@@ -64,13 +64,13 @@ export class Course {
         this.textbook = ''
     }
 
-    public termStr2Num(term: string): number[] {
-        let termIndex = semesterJp.findIndex((s) => s.name === term)
-        if (termIndex === -1) return []
-        return semesterJp[termIndex].value
+    public semesterStr2Num(semester: string): number[] {
+        let semesterIndex = semesterJp.findIndex((s) => s.name === semester)
+        if (semesterIndex === -1) return []
+        return semesterJp[semesterIndex].value
     }
 
-    public addSchedules(termStr: string, dayPeriodStr: string, classroomStr: string) {
+    public addSchedules(semesterStr: string, dayPeriodStr: string, classroomStr: string) {
         let timeGroupRegex = /([月火水木金土日])\s*([\d-]+)(時限)?/g
         let classGroupRegex = /\d+\-B?\d+/g
         let timeMatch = timeGroupRegex.exec(dayPeriodStr)
@@ -80,7 +80,7 @@ export class Course {
         let classrooms = []
         // match
         while (timeMatch) {
-            days.push(dayOfWeek[timeMatch[1] as keyof typeof dayOfWeek])
+            days.push(weekday[timeMatch[1] as keyof typeof weekday])
             let period = timeMatch[2].split('-').map((p) => parseInt(p, 10))
             if (period.length === 1) periods.push([period[0], period[0]])
             else periods.push([period[0], period[1]])
@@ -90,10 +90,10 @@ export class Course {
             classrooms.push(classMatch[0])
             classMatch = classGroupRegex.exec(classroomStr)
         }
-        let term = termStr.split('\n').map((t) => this.termStr2Num(t))
+        let semester = semesterStr.split('\n').map((t) => this.semesterStr2Num(t))
 
-        // broadcast the same term to all schedules
-        const lengths = [term.length, days.length, periods.length]
+        // broadcast the same semester to all schedules
+        const lengths = [semester.length, days.length, periods.length]
         let lca = MathUtils.lca(lengths)
         // the only case that could broadcast is when there is only 1 and lca in the lengths
         for (const length of lengths) {
@@ -105,12 +105,12 @@ export class Course {
         }
         // broadcast!
         for (let i = 0; i < lca; i++) {
-            let termIndex = i % term.length
+            let semesterIndex = i % semester.length
             let dayIndex = i % days.length
             let periodIndex = i % periods.length
             let classroomIndex = i % classrooms.length
             this.schedules.push({
-                term: term[termIndex],
+                semester: semester[semesterIndex],
                 day: days[dayIndex],
                 period: periods[periodIndex],
                 classroom: classrooms[classroomIndex],
@@ -131,7 +131,7 @@ export class Course {
 }
 
 export interface SchedulesInfo {
-    term: number[]
+    semester: number[]
     day: number
     period: number[] // start period and end period
     classroom: string

@@ -21,7 +21,7 @@ const courses = computed(() => {
         .filter((course) => course.academicYear === academicYear.value)
         .flatMap((course) =>
             course.schedules
-                .filter((schedule) => schedule.term.includes(quarter.value))
+                .filter((schedule) => schedule.semester.includes(quarter.value))
                 .map((schedule) => ({
                     code: course.code,
                     name: course.name,
@@ -33,10 +33,10 @@ const courses = computed(() => {
         )
 })
 const dateRange = computed(() => {
-    let dayOfWeek = date.value.getDay()
+    let weekday = date.value.getDay()
     return {
-        start: new Date(date.value.getTime() - 1000 * 60 * 60 * 24 * dayOfWeek),
-        end: new Date(date.value.getTime() + 1000 * 60 * 60 * 24 * (6 - dayOfWeek)),
+        start: new Date(date.value.getTime() - 1000 * 60 * 60 * 24 * weekday),
+        end: new Date(date.value.getTime() + 1000 * 60 * 60 * 24 * (6 - weekday)),
     }
 })
 

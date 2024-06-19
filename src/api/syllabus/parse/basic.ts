@@ -1,8 +1,10 @@
 import { load } from 'cheerio'
 import { full2Half } from '@/utils/locale'
+import { departments } from '@/assets/departments'
 
 interface Department {
-    title: string
+    name: string
+    abbr: string
     value: string
 }
 
@@ -11,14 +13,17 @@ const getDepartments = (html: string): Department[] => {
     const options = $('select[name="p_gakubu"] option').filter((_, option) => {
         return $(option).val() !== ''
     })
-    const departments: Department[] = []
+    const result: Department[] = []
     options.each((_, option) => {
-        departments.push({
-            title: full2Half($(option).text()),
+        let abbr = full2Half($(option).text())
+        let name = departments.find((department) => department.abbr === abbr)?.name || abbr
+        result.push({
+            name,
+            abbr,
             value: $(option).val() as string,
         })
     })
-    return departments
+    return result
 }
 
 export { getDepartments }

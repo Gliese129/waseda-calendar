@@ -1,71 +1,52 @@
 import { App } from '@capacitor/app'
 import { Toast } from '@capacitor/toast'
 import { createRouter, createWebHistory } from 'vue-router'
-import { store } from './store'
 
 const routes = [
     {
         path: '/',
         component: () => import('./pages/home/index.vue'),
-        name: 'Calendar',
-        meta: {
-            needConfigDataLoaded: true,
-        },
+        name: 'calendar',
+        meta: {},
     },
     {
         path: '/search',
         component: () => import('@/pages/search/index.vue'),
-        name: 'Search',
-        meta: {
-            needConfigDataLoaded: true,
-        },
+        name: 'search',
+        meta: {},
     },
     {
         path: '/my-courses/:keyword?',
         component: () => import('@/pages/my-courses/index.vue'),
-        name: 'My Courses',
-        meta: {
-            needConfigDataLoaded: true,
-        },
+        name: 'my_courses',
+        meta: {},
     },
     {
         path: '/settings/:subRoute(.*)?',
         component: () => import('@/pages/settings/index.vue'),
-        name: 'Settings',
         children: [
             {
                 path: '',
-                name: 'Settings Home',
-                component: () => import('@/pages/settings/category.vue'),
+                name: 'settings',
+                component: () => import('@/pages/settings/settings.vue'),
             },
             {
                 path: 'periods',
-                name: 'Periods Edit',
+                name: 'period_edit',
                 component: () => import('@/pages/settings/sub/period.vue'),
             },
         ],
     },
     {
         path: '/start',
-        component: () => import('@/pages/start-page/index.vue'),
-        name: 'Start Page',
+        component: () => import('@/pages/start-page/index.tsx'),
+        name: 'start',
     },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
-})
-
-router.beforeEach(async (to, _, next) => {
-    if (
-        to.meta.needConfigDataLoaded &&
-    !(await store.dispatch('syllabus/checkConfigDataLoaded'))
-    ) {
-        next({ name: 'Settings Home' })
-    } else {
-        next()
-    }
 })
 
 let exitLock = false

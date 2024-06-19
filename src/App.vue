@@ -8,60 +8,57 @@ import { key } from '@/store'
 import { watch } from 'vue'
 
 import courseNotification from '@/native/tasks/course-notification'
+import { useRoute, useRouter } from 'vue-router'
+import { Capacitor } from '@capacitor/core'
+const route = useRoute()
+const router = useRouter()
 const store = useStore(key)
 
 onMounted(async () => {
     console.log('App mounted')
+    await store.dispatch('user/init')
+
+    // check if is the first time
+    if (store.state.user.firstLogin) {
+        router.replace('/start')
+    }
+
     await store.dispatch('syllabus/refresh')
     console.log(store.state.syllabus.periods)
     store.dispatch('calendar/init', store.state.syllabus.holidays)
 })
-const ifDataLoaded = computed(
-    () =>
-        store.state.calendar.periods.length > 0 &&
-        store.state.syllabus.holidays.length > 0 &&
-        store.state.calendar.periods.length > 0
-)
+
 // course notification
-watch(
-    () => store.state.system.coursePush,
-    (val) => {
-        if (val) {
-            let periods = store.state.calendar.periods.map((p) => [
-                p.start.toString(),
-                p.end.toString(),
-            ])
-            let courses = store.state.calendar.courses
-            let holidays = store.state.syllabus.holidays
-            courseNotification.startPush(periods, courses, holidays)
-        } else {
-            courseNotification.stopPush()
-        }
-    }
-)
-watch(
-    () => store.state.calendar,
-    () => {
-        if (!store.state.system.coursePush) return
-        let periods = store.state.calendar.periods.map((p) => [
-            p.start.toString(),
-            p.end.toString(),
-        ])
-        let courses = store.state.calendar.courses
-        let holidays = store.state.syllabus.holidays
-        courseNotification.updatePush(periods, courses, holidays)
-    },
-    { deep: true }
-)
+if (Capacitor.getPlatform() !== 'web') {
+    watch(
+        () => [store.state.user.courseNotification, store.state.calendar],
+        (val) => {
+            if (val) {
+                let periods = store.state.calendar.periods.map((p) => [
+                    p.start.toString(),
+                    p.end.toString(),
+                ])
+                let courses = store.state.calendar.courses
+                let holidays = store.state.syllabus.holidays
+                courseNotification.startPush(periods, courses, holidays)
+            } else {
+                courseNotification.stopPush()
+            }
+        },
+        { immediate: true, deep: true }
+    )
+}
+
+const showNavigator = computed(() => !['Start Page'].includes(route.name as string))
 </script>
 
 <template>
   <v-app id="mobile">
-    <v-app-bar app>
+    <v-app-bar v-if="showNavigator" app>
       <Header />
     </v-app-bar>
 
-    <v-main v-if="ifDataLoaded">
+    <v-main>
       <ErrorMsg />
 
       <v-container fluid>
@@ -73,7 +70,9 @@ watch(
       </v-container>
     </v-main>
 
-    <v-bottom-navigation app> <Navigator class="w-full" /> </v-bottom-navigation>
+    <v-bottom-navigation v-if="showNavigator" app>
+      <Navigator class="w-full" />
+    </v-bottom-navigation>
   </v-app>
 </template>
 
@@ -83,5 +82,21 @@ watch(
   }
   .v-main {
     height: fit-content;
+  }
+</style>
+
+<style>
+  .slide-fade-enter-active {
+    transition: all 0.3s ease-out;
+  }
+
+  .slide-fade-leave-active {
+    transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
+  }
+
+  .slide-fade-enter-from,
+  .slide-fade-leave-to {
+    transform: translateX(20px);
+    opacity: 0;
   }
 </style>

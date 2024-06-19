@@ -1,4 +1,4 @@
-const dayOfWeek = [
+const weekday = [
     {
         title: 'Monday',
         value: 1,
@@ -31,17 +31,17 @@ const dayOfWeek = [
     },
 ]
 
-const term = [
+const semester = [
     {
         title: 'All Year',
         value: 0,
     },
     {
-        title: 'Spring&Summer Term',
+        title: 'Spring&Summer Semester',
         value: 1,
     },
     {
-        title: 'Fall&Autumn Term',
+        title: 'Fall&Autumn Semester',
         value: 2,
     },
     {
@@ -50,33 +50,33 @@ const term = [
     },
 ]
 
-const timeOfDay = [
+const period = [
     {
-        title: 'Slot 1',
+        title: '1',
         value: 11,
     },
     {
-        title: 'Slot 2',
+        title: '2',
         value: 22,
     },
     {
-        title: 'Slot 3',
+        title: '3',
         value: 33,
     },
     {
-        title: 'Slot 4',
+        title: '4',
         value: 44,
     },
     {
-        title: 'Slot 5',
+        title: '5',
         value: 55,
     },
     {
-        title: 'Slot 6',
+        title: '6',
         value: 66,
     },
     {
-        title: 'Slot 7',
+        title: '7',
         value: 77,
     },
     {
@@ -89,4 +89,4 @@ const timeOfDay = [
     },
 ]
 
-export { dayOfWeek, term, timeOfDay }
+export { weekday, semester, period }
