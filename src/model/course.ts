@@ -1,4 +1,4 @@
-import { semesterJp } from '@/assets/semester'
+import { semesterJp } from '@/resources/semester'
 import * as MathUtils from '@/utils/math'
 import { weekday } from '@/utils/locale'
 

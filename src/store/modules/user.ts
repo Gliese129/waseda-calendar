@@ -16,8 +16,8 @@ const baseFolder = 'user/'
 
 export const userStore = {
     state: {
-        displayLanguage: 'ja-JP',
-        searchLanguage: 'ja-JP',
+        displayLanguage: 'ja',
+        searchLanguage: 'ja',
         courseNotification: false,
         department: '',
         firstLogin: true,

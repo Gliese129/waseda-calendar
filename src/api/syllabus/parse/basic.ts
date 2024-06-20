@@ -1,6 +1,6 @@
 import { load } from 'cheerio'
 import { full2Half } from '@/utils/locale'
-import { departments } from '@/assets/departments'
+import { departments } from '@/resources/departments'
 
 interface Department {
     name: string

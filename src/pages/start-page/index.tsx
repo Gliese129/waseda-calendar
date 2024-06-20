@@ -11,7 +11,7 @@ import {
   VTimelineItem,
 } from 'vuetify/components'
 import { useRouter } from 'vue-router'
-import { languageOptions } from '@/assets/languages'
+import { languageOptions } from '@/resources/languages'
 import { useLocale } from 'vuetify'
 
 h('div') // This is a placeholder for the JSX function

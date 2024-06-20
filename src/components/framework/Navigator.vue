@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { watch, computed } from 'vue'
+import { useStore } from 'vuex'
+import { key } from '@/store'
 
 const router = useRouter()
+const route = useRoute()
+const store = useStore(key)
 
 const toggle = ref(0)
 const items = [
@@ -28,10 +32,12 @@ const items = [
         path: '/settings',
     },
 ]
+const lang = computed(() => store.state.user.displayLanguage)
 watch(
-    () => router.currentRoute.value.path,
+    () => route.path,
     (paths) => {
-        let firstPath = paths.split('/')[1]
+        let pointer = route.params.lang ? 2 : 1
+        let firstPath = paths.split('/')[pointer]
         toggle.value = items.findIndex((item) => item.path === `/${firstPath}`)
     }
 )
@@ -44,7 +50,7 @@ watch(
       :key="item.name"
       class="flex-auto"
       density="default"
-      @click="router.push(item.path)"
+      @click="router.push(`/${lang}${item.path}`)"
     >
       <v-icon>{{ item.icon }}</v-icon>
     </v-btn>

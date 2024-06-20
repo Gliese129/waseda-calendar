@@ -29,27 +29,27 @@ type MessageSchema = typeof enUs & {
 }
 
 // Plugins
-import { globalNotifyPlugin } from '@/components/plugins/message-alert'
+import { globalNotifyPlugin } from '@/utils/message-alert'
 
-const i18n = createI18n<[MessageSchema], 'en-US' | 'ja-JP' | 'zh-Hans'>({
+const i18n = createI18n<[MessageSchema], 'en' | 'ja' | 'zhHans'>({
     legacy: false,
-    locale: 'en-US',
-    fallbackLocale: 'en-US',
+    locale: 'en',
+    fallbackLocale: 'en',
 
     messages: {
-        'en-US': {
+        en: {
             $vuetify: {
                 ...en,
             },
             ...enUs,
         },
-        'ja-JP': {
+        ja: {
             $vuetify: {
                 ...ja,
             },
             ...jaJp,
         },
-        'zh-Hans': {
+        zhHans: {
             $vuetify: {
                 ...zhHans,
             },
@@ -57,7 +57,7 @@ const i18n = createI18n<[MessageSchema], 'en-US' | 'ja-JP' | 'zh-Hans'>({
         },
     },
     datetimeFormats: {
-        'en-US': {
+        en: {
             short: {
                 year: 'numeric',
                 month: 'short',
@@ -82,7 +82,7 @@ const i18n = createI18n<[MessageSchema], 'en-US' | 'ja-JP' | 'zh-Hans'>({
                 day: 'numeric',
             },
         },
-        'ja-JP': {
+        ja: {
             short: {
                 year: 'numeric',
                 month: 'short',
@@ -107,7 +107,7 @@ const i18n = createI18n<[MessageSchema], 'en-US' | 'ja-JP' | 'zh-Hans'>({
                 day: 'numeric',
             },
         },
-        'zh-Hans': {
+        zhHans: {
             short: {
                 year: 'numeric',
                 month: 'short',

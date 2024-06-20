@@ -32,10 +32,10 @@
         "noCourseWarning": "No course found"
     },
     "semester": {
-        "spring": "Spring",
-        "summer": "Summer",
-        "fall": "Fall",
-        "winter": "Winter"
+        "spring": "Spring Quarter",
+        "summer": "Summer Quarter",
+        "fall": "Fall Quarter",
+        "winter": "Winter Quarter"
     },
     "settings": {
         "periods": "Periods",

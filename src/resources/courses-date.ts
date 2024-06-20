@@ -1,36 +1,3 @@
-const weekday = [
-    {
-        title: 'Monday',
-        value: 1,
-        abbr: 'Mon',
-    },
-    {
-        title: 'Tuesday',
-        value: 2,
-        abbr: 'Tue',
-    },
-    {
-        title: 'Wednesday',
-        value: 3,
-        abbr: 'Wed',
-    },
-    {
-        title: 'Thursday',
-        value: 4,
-        abbr: 'Thu',
-    },
-    {
-        title: 'Friday',
-        value: 5,
-        abbr: 'Fri',
-    },
-    {
-        title: 'Saturday',
-        value: 6,
-        abbr: 'Sat',
-    },
-]
-
 const semester = [
     {
         title: 'All Year',
@@ -89,4 +56,4 @@ const period = [
     },
 ]
 
-export { weekday, semester, period }
+export { semester, period }

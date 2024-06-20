@@ -17,6 +17,7 @@ class CourseNotificationPlugin : Plugin() {
 
     @PluginMethod
     fun start(call: PluginCall) {
+        return // TODO: Implement this method
         try {
             call.data.getJSONArray("periods").run {
                 implementation.setPeriods(this)
@@ -44,6 +45,7 @@ class CourseNotificationPlugin : Plugin() {
 
     @PluginMethod
     fun stop(call: PluginCall) {
+        return // TODO: Implement this method
         val context = activity.applicationContext
         Intent(context, CourseNotificationService::class.java).run {
             action = CourseNotificationService.ACTION_STOP_SERVICE
@@ -54,6 +56,7 @@ class CourseNotificationPlugin : Plugin() {
 
     @PluginMethod
     fun update(call: PluginCall) {
+        return // TODO: Implement this method
         try {
             call.data.getJSONArray("periods").run {
                 implementation.setPeriods(this)

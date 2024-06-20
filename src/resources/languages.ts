@@ -1,14 +1,14 @@
 export const languageOptions = [
     {
         name: '日本語',
-        value: 'ja-JP',
+        value: 'ja',
     },
     {
         name: 'English',
-        value: 'en-US',
+        value: 'en',
     },
     {
         name: '中文',
-        value: 'zh-Hans',
+        value: 'zhHans',
     },
 ]

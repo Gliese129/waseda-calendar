@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { SearchParams } from '@/api/syllabus/course'
-import { semester, period } from '@/assets/courses-date'
+import { semester, period } from '@/resources/courses-date'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'

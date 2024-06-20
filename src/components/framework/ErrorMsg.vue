@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Ref } from 'vue'
 import { inject } from 'vue'
-import type { CustomNotification } from '@/components/plugins/message-alert'
+import type { CustomNotification } from '@/utils/message-alert'
 
 const msgStack = inject<Ref<CustomNotification[]>>('$msgStack')
 </script>
@@ -32,3 +32,4 @@ const msgStack = inject<Ref<CustomNotification[]>>('$msgStack')
     transform: translateY(-30px);
   }
 </style>
+@/utils/message-alert

@@ -1,9 +1,10 @@
 import { key } from '@/store'
-import { computed, defineComponent, h } from 'vue'
+import { computed, defineComponent, h, watch } from 'vue'
 import { VCard, VCardItem, VCardTitle, VCol, VRow, VSelect } from 'vuetify/components'
 import { useStore } from 'vuex'
 import { useLocale } from 'vuetify'
-import { languageOptions } from '@/assets/languages'
+import { languageOptions } from '@/resources/languages'
+import { useRouter } from 'vue-router'
 
 h('div') // This is a placeholder for the JSX function
 
@@ -16,13 +17,14 @@ const searchLanguageOptions = languageOptions
     title: language.name,
     value: language.value,
   }))
-  .filter((language) => ['ja-JP', 'en-US'].includes(language.value))
+  .filter((language) => ['ja', 'en'].includes(language.value))
 
 export default defineComponent({
   name: 'UserInfo',
   setup() {
     const store = useStore(key)
     const { t } = useLocale()
+    const router = useRouter()
 
     const userDepartment = computed({
       get: () => store.state.user.department,
@@ -42,6 +44,12 @@ export default defineComponent({
         value: item.value,
       }))
     )
+    watch(displayLanguage, (value) => {
+      router.push({ name: 'settings', params: { lang: value } })
+      setTimeout(() => {
+        router.go(0)
+      }, 100)
+    })
 
     return () => (
       <VCard class="mx-2">

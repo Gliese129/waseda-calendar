@@ -1,42 +1,54 @@
 import { App } from '@capacitor/app'
 import { Toast } from '@capacitor/toast'
 import { createRouter, createWebHistory } from 'vue-router'
+import LanguageRouter from './components/framework/LanguageRouter.vue'
+import { useLocale } from 'vuetify'
+import { languageOptions } from './resources/languages'
+import { useStore } from 'vuex'
+import { key } from './store'
 
 const routes = [
     {
-        path: '/',
-        component: () => import('./pages/home/index.vue'),
-        name: 'calendar',
-        meta: {},
-    },
-    {
-        path: '/search',
-        component: () => import('@/pages/search/index.vue'),
-        name: 'search',
-        meta: {},
-    },
-    {
-        path: '/my-courses/:keyword?',
-        component: () => import('@/pages/my-courses/index.vue'),
-        name: 'my_courses',
-        meta: {},
-    },
-    {
-        path: '/settings/:subRoute(.*)?',
-        component: () => import('@/pages/settings/index.vue'),
+        path: '/:lang?',
+        component: LanguageRouter,
         children: [
             {
                 path: '',
-                name: 'settings',
-                component: () => import('@/pages/settings/settings.vue'),
+                component: () => import('./pages/home/index.vue'),
+                name: 'calendar',
+                meta: {},
             },
             {
-                path: 'periods',
-                name: 'period_edit',
-                component: () => import('@/pages/settings/sub/period.vue'),
+                path: 'search',
+                component: () => import('@/pages/search/index.vue'),
+                name: 'search',
+                meta: {},
+            },
+            {
+                path: 'my-courses/:keyword?',
+                component: () => import('@/pages/my-courses/index.vue'),
+                name: 'my_courses',
+                meta: {},
+            },
+            {
+                path: 'settings/:subRoute(.*)?',
+                component: () => import('@/pages/settings/index.vue'),
+                children: [
+                    {
+                        path: '',
+                        name: 'settings',
+                        component: () => import('@/pages/settings/settings.vue'),
+                    },
+                    {
+                        path: 'periods',
+                        name: 'period_edit',
+                        component: () => import('@/pages/settings/sub/period.vue'),
+                    },
+                ],
             },
         ],
     },
+
     {
         path: '/start',
         component: () => import('@/pages/start-page/index.tsx'),
@@ -47,6 +59,24 @@ const routes = [
 const router = createRouter({
     history: createWebHistory(),
     routes: routes,
+})
+
+const supportedLangs = languageOptions.map((x) => x.value)
+router.afterEach((to, _) => {
+    const { current } = useLocale()
+    const store = useStore(key)
+
+    const toLang = to.params.lang?.toString()
+    console.log(toLang, current.value)
+
+    if (toLang) {
+        const lang = supportedLangs.includes(toLang) ? toLang : 'en'
+
+        if (current.value !== lang) {
+            store.dispatch('user/setDisplayLanguage', lang)
+            current.value = lang
+        }
+    }
 })
 
 let exitLock = false

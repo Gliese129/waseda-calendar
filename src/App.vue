@@ -54,12 +54,12 @@ if (Capacitor.getPlatform() !== 'web') {
     )
 }
 // i18n
-watch(
-    () => store.state.user.displayLanguage,
-    (locale) => {
-        current.value = locale
-    }
-)
+// watch(
+//     () => store.state.user.displayLanguage,
+//     (locale) => {
+//         current.value = locale
+//     }
+// )
 
 const showNavigator = computed(() => !['Start Page'].includes(route.name as string))
 </script>
@@ -74,11 +74,7 @@ const showNavigator = computed(() => !['Start Page'].includes(route.name as stri
       <ErrorMsg />
 
       <v-container fluid>
-        <router-view v-slot="{ Component }">
-          <KeepAlive include="SearchPage">
-            <component :is="Component" />
-          </KeepAlive>
-        </router-view>
+        <router-view />
       </v-container>
     </v-main>
 
