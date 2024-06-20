@@ -45,11 +45,11 @@ const loadCourse = async (course: Course) => {
       <course-outline :item="item" @click="loadCourse(item)" />
     </template>
     <template #empty>
-      <v-alert color="info" dense> {{ t('searchPage.no_course_warn') }}</v-alert>
+      <v-alert color="info" dense> {{ t('searchPage.noCourseWarning') }}</v-alert>
     </template>
     <template #error>
       <v-alert color="error" dense>
-        {{ t('searchPage.too_many_courses_warn') }}
+        {{ t('searchPage.tooManyCoursesWarning') }}
       </v-alert>
     </template>
     <template #loading>
@@ -61,7 +61,7 @@ const loadCourse = async (course: Course) => {
     </template>
   </v-infinite-scroll>
   <span class="text-sm text-slate-400">
-    {{ t('searchPage.overflow_tip') }}
+    {{ t('searchPage.overflowTip') }}
   </span>
 
   <v-dialog v-model="dialogActive" fullscreen>

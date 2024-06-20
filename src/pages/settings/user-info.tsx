@@ -16,7 +16,7 @@ const searchLanguageOptions = languageOptions
     title: language.name,
     value: language.value,
   }))
-  .filter((language) => ['ja_jp', 'en_us'].includes(language.value))
+  .filter((language) => ['ja-JP', 'en-US'].includes(language.value))
 
 export default defineComponent({
   name: 'UserInfo',
@@ -26,15 +26,15 @@ export default defineComponent({
 
     const userDepartment = computed({
       get: () => store.state.user.department,
-      set: (value: string) => store.commit('user/setDepartment', value),
+      set: (value: string) => store.dispatch('user/setDepartment', value),
     })
     const displayLanguage = computed({
       get: () => store.state.user.displayLanguage,
-      set: (value: string) => store.commit('user/setDisplayLanguage', value),
+      set: (value: string) => store.dispatch('user/setDisplayLanguage', value),
     })
     const searchLanguage = computed({
       get: () => store.state.user.searchLanguage,
-      set: (value: string) => store.commit('user/setSearchLanguage', value),
+      set: (value: string) => store.dispatch('user/setSearchLanguage', value),
     })
     const departments = computed(() =>
       store.state.syllabus.departments.map((item) => ({

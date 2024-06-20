@@ -1,0 +1,74 @@
+{
+    "navigation": {
+        "calendar": "日历",
+        "search": "搜索",
+        "my_courses": "我的课程",
+        "settings": "设置",
+        "period_edit": "时段编辑",
+        "start": "开始"
+    },
+    "form": {
+        "name": "课程名称",
+        "code": "代码",
+        "keyword": "关键词",
+        "semester": "学期",
+        "weekday": "星期几",
+        "period": "时段",
+        "department": "部门",
+        "campus": "校区",
+        "teachers": "教师",
+        "displayLanguage": "显示语言",
+        "searchLanguage": "搜索语言",
+        "periodStart": "时段开始",
+        "periodEnd": "时段结束",
+        "classroom": "教室",
+        "textbook": "教材",
+        "credits": "学分"
+    },
+    "searchPage": {
+        "semesterColor": "学期颜色",
+        "overflowTip": "提示：由于大小限制，仅显示第一个教师和时段",
+        "tooManyCoursesWarning": "课程太多，请使用更严格的搜索条件",
+        "noCourseWarning": "未找到课程"
+    },
+    "semester": {
+        "spring": "春季学期",
+        "summer": "夏季学期",
+        "fall": "秋季学期",
+        "winter": "冬季学期"
+    },
+    "settings": {
+        "periods": "时段",
+        "periodsDescription": "设置你的时段",
+        "courseNotification": "课程通知",
+        "courseNotificationDescription": "获取当前课程的通知",
+        "clearCache": "清除缓存",
+        "clearCacheDescription": "如果遇到问题，请尝试此操作"
+    },
+    "settingGroup": {
+        "schedule": "日程",
+        "general": "通用",
+        "dangerZone": "危险区",
+        "beta": "测试功能"
+    },
+    "notification": {
+        "cacheCleared": "缓存已清除",
+        "initFinished": "恭喜！你已完成设置。",
+        "noCourseFoundTitle": "糟糕，什么也没找到",
+        "noCourseFoundContent": "也许你需要先添加一些课程"
+    },
+    "description": {
+        "syllabusRaw": "教学大纲原始内容",
+        "notSet": "未设置"
+    },
+    "action": {
+        "edit": "编辑",
+        "delete": "删除",
+        "cancel": "取消",
+        "save": "保存",
+        "add": "添加",
+        "reset": "重置",
+        "search": "搜索",
+        "deleteEmpty": "删除空项"
+    }
+}

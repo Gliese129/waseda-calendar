@@ -37,7 +37,7 @@ export default defineComponent({
         icon: 'mdi-delete',
         action: async () => {
           await store.dispatch('syllabus/forceRefresh')
-          $message(t('notifications.cacheCleared'), 'success')
+          $message(t('notification.cacheCleared'), 'success')
         },
       },
     ])

@@ -1,0 +1,74 @@
+{
+    "navigation": {
+        "calendar": "カレンダー",
+        "search": "検索",
+        "my_courses": "私のコース",
+        "settings": "設定",
+        "period_edit": "時限編集",
+        "start": "開始"
+    },
+    "form": {
+        "name": "コース名",
+        "code": "コード",
+        "keyword": "キーワード",
+        "semester": "学期",
+        "weekday": "曜日",
+        "period": "時限",
+        "department": "部門",
+        "campus": "キャンパス",
+        "teachers": "教師",
+        "displayLanguage": "表示言語",
+        "searchLanguage": "検索言語",
+        "periodStart": "時限開始",
+        "periodEnd": "時限終了",
+        "classroom": "教室",
+        "textbook": "教科書",
+        "credits": "単位"
+    },
+    "searchPage": {
+        "semesterColor": "学期の色",
+        "overflowTip": "ヒント：サイズ制限のため、最初の教師と時限のみ表示されます",
+        "tooManyCoursesWarning": "コースが多すぎます。より厳密な検索条件を使用してください",
+        "noCourseWarning": "コースが見つかりません"
+    },
+    "semester": {
+        "spring": "春クォーター",
+        "summer": "夏クォーター",
+        "fall": "秋クォーター",
+        "winter": "冬クォーター"
+    },
+    "settings": {
+        "periods": "時限",
+        "periodsDescription": "時限を設定します",
+        "courseNotification": "コース通知",
+        "courseNotificationDescription": "現在のコースの通知を受け取る",
+        "clearCache": "キャッシュをクリア",
+        "clearCacheDescription": "問題がある場合は、これを試してください"
+    },
+    "settingGroup": {
+        "schedule": "スケジュール",
+        "general": "一般",
+        "dangerZone": "危険ゾーン",
+        "beta": "ベータ機能"
+    },
+    "notification": {
+        "cacheCleared": "キャッシュがクリアされました",
+        "initFinished": "おめでとうございます！設定が完了しました。",
+        "noCourseFoundTitle": "おっと、何も見つかりませんでした",
+        "noCourseFoundContent": "最初にいくつかのコースを追加する必要があるかもしれません"
+    },
+    "description": {
+        "syllabusRaw": "シラバスの生の内容",
+        "notSet": "未設定"
+    },
+    "action": {
+        "edit": "編集",
+        "delete": "削除",
+        "cancel": "キャンセル",
+        "save": "保存",
+        "add": "追加",
+        "reset": "リセット",
+        "search": "検索",
+        "deleteEmpty": "空を削除"
+    }
+}

@@ -155,7 +155,7 @@ export default defineComponent({
                   // @ts-ignore-next-line
                   onTrigger={() =>
                     router.push({
-                      name: 'Search',
+                      name: 'search',
                       query: { weekday: day, period: (periodIndex + 1) * 11 },
                     })
                   }
@@ -173,7 +173,7 @@ export default defineComponent({
                 // @ts-ignore-next-line
                 onTrigger={() =>
                   router.push({
-                    name: 'My Courses',
+                    name: 'my_courses',
                     params: { keyword: course.code },
                   })
                 }

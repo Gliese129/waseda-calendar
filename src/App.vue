@@ -10,9 +10,11 @@ import { watch } from 'vue'
 import courseNotification from '@/native/tasks/course-notification'
 import { useRoute, useRouter } from 'vue-router'
 import { Capacitor } from '@capacitor/core'
+import { useLocale } from 'vuetify'
 const route = useRoute()
 const router = useRouter()
 const store = useStore(key)
+const { current } = useLocale()
 
 onMounted(async () => {
     console.log('App mounted')
@@ -26,6 +28,9 @@ onMounted(async () => {
     await store.dispatch('syllabus/refresh')
     console.log(store.state.syllabus.periods)
     store.dispatch('calendar/init', store.state.syllabus.holidays)
+
+    // set language
+    current.value = store.state.user.displayLanguage
 })
 
 // course notification
@@ -48,6 +53,13 @@ if (Capacitor.getPlatform() !== 'web') {
         { immediate: true, deep: true }
     )
 }
+// i18n
+watch(
+    () => store.state.user.displayLanguage,
+    (locale) => {
+        current.value = locale
+    }
+)
 
 const showNavigator = computed(() => !['Start Page'].includes(route.name as string))
 </script>

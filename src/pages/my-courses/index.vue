@@ -75,7 +75,7 @@ defineOptions({
   <v-row class="m-auto">
     <v-text-field
       v-model="keyword"
-      label="Course Name or Code"
+      :label="t('form.name') + '/' + t('form.code')"
       outlined
       dense
       clearable
@@ -95,8 +95,8 @@ defineOptions({
       ></course-outline>
     </div>
     <v-alert v-else type="info" @click="router.push('/search')">
-      <template #title> Oops, we found nothing </template>
-      <template #text> Maybe you need to add some courses first </template>
+      <template #title> {{ t('notification.noCourseFoundTitle') }} </template>
+      <template #text> {{ t('notification.noCourseFoundContent') }} </template>
     </v-alert>
   </v-row>
   <v-dialog v-model="dialogActive" fullscreen>
@@ -108,7 +108,9 @@ defineOptions({
         @close="dialogActive = false"
       >
         <template #extra-actions>
-          <v-btn variant="text" color="red" @click="deleteCourse">Delete</v-btn>
+          <v-btn variant="text" color="red" @click="deleteCourse">{{
+            t('action.delete')
+          }}</v-btn>
         </template>
       </course-edit>
     </v-card>

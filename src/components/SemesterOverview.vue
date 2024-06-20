@@ -31,7 +31,6 @@ const semesterColor = [
 
 <template>
   <div v-if="props.intro">
-    Semester color:
     <div v-for="semester in semesterColor" :key="semester.name" class="mx-2 inline-block">
       <v-chip :color="semester.color">
         {{ semester.name }}

@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import type { SearchParams } from '@/api/syllabus/course'
-import { weekday, semester, period } from '@/assets/courses-date'
+import { semester, period } from '@/assets/courses-date'
 import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import { useLocale } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 
 const emit = defineEmits(['search', 'clear'])
 const store = useStore(key)
 const { t } = useLocale()
+const { d } = useI18n()
 
 const form = defineModel<SearchParams>()
 
@@ -23,6 +25,12 @@ const departments = computed(() =>
         title: item.name,
         value: item.value,
     }))
+)
+const weekday = computed(() =>
+    Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(0, 0, i)
+        return { title: d(date, 'weekdayLong'), value: i }
+    }).filter((item) => item.value !== 0)
 )
 </script>
 
@@ -113,10 +121,10 @@ const departments = computed(() =>
 
       <v-row>
         <v-col cols="6">
-          <v-btn color="error" @click="clearForm">{{ t('form.reset') }}</v-btn>
+          <v-btn color="error" @click="clearForm">{{ t('action.reset') }}</v-btn>
         </v-col>
         <v-col cols="6">
-          <v-btn color="primary" @click="$emit('search')">{{ t('form.search') }}</v-btn>
+          <v-btn color="primary" @click="$emit('search')">{{ t('action.search') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>

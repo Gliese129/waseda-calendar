@@ -9,21 +9,27 @@
     },
     "form": {
         "name": "Name",
+        "code": "Code",
         "keyword": "Keyword",
         "semester": "Semester",
         "weekday": "Weekday",
         "period": "Period",
         "department": "Department",
-        "reset": "Reset",
-        "search": "Search",
+        "campus": "Campus",
+        "teachers": "Teachers",
         "displayLanguage": "Display Language",
-        "searchLanguage": "Search Language"
+        "searchLanguage": "Search Language",
+        "periodStart": "Period Start",
+        "periodEnd": "Period End",
+        "classroom": "Classroom",
+        "textbook": "Textbook",
+        "credits": "Credits"
     },
     "searchPage": {
-        "semester_color": "Semester Color",
-        "overflow_tip": "Tip: due to the size limit, only the first teacher and period will be shown",
-        "too_many_courses_warn": "Too many courses, please use stricter search criteria",
-        "no_course_warn": "No course found"
+        "semesterColor": "Semester Color",
+        "overflowTip": "Tip: due to the size limit, only the first teacher and period will be shown",
+        "tooManyCoursesWarning": "Too many courses, please use stricter search criteria",
+        "noCourseWarning": "No course found"
     },
     "semester": {
         "spring": "Spring",
@@ -45,10 +51,24 @@
         "dangerZone": "Danger Zone",
         "beta": "Beta Features"
     },
-    "notifications": {
-        "cacheCleared": "Cache cleared"
+    "notification": {
+        "cacheCleared": "Cache cleared",
+        "initFinished": "Congratulations! You have completed the setup.",
+        "noCourseFoundTitle": "Oops, we found nothing",
+        "noCourseFoundContent": "Maybe you need to add some courses first"
     },
     "description": {
-        "syllabusRaw": "Syllabus Raw Content"
+        "syllabusRaw": "Syllabus Raw Content",
+        "notSet": "Not Set"
+    },
+    "action": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "save": "Save",
+        "add": "Add",
+        "reset": "Reset",
+        "search": "Search",
+        "deleteEmpty": "Delete Empty"
     }
 }

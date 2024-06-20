@@ -5,6 +5,8 @@ import { watch } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import SemesterOverview from '@/components/SemesterOverview.vue'
+import { useLocale } from 'vuetify'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps({
     edit: {
@@ -13,6 +15,8 @@ const props = defineProps({
     },
 })
 const emits = defineEmits(['afterSave', 'close'])
+const { t } = useLocale()
+const { d } = useI18n()
 const $message = inject<Function>('$message') as Function
 const store = useStore(key)
 
@@ -41,9 +45,6 @@ const reset = () => {
     Course.deepCopy(course, origin.value || ({} as any))
 }
 
-const showDay = (day: number) => {
-    return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day]
-}
 const showPeriod = (startPeriod: number, endPeriod: number) => {
     if (startPeriod === endPeriod) return `${startPeriod}`
     return `${startPeriod}-${endPeriod}`
@@ -78,6 +79,17 @@ const openInNew = (url: string | undefined) => {
     if (!url) return
     window.open(url, '_blank')
 }
+const weekdays = computed(() =>
+    Array.from({ length: 7 }, (_) => new Date())
+        .map((d, i) => {
+            // adjust to weekdays
+            const weekday = d.getDay()
+            const offset = weekday - i
+            return new Date(d.getTime() - offset * 24 * 60 * 60 * 1000)
+        })
+        .filter((d) => d.getDay() !== 0)
+        .map((weekday) => d(weekday, 'weekday'))
+)
 </script>
 
 <template>
@@ -99,7 +111,7 @@ const openInNew = (url: string | undefined) => {
   <v-expansion-panels elevation="1" class="w-full mb-5">
     <v-expansion-panel>
       <v-expansion-panel-title class="py-1">
-        <p>Syllabus Raw Content</p>
+        <p>{{ t('description.syllabusRaw') }}</p>
         <v-btn
           class="ml-1"
           variant="text"
@@ -119,7 +131,7 @@ const openInNew = (url: string | undefined) => {
         <v-text-field
           v-model="course.name"
           prepend-icon="mdi-rename-box-outline"
-          label="Name"
+          :label="t('form.name')"
           variant="solo"
           density="comfortable"
           :readonly="!props.edit"
@@ -132,7 +144,7 @@ const openInNew = (url: string | undefined) => {
           v-model="course.department"
           :items="departments"
           prepend-icon="mdi-school-outline"
-          label="Department"
+          :label="t('form.department')"
           variant="solo"
           density="comfortable"
         ></v-select>
@@ -141,7 +153,7 @@ const openInNew = (url: string | undefined) => {
         <v-text-field
           v-model="course.campus"
           prepend-icon="mdi-map-marker-outline"
-          label="Campus"
+          :label="t('form.campus')"
           variant="solo"
           density="comfortable"
         ></v-text-field>
@@ -151,9 +163,8 @@ const openInNew = (url: string | undefined) => {
       <v-col cols="12">
         <v-combobox
           v-model="course.teachers"
-          :items="[]"
           prepend-icon="mdi-account-outline"
-          label="Teachers"
+          :label="t('form.teachers')"
           chips
           multiple
         ></v-combobox>
@@ -172,11 +183,11 @@ const openInNew = (url: string | undefined) => {
         >
           <v-expansion-panel-title class="py-1">
             <div>
-              <span class="font-bold mr-4"> Period {{ index + 1 }} </span>
+              <span class="font-bold mr-4"> {{ t('form.period') }} {{ index + 1 }} </span>
               <span v-if="tp.day !== -1">
-                {{ showDay(tp.day) }} {{ showPeriod(tp.period[0], tp.period[1]) }}
+                {{ d(tp.day, 'weekday') }} {{ showPeriod(tp.period[0], tp.period[1]) }}
               </span>
-              <span v-else> Not set </span>
+              <span v-else> {{ t('description.notSet') }} </span>
             </div>
 
             <template v-slot:actions>
@@ -186,20 +197,20 @@ const openInNew = (url: string | undefined) => {
                 @click.stop="course.schedules.splice(index, 1)"
               >
                 <v-icon>mdi-delete</v-icon>
-                del
+                {{ t('action.delete') }}
               </v-btn>
             </template>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-row>
               <v-checkbox
-                v-for="(quarter, index) in ['Spring', 'Summer', 'Fall', 'Winter']"
+                v-for="(semester, index) in ['spring', 'summer', 'fall', 'winter']"
                 :key="index"
                 v-model="tp.semester"
                 class="mx-auto"
                 hide-details
                 :value="index"
-                :label="quarter"
+                :label="t(`semester.${semester}`)"
                 @update:model-value="tp.semester.sort((a, b) => a - b)"
               ></v-checkbox>
             </v-row>
@@ -212,21 +223,22 @@ const openInNew = (url: string | undefined) => {
                 density="compact"
               >
                 <v-btn
-                  v-for="(day, index) in [1, 2, 3, 4, 5, 6]"
+                  v-for="(weekday, index) in weekdays"
                   :key="index"
-                  :value="day"
+                  :value="index + 1"
+                  size="small"
+                  :text="weekday"
                 >
-                  {{ showDay(day) }}
                 </v-btn>
               </v-btn-toggle>
             </v-row>
             <v-row>
-              <v-col cols="6" class="flex">
+              <v-col cols="7" class="flex">
                 <v-icon class="m-auto">mdi-clock-time-four-outline</v-icon>
 
                 <v-number-input
                   v-model="tp.period[0]"
-                  label="Start"
+                  :label="t('form.periodStart')"
                   variant="solo"
                   density="compact"
                   control-variant="stacked"
@@ -240,7 +252,7 @@ const openInNew = (url: string | undefined) => {
                 </v-number-input>
                 <v-number-input
                   v-model="tp.period[1]"
-                  label="End"
+                  :label="t('form.periodEnd')"
                   variant="solo"
                   density="compact"
                   control-variant="stacked"
@@ -257,7 +269,7 @@ const openInNew = (url: string | undefined) => {
                 <v-text-field
                   v-model="tp.classroom"
                   prepend-icon="mdi-door"
-                  label="Room"
+                  :label="t('form.classroom')"
                   variant="solo"
                   density="compact"
                   hide-details
@@ -269,13 +281,13 @@ const openInNew = (url: string | undefined) => {
         <v-expansion-panel readonly>
           <v-expansion-panel-title class="py-1 flex justify-around">
             <v-btn color="orange" prepend-icon="mdi-delete" @click.stop="deleteEmpty">
-              Delete Empty
+              {{ t('action.deleteEmpty') }}
             </v-btn>
 
             <template v-slot:actions>
               <v-btn color="blue" @click.stop="addPeriod">
                 <v-icon>mdi-plus</v-icon>
-                Add
+                {{ t('action.add') }}
               </v-btn>
             </template>
           </v-expansion-panel-title>
@@ -286,7 +298,7 @@ const openInNew = (url: string | undefined) => {
       <v-col cols="4">
         <v-number-input
           v-model="course.credits"
-          label="Credits"
+          :label="t('form.credits')"
           variant="solo"
           density="compact"
           control-variant="stacked"
@@ -297,7 +309,7 @@ const openInNew = (url: string | undefined) => {
       <v-col cols="8">
         <v-text-field
           v-model="course.textbook"
-          label="Textbook"
+          :label="t('form.textbook')"
           variant="solo"
           density="compact"
           clearable

@@ -18,29 +18,46 @@ import 'virtual:uno.css'
 import { createVueI18nAdapter } from 'vuetify/locale/adapters/vue-i18n'
 // @ts-ignore-next-line
 import { createI18n, useI18n } from 'vue-i18n'
-import { en } from 'vuetify/locale'
+import { en, ja, zhHans } from 'vuetify/locale'
 
 import enUs from './locales/en.json'
+import jaJp from './locales/ja.json'
+import zh_Hans from './locales/zhHans.json'
 
-type MessageSchema = typeof enUs
+type MessageSchema = typeof enUs & {
+    $vuetify: typeof en
+}
 
 // Plugins
 import { globalNotifyPlugin } from '@/components/plugins/message-alert'
 
-const i18n = createI18n<[MessageSchema], 'en' | 'ja' | 'zhHans'>({
+const i18n = createI18n<[MessageSchema], 'en-US' | 'ja-JP' | 'zh-Hans'>({
     legacy: false,
-    locale: 'en',
-    fallbackLocale: 'en',
+    locale: 'en-US',
+    fallbackLocale: 'en-US',
+
     messages: {
-        en: {
+        'en-US': {
             $vuetify: {
                 ...en,
             },
             ...enUs,
         },
+        'ja-JP': {
+            $vuetify: {
+                ...ja,
+            },
+            ...jaJp,
+        },
+        'zh-Hans': {
+            $vuetify: {
+                ...zhHans,
+            },
+            ...zh_Hans,
+        },
     },
     datetimeFormats: {
-        en: {
+        'en-US': {
             short: {
                 year: 'numeric',
                 month: 'short',
@@ -56,6 +73,59 @@ const i18n = createI18n<[MessageSchema], 'en' | 'ja' | 'zhHans'>({
             },
             weekday: {
                 weekday: 'short',
+            },
+            weekdayLong: {
+                weekday: 'long',
+            },
+            date: {
+                month: 'numeric',
+                day: 'numeric',
+            },
+        },
+        'ja-JP': {
+            short: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            },
+            long: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                weekday: 'short',
+                hour: 'numeric',
+                minute: 'numeric',
+            },
+            weekday: {
+                weekday: 'short',
+            },
+            weekdayLong: {
+                weekday: 'long',
+            },
+            date: {
+                month: 'numeric',
+                day: 'numeric',
+            },
+        },
+        'zh-Hans': {
+            short: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            },
+            long: {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                weekday: 'short',
+                hour: 'numeric',
+                minute: 'numeric',
+            },
+            weekday: {
+                weekday: 'short',
+            },
+            weekdayLong: {
+                weekday: 'long',
             },
             date: {
                 month: 'numeric',
@@ -76,6 +146,7 @@ const vuetify = createVuetify({
         mobileBreakpoint: 'sm',
     },
     locale: {
+    // @ts-ignore-next-line
         adapter: createVueI18nAdapter({ i18n, useI18n }),
     },
 })

@@ -12,6 +12,7 @@ import {
 } from 'vuetify/components'
 import { useRouter } from 'vue-router'
 import { languageOptions } from '@/assets/languages'
+import { useLocale } from 'vuetify'
 
 h('div') // This is a placeholder for the JSX function
 
@@ -20,6 +21,7 @@ export default defineComponent({
   setup() {
     const store = useStore(key)
     const router = useRouter()
+    const { t } = useLocale()
 
     const departments = computed(() =>
       store.state.syllabus.departments.map(
@@ -61,20 +63,20 @@ export default defineComponent({
             info.department = val
           }}
           items={departments.value}
-          label="Department"
+          label={t('form.department')}
         ></VSelect>
         <VSelect
           modelValue={info.displayLanguages}
           items={languages}
-          label="Display Language"
+          label={t('form.displayLanguage')}
         ></VSelect>
         <VSelect
           modelValue={info.searchLanguages}
           items={languages}
-          label="Search Language"
+          label={t('form.searchLanguage')}
         ></VSelect>
       </div>,
-      <VAlert type="success">Congratulations! You have completed the setup.</VAlert>,
+      <VAlert type="success">{t('notification.initFinished')}</VAlert>,
     ])
 
     return () => (
