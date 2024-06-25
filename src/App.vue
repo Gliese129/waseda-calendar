@@ -7,30 +7,66 @@ import { useStore } from 'vuex'
 import { key } from '@/store'
 import { watch } from 'vue'
 
+import { App } from '@capacitor/app'
 import courseNotification from '@/native/tasks/course-notification'
 import { useRoute, useRouter } from 'vue-router'
 import { Capacitor } from '@capacitor/core'
 import { useLocale } from 'vuetify'
+import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite'
+import { JeepSqlite } from 'jeep-sqlite/dist/components/jeep-sqlite'
+import useSQLiteDB from './utils/sqlite'
+
 const route = useRoute()
 const router = useRouter()
 const store = useStore(key)
 const { current } = useLocale()
 
 onMounted(async () => {
-    console.log('App mounted')
-    await store.dispatch('user/init')
+    await store.dispatch('syllabus/refresh')
+
+    try {
+        // init sqlite
+
+        const platform = Capacitor.getPlatform()
+        console.log('Platform: ', platform)
+        // specify webSQLite for browser
+        if (platform === 'web') {
+            const sqlite = new SQLiteConnection(CapacitorSQLite)
+
+            customElements.define('jeep-sqlite', JeepSqlite)
+            const jeepSqliteEl = document.createElement('jeep-sqlite')
+            document.body.appendChild(jeepSqliteEl)
+            await customElements.whenDefined('jeep-sqlite')
+
+            await sqlite.initWebStore()
+            console.log('SQLite web initialized')
+        }
+        const { initialized, performSQLAction } = await useSQLiteDB()
+        if (!initialized.value) {
+            console.log('Initializing SQLite')
+        }
+
+        await store.dispatch('user/init', performSQLAction)
+        await store.dispatch('calendar/init', performSQLAction)
+    } catch (e) {
+        console.error(e)
+    }
+
+    // set language
+    current.value = store.state.user.displayLanguage
 
     // check if is the first time
     if (store.state.user.firstLogin) {
         router.replace('/start')
     }
+})
 
-    await store.dispatch('syllabus/refresh')
-    console.log(store.state.syllabus.periods)
-    store.dispatch('calendar/init', store.state.syllabus.holidays)
-
-    // set language
-    current.value = store.state.user.displayLanguage
+// save before unmounted or app closed
+App.addListener('appStateChange', async (state) => {
+    if (!state.isActive) {
+        const { performSQLAction } = await useSQLiteDB()
+        await store.dispatch('user/saveToDB', performSQLAction)
+    }
 })
 
 // course notification
@@ -61,7 +97,7 @@ if (Capacitor.getPlatform() !== 'web') {
 //     }
 // )
 
-const showNavigator = computed(() => !['Start Page'].includes(route.name as string))
+const showNavigator = computed(() => !['start'].includes(route.name as string))
 </script>
 
 <template>

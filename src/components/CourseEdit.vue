@@ -7,6 +7,7 @@ import { key } from '@/store'
 import SemesterOverview from '@/components/SemesterOverview.vue'
 import { useLocale } from 'vuetify'
 import { useI18n } from 'vue-i18n'
+import useSQLiteDB from '@/utils/sqlite'
 
 const props = defineProps({
     edit: {
@@ -52,15 +53,23 @@ const showPeriod = (startPeriod: number, endPeriod: number) => {
 
 const save = async () => {
     try {
+        const { performSQLAction } = await useSQLiteDB()
         if (props.edit) {
-            await store.dispatch('calendar/deleteCourse', origin.value)
+            await store.dispatch('calendar/deleteCourse', {
+                course: origin.value,
+                $sqlite: performSQLAction,
+            })
         }
-        await store.dispatch('calendar/addCourse', course)
+        await store.dispatch('calendar/addCourse', {
+            course: origin.value,
+            $sqlite: performSQLAction,
+        })
 
         emits('afterSave')
         $message('Saved successfully', 'success')
     } catch (e: any) {
         $message(e.message, 'warning')
+        console.warn(e)
     }
 }
 const addPeriod = () => {

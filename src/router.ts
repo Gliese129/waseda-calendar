@@ -67,13 +67,12 @@ router.afterEach((to, _) => {
     const store = useStore(key)
 
     const toLang = to.params.lang?.toString()
-    console.log(toLang, current.value)
 
     if (toLang) {
         const lang = supportedLangs.includes(toLang) ? toLang : 'en'
 
         if (current.value !== lang) {
-            store.dispatch('user/setDisplayLanguage', lang)
+            store.commit('user/setDisplayLanguage', lang)
             current.value = lang
         }
     }

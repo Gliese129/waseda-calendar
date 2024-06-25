@@ -2,7 +2,8 @@
  * This store contains states of user
  */
 
-import { getLocal, saveLocal } from '@/utils/storage'
+import { getUserInfoQuery, updateUserInfoQuery } from '@/database/user'
+import type { SQLiteAction } from '@/utils/sqlite'
 
 export interface UserState {
     displayLanguage: string
@@ -11,8 +12,6 @@ export interface UserState {
     department: string
     firstLogin: boolean
 }
-
-const baseFolder = 'user/'
 
 export const userStore = {
     state: {
@@ -40,39 +39,38 @@ export const userStore = {
         },
     },
     actions: {
-        setDisplayLanguage({ commit }: { commit: any }, displayLanguage: string) {
-            commit('setDisplayLanguage', displayLanguage)
-            saveLocal(baseFolder + 'displayLanguage', displayLanguage)
-        },
-        setSearchLanguage({ commit }: { commit: any }, searchLanguage: string) {
-            commit('setSearchLanguage', searchLanguage)
-            saveLocal(baseFolder + 'searchLanguage', searchLanguage)
-        },
-        setCourseNotification({ commit }: { commit: any }, coursePush: boolean) {
-            commit('setCourseNotification', coursePush)
-            saveLocal(baseFolder + 'coursePush', coursePush)
-        },
-        setDepartment({ commit }: { commit: any }, department: string) {
-            commit('setDepartment', department)
-            saveLocal(baseFolder + 'department', department)
-        },
-        setFirstLogin({ commit }: { commit: any }, firstLogin: boolean) {
-            commit('setFirstLogin', firstLogin)
-            saveLocal(baseFolder + 'firstLogin', firstLogin)
+        async saveToDB({ state }: { state: UserState }, $sqlite: SQLiteAction) {
+            await $sqlite(async (db) => {
+                await db.run(updateUserInfoQuery, [
+                    state.displayLanguage,
+                    state.searchLanguage,
+                    state.courseNotification ? 1 : 0,
+                    state.department,
+                    0,
+                ])
+            })
         },
 
-        async init({ commit }: { commit: any }) {
-            let displayLanguage = (await getLocal(baseFolder + 'displayLanguage')) ?? 'ja_jp'
-            let searchLanguage = (await getLocal(baseFolder + 'searchLanguage')) ?? 'ja_jp'
-            let coursePush = (await getLocal(baseFolder + 'coursePush')) ?? false
-            let department = (await getLocal(baseFolder + 'department')) ?? ''
-            let firstLogin = (await getLocal(baseFolder + 'firstLogin')) ?? true
-
-            commit('setDisplayLanguage', displayLanguage)
-            commit('setSearchLanguage', searchLanguage)
-            commit('setCourseNotification', coursePush)
-            commit('setDepartment', department)
-            commit('setFirstLogin', firstLogin)
+        async init({ commit }: { commit: any }, $sqlite: SQLiteAction) {
+            await $sqlite(async (db) => {
+                const result = (await db.query(getUserInfoQuery)).values
+                if (result) {
+                    const {
+                        course_notification,
+                        department,
+                        display_language,
+                        first_login,
+                        search_language,
+                    } = result[0]
+                    commit('setDisplayLanguage', display_language)
+                    commit('setSearchLanguage', search_language)
+                    commit('setCourseNotification', course_notification ? true : false)
+                    commit('setDepartment', department)
+                    commit('setFirstLogin', first_login ? true : false)
+                } else {
+                    throw new Error('User not found')
+                }
+            })
         },
     },
 }

@@ -23,7 +23,7 @@ export default defineComponent({
     const router = useRouter()
     const { t } = useLocale()
 
-    const departments = computed(() =>
+    const departmentOptions = computed(() =>
       store.state.syllabus.departments.map(
         (department: { name: string; value: string }) => ({
           title: department.name,
@@ -41,18 +41,18 @@ export default defineComponent({
     const submit = () => {
       step.value++
       if (step.value >= components.value.length) {
-        store.dispatch('user/setDepartment', info.department)
-        store.dispatch('user/setFirstLogin', false)
-        store.dispatch('user/setDisplayLanguage', info.displayLanguages)
-        store.dispatch('user/setSearchLanguage', info.searchLanguages)
+        store.commit('user/setDepartment', info.department)
+        store.commit('user/setFirstLogin', false)
+        store.commit('user/setDisplayLanguage', info.displayLanguages)
+        store.commit('user/setSearchLanguage', info.searchLanguages)
         router.push('/')
       }
     }
 
     const info = reactive({
       department: '',
-      displayLanguages: 'ja_jp',
-      searchLanguages: 'ja_jp',
+      displayLanguages: 'ja',
+      searchLanguages: 'ja',
     })
 
     const components = computed(() => [
@@ -62,7 +62,7 @@ export default defineComponent({
           onUpdate:modelValue={(val) => {
             info.department = val
           }}
-          items={departments.value}
+          items={departmentOptions.value}
           label={t('form.department')}
         ></VSelect>
         <VSelect
@@ -83,7 +83,7 @@ export default defineComponent({
       <VCard
         class="mx-auto my-50 p-3"
         elevation="8"
-        loading={departments.value.length === 0}
+        loading={departmentOptions.value.length === 0}
         width="80vw"
       >
         <VForm fast-fail class="flex flex-col">

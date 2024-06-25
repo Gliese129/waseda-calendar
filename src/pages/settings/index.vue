@@ -1,4 +1,25 @@
 <script setup lang="ts">
+import { key } from '@/store'
+import useSQLiteDB from '@/utils/sqlite'
+import { onMounted, ref, watch } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore(key)
+const $sqlite = ref()
+
+onMounted(async () => {
+    const { performSQLAction } = await useSQLiteDB()
+    $sqlite.value = performSQLAction
+})
+
+watch(
+    () => store.state.user,
+    () => {
+        store.dispatch('user/saveToDB', $sqlite.value)
+    },
+    { deep: true }
+)
+
 defineOptions({
     name: 'SettingsPage',
 })

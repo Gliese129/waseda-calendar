@@ -4,6 +4,7 @@ import { key } from '@/store'
 import { ref } from 'vue'
 import { inject } from 'vue'
 import { SimpleTime } from '@/model/date'
+import useSQLiteDB from '@/utils/sqlite'
 
 const store = useStore(key)
 const $message = inject<Function>('$message') as Function
@@ -69,7 +70,11 @@ const update = async () => {
         )
             throw new Error(`End time should be smaller then next start time`)
         // passed
-        store.dispatch('calendar/setPeriods', periods.value)
+        const { performSQLAction } = await useSQLiteDB()
+        store.dispatch('calendar/setPeriods', {
+            periods: periods.value,
+            $sqlite: performSQLAction,
+        })
         $message('Periods Updated', 'success')
     } catch (e: any) {
         console.log(e)

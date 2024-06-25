@@ -9,8 +9,8 @@ const config: CapacitorConfig = {
             enabled: true,
         },
         BackgroundRunner: {},
+        CapacitorSQLite: {},
     },
-    bundledWebRuntime: true,
 }
 
 export default config

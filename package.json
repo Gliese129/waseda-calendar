@@ -9,6 +9,7 @@
         "preview": "vite preview"
     },
     "dependencies": {
+        "@capacitor-community/sqlite": "^6.0.1",
         "@capacitor/android": "^6.0.0",
         "@capacitor/app": "^6.0.0",
         "@capacitor/core": "^6.0.0",
@@ -22,6 +23,7 @@
         "axios": "^1.6.8",
         "cheerio": "^1.0.0-rc.12",
         "dom-parser": "^1.1.5",
+        "jeep-sqlite": "^2.7.2",
         "vue": "^3.4.21",
         "vue-i18n": "9",
         "vue-router": "4",

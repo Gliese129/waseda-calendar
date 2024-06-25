@@ -28,15 +28,15 @@ export default defineComponent({
 
     const userDepartment = computed({
       get: () => store.state.user.department,
-      set: (value: string) => store.dispatch('user/setDepartment', value),
+      set: (value: string) => store.commit('user/setDepartment', value),
     })
     const displayLanguage = computed({
       get: () => store.state.user.displayLanguage,
-      set: (value: string) => store.dispatch('user/setDisplayLanguage', value),
+      set: (value: string) => store.commit('user/setDisplayLanguage', value),
     })
     const searchLanguage = computed({
       get: () => store.state.user.searchLanguage,
-      set: (value: string) => store.dispatch('user/setSearchLanguage', value),
+      set: (value: string) => store.commit('user/setSearchLanguage', value),
     })
     const departments = computed(() =>
       store.state.syllabus.departments.map((item) => ({
