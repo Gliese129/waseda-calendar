@@ -1,4 +1,4 @@
-import { defineComponent, ref, computed, reactive, h, Transition } from 'vue'
+import { defineComponent, ref, computed, reactive, h, Transition, watch } from 'vue'
 import { useStore } from 'vuex'
 import { key } from '@/store'
 import {
@@ -41,13 +41,12 @@ export default defineComponent({
     const submit = () => {
       step.value++
       if (step.value >= components.value.length) {
-        store.commit('user/setDepartment', info.department)
         store.commit('user/setFirstLogin', false)
-        store.commit('user/setDisplayLanguage', info.displayLanguages)
-        store.commit('user/setSearchLanguage', info.searchLanguages)
         router.push('/')
       }
     }
+
+    const { current } = useLocale()
 
     const info = reactive({
       department: '',
@@ -55,25 +54,44 @@ export default defineComponent({
       searchLanguages: 'ja',
     })
 
+    watch(
+      () => info.displayLanguages,
+      (val) => {
+        current.value = val
+      }
+    )
+
     const components = computed(() => [
       <div>
         <VSelect
           modelValue={info.department}
           onUpdate:modelValue={(val) => {
             info.department = val
+            store.commit('user/setDepartment', val)
           }}
           items={departmentOptions.value}
           label={t('form.department')}
         ></VSelect>
         <VSelect
           modelValue={info.displayLanguages}
+          onUpdate:modelValue={(val) => {
+            info.displayLanguages = val
+            store.commit('user/setDisplayLanguage', val)
+          }}
           items={languages}
           label={t('form.displayLanguage')}
         ></VSelect>
         <VSelect
           modelValue={info.searchLanguages}
-          items={languages}
+          onUpdate:modelValue={(val) => {
+            info.searchLanguages = val
+            store.commit('user/setSearchLanguage', val)
+          }}
+          items={languages.filter((lang) => ['ja', 'en'].includes(lang.value))}
           label={t('form.searchLanguage')}
+          hint={
+            info.searchLanguages === 'en' ? 'This function is current in beta test' : ''
+          }
         ></VSelect>
       </div>,
       <VAlert type="success">{t('notification.initFinished')}</VAlert>,

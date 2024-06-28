@@ -6,7 +6,7 @@ import {
     deleteCourseByCodeQuery,
     getAllCoursesQuery,
 } from '@/database/courses'
-import { addPeriodsQuery, deleteAllPeriodsQuery } from '@/database/periods'
+import { deleteAllPeriodsQuery, generateAddPeriodsBatchQuery } from '@/database/periods'
 import { Course } from '@/model/course'
 import { SimpleTime } from '@/model/date'
 import type { SQLiteAction } from '@/utils/sqlite'
@@ -76,6 +76,7 @@ export const calendarStore = {
             }
             // arrange courses
             courses.forEach((course, idx) => {
+                console.log('Checking course:', course)
                 course.schedules.forEach((schedule) => {
                     schedule.semester.forEach((semester) => {
                         let day = schedule.day
@@ -85,7 +86,7 @@ export const calendarStore = {
                                 let conflictId = timetable[semester][day][period]
                                 console.log(conflictId, semester, day, period)
                                 console.log(timetable)
-                                throw new Error('Conflict with ' + courses[conflictId].name)
+                                throw new Error(courses[conflictId].name)
                             }
                             timetable[semester][day][period] = idx
                         }
@@ -100,19 +101,17 @@ export const calendarStore = {
             payload: { course: any; $sqlite: SQLiteAction }
         ) {
             const { course, $sqlite } = payload
-            console.log($sqlite)
 
             let currCourse = new Course(course.code, course.name)
             Course.deepCopy(currCourse, course)
-
+            console.log('Adding course:', currCourse)
             commit('checkConflict', currCourse)
 
             $sqlite(async (db) => {
-                commit('addCourse', currCourse)
-                db.run(addCourseQuery, [
+                await db.run(addCourseQuery, [
                     currCourse.code,
                     currCourse.name,
-                    currCourse.teachers,
+                    JSON.stringify(currCourse.teachers),
                     JSON.stringify(currCourse.schedules),
                     currCourse.academicYear,
                     currCourse.campus,
@@ -141,41 +140,50 @@ export const calendarStore = {
 
         async setPeriods(
             { commit }: { commit: any },
-            payload: { periods: string[][]; $sqlite: SQLiteAction }
+            payload: {
+                periods: {
+                    start: SimpleTime
+                    end: SimpleTime
+                }[]
+                $sqlite: SQLiteAction
+            }
         ) {
             const { periods, $sqlite } = payload
             $sqlite(async (db) => {
-                commit(
-                    'setPeriods',
-                    periods.map((x) => ({ start: new SimpleTime(x[0]), end: new SimpleTime(x[1]) }))
-                )
-
-                db.run(deleteAllPeriodsQuery)
-                periods.forEach((period, idx) => {
-                    console.log(period, idx)
-                    db.run(addPeriodsQuery, [idx, period[0], period[1]])
-                })
+                await db.run(deleteAllPeriodsQuery)
+                const { query, data } = generateAddPeriodsBatchQuery(periods)
+                console.log(query, data)
+                await db.run(query, data)
             })
+            commit('setPeriods', periods)
         },
 
         async init({ commit }: { commit: any }, $sqlite: SQLiteAction) {
             $sqlite(async (db) => {
-                const courses = (await db.query(getAllCoursesQuery)).values ?? []
-                console.log('courses:', courses)
+                const courses =
+          (await db.query(getAllCoursesQuery)).values?.map((course) => {
+              course.schedules = JSON.parse(course.schedules)
+              course.teachers = JSON.parse(course.teachers)
+              return course
+          }) ?? []
                 commit('setCourses', courses)
 
                 const periodsData = (await db.query('SELECT * FROM periods')).values
+                    ?.sort((x) => x.id)
+                    .map((period) => ({
+                        start: new SimpleTime(period.start),
+                        end: new SimpleTime(period.end),
+                    }))
+
                 const periods = periodsData?.length
                     ? periodsData
                     : await getLocal('syllabus/periods')
 
-                commit(
-                    'setPeriods',
-                    periods.map((x: any) => ({
-                        start: new SimpleTime(x[0]),
-                        end: new SimpleTime(x[1]),
-                    }))
-                )
+                periods?.forEach((period: any) => {
+                    Object.setPrototypeOf(period.start, SimpleTime.prototype)
+                    Object.setPrototypeOf(period.end, SimpleTime.prototype)
+                })
+                commit('setPeriods', periods)
             })
         },
     },

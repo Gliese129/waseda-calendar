@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, watchEffect } from 'vue'
 import Navigator from './components/framework/Navigator.vue'
 import Header from './components/framework/Header.vue'
 import ErrorMsg from './components/framework/ErrorMsg.vue'
@@ -7,7 +7,6 @@ import { useStore } from 'vuex'
 import { key } from '@/store'
 import { watch } from 'vue'
 
-import { App } from '@capacitor/app'
 import courseNotification from '@/native/tasks/course-notification'
 import { useRoute, useRouter } from 'vue-router'
 import { Capacitor } from '@capacitor/core'
@@ -33,7 +32,8 @@ onMounted(async () => {
         if (platform === 'web') {
             const sqlite = new SQLiteConnection(CapacitorSQLite)
 
-            customElements.define('jeep-sqlite', JeepSqlite)
+            if (!customElements.get('jeep-sqlite'))
+                customElements.define('jeep-sqlite', JeepSqlite)
             const jeepSqliteEl = document.createElement('jeep-sqlite')
             document.body.appendChild(jeepSqliteEl)
             await customElements.whenDefined('jeep-sqlite')
@@ -42,8 +42,9 @@ onMounted(async () => {
             console.log('SQLite web initialized')
         }
         const { initialized, performSQLAction } = await useSQLiteDB()
-        if (!initialized.value) {
-            console.log('Initializing SQLite')
+        if (!initialized) {
+            console.error('SQLite initialization failed')
+            return
         }
 
         await store.dispatch('user/init', performSQLAction)
@@ -62,40 +63,36 @@ onMounted(async () => {
 })
 
 // save before unmounted or app closed
-App.addListener('appStateChange', async (state) => {
-    if (!state.isActive) {
+watch(
+    () => store.state.user,
+    async () => {
+        if (!customElements.get('jeep-sqlite')) return
         const { performSQLAction } = await useSQLiteDB()
-        await store.dispatch('user/saveToDB', performSQLAction)
-    }
-})
+        store.dispatch('user/saveToDB', performSQLAction)
+    },
+    { deep: true, immediate: true }
+)
 
 // course notification
 if (Capacitor.getPlatform() !== 'web') {
-    watch(
-        () => [store.state.user.courseNotification, store.state.calendar],
-        (val) => {
-            if (val) {
-                let periods = store.state.calendar.periods.map((p) => [
-                    p.start.toString(),
-                    p.end.toString(),
-                ])
-                let courses = store.state.calendar.courses
-                let holidays = store.state.syllabus.holidays
-                courseNotification.startPush(periods, courses, holidays)
-            } else {
-                courseNotification.stopPush()
-            }
-        },
-        { immediate: true, deep: true }
-    )
+    watchEffect(() => {
+        if (store.state.user.courseNotification) {
+            let periods = store.state.calendar.periods.map((p) => [
+                p.start.toString(),
+                p.end.toString(),
+            ])
+            let courses = store.state.calendar.courses
+            let holidays = store.state.syllabus.holidays
+            courseNotification.startPush(periods, courses, holidays)
+        } else {
+            courseNotification.stopPush()
+        }
+    })
 }
 // i18n
-// watch(
-//     () => store.state.user.displayLanguage,
-//     (locale) => {
-//         current.value = locale
-//     }
-// )
+watchEffect(() => {
+    current.value = store.state.user.displayLanguage
+})
 
 const showNavigator = computed(() => !['start'].includes(route.name as string))
 </script>

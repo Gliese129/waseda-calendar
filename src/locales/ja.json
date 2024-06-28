@@ -55,7 +55,9 @@
         "cacheCleared": "キャッシュがクリアされました",
         "initFinished": "おめでとうございます！設定が完了しました。",
         "noCourseFoundTitle": "おっと、何も見つかりませんでした",
-        "noCourseFoundContent": "最初にいくつかのコースを追加する必要があるかもしれません"
+        "noCourseFoundContent": "最初にいくつかのコースを追加する必要があるかもしれません",
+        "saved": "保存されました",
+        "courseConflict": "{0}と競合しています"
     },
     "description": {
         "syllabusRaw": "シラバスの生の内容",

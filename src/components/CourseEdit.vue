@@ -21,6 +21,7 @@ const { d } = useI18n()
 const $message = inject<Function>('$message') as Function
 const store = useStore(key)
 
+const searchLang = computed(() => store.state.user.searchLanguage)
 const origin = defineModel<Course>('origin')
 
 const course = reactive<Course>(new Course('', ''))
@@ -66,9 +67,9 @@ const save = async () => {
         })
 
         emits('afterSave')
-        $message('Saved successfully', 'success')
+        $message(t('notification.saved'), 'success')
     } catch (e: any) {
-        $message(e.message, 'warning')
+        $message(t('notification.courseConflict', e.message), 'warning')
         console.warn(e)
     }
 }
@@ -125,11 +126,15 @@ const weekdays = computed(() =>
           class="ml-1"
           variant="text"
           icon="mdi-open-in-new"
-          @click.stop="openInNew(origin?.url)"
+          @click.stop="openInNew(origin?.url + `&pLng=${searchLang}`)"
         ></v-btn>
       </v-expansion-panel-title>
       <v-expansion-panel-text>
-        <iframe :src="origin?.url" class="mx-auto h-30vh w-full" frameborder="0"></iframe>
+        <iframe
+          :src="origin?.url + `&pLng=${searchLang}`"
+          class="mx-auto h-30vh w-full"
+          frameborder="0"
+        ></iframe>
       </v-expansion-panel-text>
     </v-expansion-panel>
   </v-expansion-panels>

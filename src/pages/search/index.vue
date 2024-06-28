@@ -20,6 +20,7 @@ const form = reactive<SearchParams>({
     period: null,
     pageId: 0,
     departmentId: null,
+    lang: store.state.user.searchLanguage,
 })
 
 watch(

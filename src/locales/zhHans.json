@@ -55,7 +55,9 @@
         "cacheCleared": "缓存已清除",
         "initFinished": "恭喜！你已完成设置。",
         "noCourseFoundTitle": "糟糕，什么也没找到",
-        "noCourseFoundContent": "也许你需要先添加一些课程"
+        "noCourseFoundContent": "也许你需要先添加一些课程",
+        "saved": "已保存",
+        "courseConflict": "和{0}冲突"
     },
     "description": {
         "syllabusRaw": "教学大纲原始内容",

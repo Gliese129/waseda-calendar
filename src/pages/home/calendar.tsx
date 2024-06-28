@@ -57,7 +57,7 @@ export default defineComponent({
     onMounted(() => {
       setInterval(() => {
         now.value = new Date()
-      }, 1000)
+      }, 1000 * 60)
     })
 
     const periods = computed(() => store.state.calendar.periods)

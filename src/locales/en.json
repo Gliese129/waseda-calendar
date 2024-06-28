@@ -55,7 +55,9 @@
         "cacheCleared": "Cache cleared",
         "initFinished": "Congratulations! You have completed the setup.",
         "noCourseFoundTitle": "Oops, we found nothing",
-        "noCourseFoundContent": "Maybe you need to add some courses first"
+        "noCourseFoundContent": "Maybe you need to add some courses first",
+        "saved": "Successfully saved",
+        "courseConflict": "Course conflict with {0}"
     },
     "description": {
         "syllabusRaw": "Syllabus Raw Content",

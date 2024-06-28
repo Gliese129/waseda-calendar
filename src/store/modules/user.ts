@@ -54,6 +54,7 @@ export const userStore = {
         async init({ commit }: { commit: any }, $sqlite: SQLiteAction) {
             await $sqlite(async (db) => {
                 const result = (await db.query(getUserInfoQuery)).values
+                console.log(result)
                 if (result) {
                     const {
                         course_notification,

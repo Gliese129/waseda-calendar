@@ -1,7 +1,7 @@
 import { initTablesQuery, initUserQuery } from '@/database/initTables'
 import type { SQLiteDBConnection } from '@capacitor-community/sqlite'
 import { CapacitorSQLite, SQLiteConnection } from '@capacitor-community/sqlite'
-import { inject, ref } from 'vue'
+import { ref } from 'vue'
 
 export default async function useSQLiteDB() {
     const db = ref<SQLiteDBConnection | null>(null)
@@ -54,11 +54,7 @@ export default async function useSQLiteDB() {
             await db.value.open()
             await action(db.value as SQLiteDBConnection)
         } catch (error: any) {
-            const msg = inject('$message') as (
-                message: string,
-                type: 'info' | 'success' | 'warning' | 'error'
-            ) => void
-            msg(error.message, 'error')
+            console.log(error)
         } finally {
             const isOpen = (await db.value.isDBOpen()).result
             if (isOpen) await db.value.close()

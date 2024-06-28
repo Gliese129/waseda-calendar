@@ -1,13 +1,14 @@
 export const initTablesQuery = `
     CREATE TABLE IF NOT EXISTS courses (
-        code TEXT PRIMARY KEY,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        code TEXT NOT NULL,
         name TEXT NOT NULL,
         teachers TEXT NOT NULL,
         schedules TEXT NOT NULL,
         academic_year INTEGER NOT NULL,
-        campus TEXT NOT NULL,
+        campus TEXT,
         department TEXT NOT NULL,
-        credits INTEGER NOT NULL,
+        credits INTEGER,
         url TEXT,
         textbook TEXT
         description TEXT
@@ -25,7 +26,7 @@ export const initTablesQuery = `
         UNIQUE(id, name)
     );
     CREATE TABLE IF NOT EXISTS periods (
-        ID INTEGER PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         start TEXT NOT NULL,
         end TEXT NOT NULL
     );

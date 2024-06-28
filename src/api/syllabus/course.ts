@@ -10,6 +10,7 @@ export interface SearchParams {
     period: number | null
     pageId: number
     departmentId: string | null
+    lang: string
 }
 
 import { getCourseDetail, getCoursesList } from './parse/course'
@@ -21,6 +22,7 @@ const fetchCoursesList = async (form: SearchParams) => {
     if (form.weekday) formData['p_youbi'] = form.weekday
     if (form.period) formData['p_jigen'] = form.period
     if (form.departmentId) formData['p_gakubu'] = form.departmentId
+    formData['pLng'] = form.lang
     formData['ControllerParameters'] = 'JAA103SubCon'
     formData['p_number'] = 20
     if (form.pageId) formData['p_page'] = form.pageId
