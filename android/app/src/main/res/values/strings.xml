@@ -7,4 +7,8 @@
     <string name="form_keyword">Keyword</string>
     <string name="form_name">Name</string>
     <string name="action_clear">Clear</string>
+    <string name="form_semester">Semester</string>
+    <string name="form_weekday">Day Of Week</string>
+    <string name="form_period">Period</string>
+    <string name="form_school">School</string>
 </resources>

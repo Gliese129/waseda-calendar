@@ -1,19 +1,39 @@
 package org.wasedacanlendar.android.ui.screen.search
 
+import android.util.Log
+import android.util.LogPrinter
 import android.view.View
 import android.widget.Space
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -24,34 +44,107 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.integerArrayResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import org.wasedacanlendar.android.R
+import org.wasedacanlendar.android.model.Course
+import org.wasedacanlendar.android.ui.component.ClearableFilterBox
+import org.wasedacanlendar.android.ui.component.ClearableSelectBox
 import org.wasedacanlendar.android.ui.component.ClearableTextField
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
+import java.util.logging.Logger
 import kotlin.math.round
 
+@Preview
 @Composable
 fun SearchScreen(
     searchViewModel: SearchViewModel = viewModel()
 ) {
     val searchUiState by searchViewModel.uiState.collectAsState()
-    val keyword = searchUiState.keyword
 
     Column(
         modifier = Modifier.padding(16.dp)
     ) {
         Row {
             SearchFormLayout(
-                keyword = keyword,
+                keyword = searchUiState.keyword,
                 onKeywordChanged = { searchViewModel.onKeywordChanged(it) },
                 name = searchUiState.name,
-                onNameChanged = { searchViewModel.onNameChanged(it) }
+                onNameChanged = { searchViewModel.onNameChanged(it) },
+                semester = searchUiState.semester,
+                onSemesterChanged = { searchViewModel.onSemesterChanged(it) },
+                weekday = searchUiState.weekday,
+                onWeekdayChanged = { searchViewModel.onWeekdayChanged(it) },
+                period = searchUiState.period,
+                onPeriodChanged = { searchViewModel.onPeriodChanged(it) },
+                school = searchUiState.school,
+                onSchoolChanged = { searchViewModel.onSchoolChanged(it?:"") },
             )
+        }
+        HorizontalDivider()
+        Row {
+            InfiniteScrollLayout(searchUiState.courses!!.collectAsLazyPagingItems())
         }
     }
 
+}
+
+@Composable
+fun InfiniteScrollLayout(
+    lazyCourseItems: LazyPagingItems<Course>
+) {
+    val scrollState = rememberLazyListState()
+
+    Surface {
+        Scaffold { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                LazyColumn(
+                    contentPadding = innerPadding,
+                    state = scrollState
+                ) {
+                    items(lazyCourseItems.itemCount) { index ->
+                        lazyCourseItems[index]?.let {
+                            Box(modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)) {
+                                Text(text = it.name)
+                            }
+                            Spacer(modifier = Modifier.height(6.dp))
+                        }
+                    }
+                    lazyCourseItems.apply {
+                        when (loadState.append) {
+                            is LoadState.Loading -> {
+                                item {
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    Text("Loading...")
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(6.dp))
+                    }
+                }
+
+            }
+
+        }
+    }
 }
 
 @Composable
@@ -59,7 +152,15 @@ fun SearchFormLayout(
     keyword: String,
     onKeywordChanged: (String) -> Unit,
     name: String,
-    onNameChanged: (String) -> Unit
+    onNameChanged: (String) -> Unit,
+    semester: Int?,
+    onSemesterChanged: (Int?) -> Unit,
+    weekday: Int?,
+    onWeekdayChanged: (Int?) -> Unit,
+    period: Int?,
+    onPeriodChanged: (Int?) -> Unit,
+    school: String,
+    onSchoolChanged: (String?) -> Unit,
 ) {
     var showKeywordSwitch by remember { mutableStateOf(true) }
 
@@ -94,6 +195,74 @@ fun SearchFormLayout(
                         Text(stringResource(R.string.form_keyword))
                 }
             }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            val semesterOptions = let {
+                val semesterNames = stringArrayResource(R.array.semester_name).toList()
+                val semesterValues = integerArrayResource(R.array.semester_value).toList()
+                semesterValues.zip(semesterNames).toMap()
+            }
+            ClearableSelectBox(
+                value = semester,
+                onValueChange = { onSemesterChanged(it) },
+                options = semesterOptions,
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(stringResource(R.string.form_semester)) },
+            )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.45f)
+            ) {
+                val dayOfWeekOptions = DayOfWeek.entries.toTypedArray()
+                    .sortedBy { it.value % 7 }
+                    .map { it.getDisplayName(TextStyle.FULL, Locale.getDefault()) }
+                    .let {
+                        (0..7).toList().zip(it).toMap()
+                    }
+                ClearableSelectBox(
+                    value = weekday,
+                    onValueChange = onWeekdayChanged,
+                    options = dayOfWeekOptions,
+                    label = { Text(stringResource(R.string.form_weekday)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Column {
+                val periodOptions = let {
+                    val periodNames = stringArrayResource(R.array.period_name).toList()
+                    val periodValues = integerArrayResource(R.array.period_value).toList()
+                    periodValues.zip(periodNames).toMap()
+                }
+                ClearableSelectBox(
+                    value = period,
+                    onValueChange = onPeriodChanged,
+                    options = periodOptions,
+                    label = { Text(stringResource(R.string.form_period)) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+        Row {
+            val schoolOptions = let {
+                val schoolNames = stringArrayResource(R.array.school_name).toList()
+                val schoolValues = stringArrayResource(R.array.school_value).toList()
+                schoolValues.zip(schoolNames).toMap()
+            }
+            ClearableFilterBox(
+                value = school,
+                onValueChange = onSchoolChanged,
+                options = schoolOptions,
+                label = { Text(stringResource(R.string.form_school)) },
+                filter = { text, options ->
+                    options.filter { it.value.contains(text, ignoreCase = true) }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

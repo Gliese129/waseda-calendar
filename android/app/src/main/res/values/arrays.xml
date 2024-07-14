@@ -1,0 +1,157 @@
+<?xml version="1.0" ?>
+<resources>
+    <string-array name="semester_name">
+        <item>Full Year</item>
+        <item>Spring Semester</item>
+        <item>Autumn Semester</item>
+        <item>Others</item>
+    </string-array>
+    <integer-array name="semester_value">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </integer-array>
+    <string-array name="period_name">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>Full On Demand</item>
+        <item>Others</item>
+    </string-array>
+    <integer-array name="period_value">
+        <item>11</item>
+        <item>22</item>
+        <item>33</item>
+        <item>44</item>
+        <item>55</item>
+        <item>66</item>
+        <item>77</item>
+        <item>88</item>
+        <item>99</item>
+    </integer-array>
+    <string-array name="school_value">
+        <item>111973</item>
+        <item>121973</item>
+        <item>151949</item>
+        <item>161973</item>
+        <item>181966</item>
+        <item>192000</item>
+        <item>202003</item>
+        <item>212004</item>
+        <item>232006</item>
+        <item>242006</item>
+        <item>252020</item>
+        <item>262006</item>
+        <item>272006</item>
+        <item>282006</item>
+        <item>311951</item>
+        <item>321951</item>
+        <item>331951</item>
+        <item>342002</item>
+        <item>351951</item>
+        <item>371990</item>
+        <item>381991</item>
+        <item>391994</item>
+        <item>402003</item>
+        <item>432001</item>
+        <item>442003</item>
+        <item>472004</item>
+        <item>482005</item>
+        <item>502005</item>
+        <item>512006</item>
+        <item>522006</item>
+        <item>532006</item>
+        <item>542006</item>
+        <item>562012</item>
+        <item>572015</item>
+        <item>712001</item>
+        <item>922006</item>
+        <item>982007</item>
+        <item>9S2013</item>
+    </string-array>
+    <string-array name="school_abbr">
+        <item>政経</item>
+        <item>法学</item>
+        <item>教育</item>
+        <item>商学</item>
+        <item>社学</item>
+        <item>人科</item>
+        <item>スポーツ</item>
+        <item>国際教養</item>
+        <item>文構</item>
+        <item>文</item>
+        <item>人通</item>
+        <item>基幹</item>
+        <item>創造</item>
+        <item>先進</item>
+        <item>政研</item>
+        <item>経研</item>
+        <item>法研</item>
+        <item>文研</item>
+        <item>商研</item>
+        <item>教研</item>
+        <item>人研</item>
+        <item>社学研</item>
+        <item>アジア研</item>
+        <item>日研</item>
+        <item>情シス研</item>
+        <item>法務研</item>
+        <item>会計研</item>
+        <item>スポーツ研</item>
+        <item>基幹研</item>
+        <item>創造研</item>
+        <item>先進研</item>
+        <item>環エネ研</item>
+        <item>国際コミ研</item>
+        <item>経管研</item>
+        <item>芸術</item>
+        <item>日本語</item>
+        <item>留学</item>
+        <item>グローバル</item>
+    </string-array>
+    <string-array name="school_name">
+        <item>政治経済学部</item>
+        <item>法学部</item>
+        <item>教育学部</item>
+        <item>商学部</item>
+        <item>社会科学部</item>
+        <item>人間科学部</item>
+        <item>スポーツ科学部</item>
+        <item>国際教養学部</item>
+        <item>文化構想学部</item>
+        <item>文学部</item>
+        <item>人間科学部（通信教育課程）</item>
+        <item>基幹理工学部</item>
+        <item>創造理工学部</item>
+        <item>先進理工学部</item>
+        <item>大学院政治学研究科</item>
+        <item>大学院経済学研究科</item>
+        <item>大学院法学研究科</item>
+        <item>大学院文学研究科</item>
+        <item>大学院商学研究科</item>
+        <item>大学院教育学研究科</item>
+        <item>大学院人間科学研究科</item>
+        <item>大学院社会科学研究科</item>
+        <item>大学院アジア太平洋研究科</item>
+        <item>大学院日本語教育研究科</item>
+        <item>大学院情報生産システム研究科</item>
+        <item>大学院法務研究科</item>
+        <item>大学院会計研究科</item>
+        <item>大学院スポーツ科学研究科</item>
+        <item>大学院基幹理工学研究科</item>
+        <item>大学院創造理工学研究科</item>
+        <item>大学院先進理工学研究科</item>
+        <item>大学院環境・エネルギー研究科</item>
+        <item>大学院国際コミュニケーション研究科</item>
+        <item>大学院経営管理研究科</item>
+        <item>芸術学校</item>
+        <item>日本語教育研究センター</item>
+        <item>留学センター</item>
+        <item>グローバルエデュケーションセンター</item>
+    </string-array>
+</resources>
