@@ -31,37 +31,30 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.ImageProvider
 import androidx.glance.appwidget.components.CircleIconButton
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material.ChipDefaults
 import androidx.compose.material3.ColorScheme
 import org.wasedacanlendar.android.R
 import org.wasedacanlendar.android.model.Course
 import org.wasedacanlendar.android.model.FiscalQuarter
 import org.wasedacanlendar.android.model.Schedule
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.format.TextStyle
+import java.util.Locale
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-@Preview
 fun CourseOutline(
-    course: Course = Course(
-        name = "Test",
-        code = "CSE101",
-        school = "School of Science and Engineering",
-        credits = 2,
-        instructors = listOf("John Doe", "Kevin"),
-        schedules = listOf(Schedule(
-            quarter = listOf(FiscalQuarter.Spring),
-            weekday = 1,
-            period = Pair(1, 4),
-            classroom = "Room 101"
-        ))
-    )
+    course: Course,
+    modifier: Modifier = Modifier
 ) {
     Card(
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
         ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(80.dp),
+        modifier = modifier,
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
     ) {
         Column(
             modifier = Modifier
@@ -108,8 +101,21 @@ fun CourseOutline(
                             contentDescription = "Schedule",
                             modifier = Modifier
                                 .height(20.dp)
-                                .padding(end = 5.dp)
                         )
+                        Column(
+                            modifier = Modifier.height(20.dp)
+                        ) {
+                            if (course.schedules.isNotEmpty()) {
+                                CourseScheduleChip(course.schedules[0])
+                                if(course.schedules.size > 1)
+                                    Text(text = "...") // Show ellipsis if there are more than one schedules
+                            } else {
+                                Text(text = "TBA")
+                            }
+                            course.schedules.forEach {
+                                CourseScheduleChip(it)
+                            }
+                        }
                     }
                 }
             }
@@ -117,10 +123,48 @@ fun CourseOutline(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-@Preview
+fun CourseScheduleChip(
+    schedule: Schedule
+) {
+    Chip(
+        onClick = {},
+        colors = ChipDefaults.chipColors(
+            backgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+        ),
+        enabled = false
+    ) {
+        Row {
+            QuarterCompactLayout(
+                quarters = schedule.quarter,
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 3.dp)
+            )
+            Text(
+                text = DayOfWeek.of(schedule.weekday).getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(end = 2.dp)
+            )
+            Text(
+                text = if (schedule.period.first == schedule.period.second)
+                    schedule.period.first.toString()
+                else "${schedule.period.first}-${schedule.period.second}",
+                fontSize = 12.sp,
+                modifier = Modifier.padding(end = 3.dp)
+            )
+            Text(
+                text = schedule.classroom,
+                fontSize = 12.sp
+            )
+        }
+    }
+}
+@Composable
 fun QuarterCompactLayout(
-    quarters: List<FiscalQuarter> = listOf(FiscalQuarter.Spring)
+    modifier: Modifier = Modifier,
+    quarters: List<FiscalQuarter> = listOf(FiscalQuarter.Spring),
 ) {
     val calculateColor = { quarter: FiscalQuarter ->
         if (quarters.contains(quarter)) {
@@ -134,25 +178,27 @@ fun QuarterCompactLayout(
             Color.Gray
         }
     }
-    Column {
+    Column(
+        modifier = modifier
+    ) {
         Row {
             Box(modifier = Modifier
                 .background(calculateColor(FiscalQuarter.Spring), CircleShape)
-                .padding(4.dp)
+                .padding(3.dp)
             )
             Box(modifier = Modifier
                 .background(calculateColor(FiscalQuarter.Summer), CircleShape)
-                .padding(4.dp)
+                .padding(3.dp)
             )
         }
         Row {
             Box(modifier = Modifier
                 .background(calculateColor(FiscalQuarter.Autumn), CircleShape)
-                .padding(4.dp)
+                .padding(3.dp)
             )
             Box(modifier = Modifier
                 .background(calculateColor(FiscalQuarter.Winter), CircleShape)
-                .padding(4.dp)
+                .padding(3.dp)
             )
         }
     }

@@ -17,5 +17,6 @@ data class SearchUiState(
     val school: String = "",
     val lang: String = "",
 
-    val courses: Flow<PagingData<Course>>? = null
+    val courses: Flow<PagingData<Course>>? = null,
+    val selectedCourse: Course? = null
 )

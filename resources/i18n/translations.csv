@@ -1,0 +1,57 @@
+key,en,ja,zhHans
+navigation.calendar,Calendar,カレンダー,日历
+navigation.search,Search,検索,搜索
+navigation.my_courses,My Courses,私のコース,我的课程
+navigation.settings,Settings,設定,设置
+navigation.period_edit,Period Editor,期間エディター,时段编辑器
+navigation.start,Start,開始,开始
+form.name,Name,名前,名称
+form.code,Code,コード,代码
+form.keyword,Keyword,キーワード,关键词
+form.semester,Semester,学期,学期
+form.weekday,Weekday,曜日,工作日
+form.period,Period,期間,时段
+form.department,Department,学部,部门
+form.campus,Campus,キャンパス,校区
+form.teachers,Teachers,教師,教师
+form.displayLanguage,Display Language,表示言語,显示语言
+form.searchLanguage,Search Language,検索言語,搜索语言
+form.periodStart,Period Start,期間開始,时段开始
+form.periodEnd,Period End,期間終了,时段结束
+form.classroom,Classroom,教室,教室
+form.textbook,Textbook,教科書,教科书
+form.credits,Credits,単位,学分
+searchPage.semesterColor,Semester Color,学期の色,学期颜色
+searchPage.overflowTip,"Tip: due to the size limit, only the first teacher and period will be shown",ヒント: サイズ制限により、最初の教師と期間のみが表示されます,提示：由于大小限制，仅显示第一个教师和时段
+searchPage.tooManyCoursesWarning,"Too many courses, please use stricter search criteria",コースが多すぎます、より厳しい検索条件を使用してください,课程太多，请使用更严格的搜索条件
+searchPage.noCourseWarning,No course found,コースが見つかりません,未找到课程
+semester.spring,Spring Quarter,春学期,春季学期
+semester.summer,Summer Quarter,夏学期,夏季学期
+semester.fall,Fall Quarter,秋学期,秋季学期
+semester.winter,Winter Quarter,冬学期,冬季学期
+settings.periods,Periods,期間,时段
+settings.periodsDescription,Set up your periods,期間を設定する,设置您的时段
+settings.courseNotification,Course Notification,コース通知,课程通知
+settings.courseNotificationDescription,Get notifications of the current course,現在のコースの通知を取得する,获取当前课程的通知
+settings.clearCache,Clear Cache,キャッシュをクリア,清除缓存
+settings.clearCacheDescription,"If you have any problem, try this",問題がある場合は、これを試してください,如果您有任何问题，请尝试这个
+settingGroup.schedule,Schedule,スケジュール,时间表
+settingGroup.general,General,一般,通用
+settingGroup.dangerZone,Danger Zone,危険地帯,危险区
+settingGroup.beta,Beta Features,ベータ機能,测试功能
+notification.cacheCleared,Cache cleared,キャッシュがクリアされました,缓存已清除
+notification.initFinished,Congratulations! You have completed the setup.,おめでとうございます！設定が完了しました。,恭喜！您已完成设置。
+notification.noCourseFoundTitle,"Oops, we found nothing",おっと、何も見つかりませんでした,哎呀，我们什么也没找到
+notification.noCourseFoundContent,Maybe you need to add some courses first,最初にいくつかのコースを追加する必要があるかもしれません,也许您需要先添加一些课程
+notification.saved,Successfully saved,正常に保存されました,成功保存
+notification.courseConflict,Course conflict with {0},{0}とのコースの競合,与{0}的课程冲突
+description.syllabusRaw,Syllabus Raw Content,シラバスの生の内容,教学大纲原始内容
+description.notSet,Not Set,設定されていません,未设置
+action.edit,Edit,編集,编辑
+action.delete,Delete,削除,删除
+action.cancel,Cancel,キャンセル,取消
+action.save,Save,保存,保存
+action.add,Add,追加,添加
+action.reset,Reset,リセット,重置
+action.search,Search,検索,搜索
+action.deleteEmpty,Delete Empty,空を削除,删除空项

@@ -4,16 +4,20 @@ import android.util.Log
 import android.util.LogPrinter
 import android.view.View
 import android.widget.Space
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,6 +26,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,12 +51,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.integerArrayResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -61,6 +69,8 @@ import org.wasedacanlendar.android.model.Course
 import org.wasedacanlendar.android.ui.component.ClearableFilterBox
 import org.wasedacanlendar.android.ui.component.ClearableSelectBox
 import org.wasedacanlendar.android.ui.component.ClearableTextField
+import org.wasedacanlendar.android.ui.component.CourseEdit
+import org.wasedacanlendar.android.ui.component.CourseOutline
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -94,9 +104,13 @@ fun SearchScreen(
                 onSchoolChanged = { searchViewModel.onSchoolChanged(it?:"") },
             )
         }
-        HorizontalDivider()
+        HorizontalDivider(Modifier.padding(vertical = 16.dp))
         Row {
-            InfiniteScrollLayout(searchUiState.courses!!.collectAsLazyPagingItems())
+            InfiniteScrollLayout(
+                lazyCourseItems = searchUiState.courses!!.collectAsLazyPagingItems(),
+                onSelectedCourseChanged = { searchViewModel.onSelectedCourseChanged(it) },
+                selectedCourse = searchUiState.selectedCourse
+            )
         }
     }
 
@@ -104,24 +118,51 @@ fun SearchScreen(
 
 @Composable
 fun InfiniteScrollLayout(
-    lazyCourseItems: LazyPagingItems<Course>
+    lazyCourseItems: LazyPagingItems<Course>,
+    onSelectedCourseChanged: (Course) -> Unit,
+    selectedCourse: Course?
 ) {
     val scrollState = rememberLazyListState()
+    val dialogShow = remember { mutableStateOf(false) }
+
+    if (dialogShow.value && selectedCourse != null) {
+        Dialog(
+            onDismissRequest = { dialogShow.value = false },
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize(),
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer,
+            ) {
+                CourseEdit(selectedCourse)
+            }
+        }
+    }
 
     Surface {
         Scaffold { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
+            Box(modifier = Modifier) {
                 LazyColumn(
                     contentPadding = innerPadding,
                     state = scrollState
                 ) {
                     items(lazyCourseItems.itemCount) { index ->
                         lazyCourseItems[index]?.let {
-                            Box(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(60.dp)) {
-                                Text(text = it.name)
-                            }
+                            CourseOutline(
+                                it,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(80.dp)
+                                    .padding(4.dp)
+                                    .clickable {
+                                        dialogShow.value = true
+                                        onSelectedCourseChanged(it)
+                                    }
+                            )
                             Spacer(modifier = Modifier.height(6.dp))
                         }
                     }
@@ -129,11 +170,44 @@ fun InfiniteScrollLayout(
                         when (loadState.append) {
                             is LoadState.Loading -> {
                                 item {
-                                    Spacer(modifier = Modifier.height(6.dp))
-                                    Text("Loading...")
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier
+                                                .width(64.dp)
+                                                .align(Alignment.Center),
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        )
+                                    }
                                 }
                             }
                             else -> {}
+                        }
+                        when (loadState.refresh) {
+                            is LoadState.Loading -> {
+                                item {
+                                    Box(modifier = Modifier.fillMaxWidth()) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier
+                                                .width(64.dp)
+                                                .align(Alignment.Center),
+                                            color = MaterialTheme.colorScheme.secondary,
+                                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                        )
+                                    }
+                                }
+                            }
+                            else -> {}
+                        }
+                        if (loadState.hasError) {
+                            item {
+                                Box(modifier = Modifier.fillMaxWidth()) {
+                                    Text(
+                                        text = "An error occurred",
+                                        modifier = Modifier.align(Alignment.Center)
+                                    )
+                                }
+                            }
                         }
                     }
                     item {

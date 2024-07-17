@@ -48,6 +48,10 @@ class SearchViewModel: ViewModel() {
         }
     }
 
+    fun onSelectedCourseChanged(course: Course) {
+        _uiState.value = _uiState.value.copy(selectedCourse = course)
+    }
+
     fun resetForm() {
         _uiState.value = SearchUiState()
     }

@@ -14,10 +14,14 @@ data class Course(
     val key: String = "",
     val campus: String = "",
     val credits: Int = 0,
-    val url: String = "",
     val outline: String = "",
     val courseSchedule: String = "",
     val evaluations: List<Evaluation> = emptyList(),
     val note: String = "",
     val academicYear: Int = 0,
-): Parcelable
+): Parcelable {
+    @IgnoredOnParcel
+    val url = { lang: String ->
+        "https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=${key}&pLng=${lang}"
+    }
+}

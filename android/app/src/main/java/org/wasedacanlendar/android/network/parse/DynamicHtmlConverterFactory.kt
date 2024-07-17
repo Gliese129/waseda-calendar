@@ -26,14 +26,12 @@ class DynamicHtmlConverterFactory : Converter.Factory() {
     }
 
     private fun transformHtml(html: String): Document {
-        html.apply {
-            replace(
-                Regex("[Ａ-Ｚａ-ｚ０-９　＋－＊／＝＜＞（）［］｛｝、。・，．：；？！＆＃％＠｜￥「」『』【】]")
-            ) {
-                it.value[0].code.minus(0xFEE0).toChar().toString()
-            }
+        html.replace(
+            Regex("[Ａ-Ｚａ-ｚ０-９＋－＊／＝＜＞（）［］｛｝，．：；？！＆＃％＠｜]")
+        ) {
+            it.value[0].code.minus(0xFEE0).toChar().toString()
+        }.replace("　", " ").let {
+            return Jsoup.parse(it)
         }
-        println(html)
-        return Jsoup.parse(html)
     }
 }

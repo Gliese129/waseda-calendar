@@ -25,7 +25,10 @@ class CourseIntrosParser: ResponseParser<List<Course>> {
                         val classroomStr = cells[7].html()
                         getSchedules(semesterStr, dayPeriodStr, classroomStr)
                     },
-                    academicYear = cells[0].text().toIntOrNull() ?: 0
+                    academicYear = cells[0].text().toIntOrNull() ?: 0,
+                    key = cells[2].select("a").attr("onclick").let {
+                        Regex("post_submit('JAA104DtlSubCon', '(\\d+)')").find(it)?.groupValues?.get(1) ?: ""
+                    }
                 )
                 courses.add(course)
             }

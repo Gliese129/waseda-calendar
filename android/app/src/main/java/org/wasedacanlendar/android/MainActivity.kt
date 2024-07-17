@@ -61,7 +61,6 @@ fun NavApp() {
 
     val screens = Screen.entries
 
-
     Scaffold(
         bottomBar = {
             NavigationBar(
@@ -100,23 +99,23 @@ fun NavApp() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.name,
+            startDestination = Screen.Search.route, // TODO: Change to HomeScreen
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            composable(Screen.Home.name) { HomeScreen() }
-            composable(Screen.Search.name) { SearchScreen() }
+            composable(Screen.Home.route) { HomeScreen() }
+            composable(Screen.Search.route) { SearchScreen() }
 //        composable(Screen.MyCourses.name) { MyCoursesScreen() }
 //        composable(Screen.Settings.name) { SettingsScreen() }
         }
     }
 }
 
-enum class Screen(val label: Int, val icon: Int) {
+enum class Screen(val label: Int, val icon: Int, val route: String) {
 
-    Home(R.string.navigation_home, R.drawable.outline_home_24),
-    Search(R.string.navigation_search, R.drawable.outline_search_24),
-    MyCourses(R.string.navigation_my_courses, R.drawable.outline_school_24),
-    Settings(R.string.navigation_settings, R.drawable.outline_settings_24)
+    Home(R.string.navigation_home, R.drawable.outline_home_24, "home"),
+    Search(R.string.navigation_search, R.drawable.outline_search_24, "search?period={period}&weekday={weekday}&semester={semester}&school={school}&name={name}&keyword={keyword}"),
+    MyCourses(R.string.navigation_my_courses, R.drawable.outline_school_24, "my-courses"),
+    Settings(R.string.navigation_settings, R.drawable.outline_settings_24, "settings");
 }
