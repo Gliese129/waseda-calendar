@@ -1,11 +1,13 @@
 package org.wasedacanlendar.android.ui.screen.search
 
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -14,9 +16,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.wasedacanlendar.android.model.Course
+import org.wasedacanlendar.android.model.UserConfig
 import org.wasedacanlendar.android.network.paging.CourseSource
+import org.wasedacanlendar.android.ui.screen.config.UserConfigViewModel
+import javax.inject.Inject
 
-class SearchViewModel: ViewModel() {
+@HiltViewModel
+class SearchViewModel @Inject constructor(
+    private val sharedPreferences: SharedPreferences
+): ViewModel() {
+
     private val _uiState = MutableStateFlow(SearchUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -39,7 +48,8 @@ class SearchViewModel: ViewModel() {
                             semester = currentState.semester,
                             weekday = currentState.weekday,
                             period = currentState.period,
-                            school = currentState.school
+                            school = currentState.school,
+                            lang = sharedPreferences.getString("search_lang", "ja")!!
                         )
                     }.flow.cachedIn(viewModelScope)
                 )

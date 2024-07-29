@@ -10,7 +10,7 @@ object SyllabusHttpClient {
 
     private val logging: HttpLoggingInterceptor by lazy {
         HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
+            level = HttpLoggingInterceptor.Level.BASIC
         }
     }
 

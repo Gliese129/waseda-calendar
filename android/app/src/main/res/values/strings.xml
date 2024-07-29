@@ -1,3 +1,4 @@
+<?xml version="1.0" ?>
 <resources>
     <string name="app_name">Waseda  Calendar</string>
     <string name="navigation_home">Home</string>
@@ -11,4 +12,10 @@
     <string name="form_weekday">Day Of Week</string>
     <string name="form_period">Period</string>
     <string name="form_school">School</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_redo">Redo</string>
+    <string name="description_syllabus_raw_content">Syllabus Raw Content</string>
+    <string name="hide_syllabus">Hide %1$s</string>
+    <string name="show_syllabus">Show %1$s</string>
+    <string name="hello">hello</string>
 </resources>

@@ -14,7 +14,8 @@ class CourseSource(
     private val semester: Int?,
     private val weekday: Int?,
     private val period: Int?,
-    private val school: String?
+    private val school: String?,
+    private val lang: String = "ja"
 ): PagingSource<Int, Course>(){
 
     override fun getRefreshKey(state: PagingState<Int, Course>): Int? {
@@ -31,7 +32,8 @@ class CourseSource(
                 period = period,
                 school = school,
                 page = nextPage,
-                amount = params.loadSize
+                amount = params.loadSize,
+                lang = lang,
             )
 
             LoadResult.Page(

@@ -154,4 +154,64 @@
         <item>留学センター</item>
         <item>グローバルエデュケーションセンター</item>
     </string-array>
+    <string-array name="syllabus_academic_year">
+        <item>開講年度</item>
+        <item>year</item>
+    </string-array>
+    <string-array name="syllabus_school">
+        <item>開講箇所</item>
+        <item>school</item>
+    </string-array>
+    <string-array name="syllabus_name">
+        <item>科目名</item>
+        <item>course title</item>
+    </string-array>
+    <string-array name="syllabus_instructors">
+        <item>担当教員</item>
+        <item>instructor</item>
+    </string-array>
+    <string-array name="syllabus_campus">
+        <item>キャンパス</item>
+        <item>campus</item>
+    </string-array>
+    <string-array name="syllabus_code">
+        <item>コース/コード</item>
+        <item>course code</item>
+    </string-array>
+    <string-array name="syllabus_key">
+        <item>科目キー</item>
+        <item>course key</item>
+    </string-array>
+    <string-array name="syllabus_credits">
+        <item>単位数</item>
+        <item>credits</item>
+    </string-array>
+    <string-array name="syllabus_date">
+        <item>学期曜日時限</item>
+        <item>term/day/period</item>
+    </string-array>
+    <string-array name="syllabus_classroom">
+        <item>使用教室</item>
+        <item>classroom</item>
+    </string-array>
+    <string-array name="syllabus_outline">
+        <item>授業概要</item>
+        <item>course outline</item>
+    </string-array>
+    <string-array name="syllabus_course_schedule">
+        <item>授業計画</item>
+        <item>course schedule</item>
+    </string-array>
+    <string-array name="syllabus_evaluations">
+        <item>成績評価方法</item>
+        <item>evaluation</item>
+    </string-array>
+    <string-array name="syllabus_note">
+        <item>備考/関連URL</item>
+        <item>note/url</item>
+    </string-array>
+    <string-array name="syllabus_textbook">
+        <item>教科書</item>
+        <item>textbook</item>
+    </string-array>
 </resources>

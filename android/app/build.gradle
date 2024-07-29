@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("kotlin-parcelize")
+    id "kotlin-parcelize"
+    id 'kotlin-kapt'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -79,4 +81,17 @@ dependencies {
     // Paging
     implementation libs.androidx.paging.compose
 
+    // Global Store
+    implementation  libs.dagger
+    implementation  libs.dagger.android
+    kapt libs.dagger.android.processor
+    kapt libs.dagger.compiler
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+    implementation libs.androidx.hilt.navigation.compose
+
+}
+
+kapt {
+    correctErrorTypes true
 }

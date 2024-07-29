@@ -27,7 +27,7 @@ class CourseIntrosParser: ResponseParser<List<Course>> {
                     },
                     academicYear = cells[0].text().toIntOrNull() ?: 0,
                     key = cells[2].select("a").attr("onclick").let {
-                        Regex("post_submit('JAA104DtlSubCon', '(\\d+)')").find(it)?.groupValues?.get(1) ?: ""
+                        Regex("post_submit\\('.+', '(\\d+)'\\)").find(it)?.groupValues?.get(1) ?: ""
                     }
                 )
                 courses.add(course)

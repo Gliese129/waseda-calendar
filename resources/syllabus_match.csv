@@ -1,0 +1,16 @@
+key,en,ja
+academic_year,year,開講年度
+school,school,開講箇所
+name,course title,科目名
+instructors,instructor,担当教員
+campus,campus,キャンパス
+code,course code,コース/コード
+key,course key,科目キー
+credits,credits,単位数
+date,term/day/period,学期曜日時限
+classroom,classroom,使用教室
+outline,course outline,授業概要
+course_schedule,course schedule,授業計画
+evaluations,evaluation,成績評価方法
+note,note/url,備考/関連URL
+textbook,textbook,教科書
