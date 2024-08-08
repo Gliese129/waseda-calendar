@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -43,10 +44,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import org.wasedacanlendar.android.R
 import org.wasedacanlendar.android.model.Course
 import org.wasedacanlendar.android.ui.component.ClearableFilterBox
-import org.wasedacanlendar.android.ui.component.ClearableSelectBox
 import org.wasedacanlendar.android.ui.component.ClearableTextField
 import org.wasedacanlendar.android.ui.component.courseedit.CourseEdit
 import org.wasedacanlendar.android.ui.component.CourseOutline
+import org.wasedacanlendar.android.ui.component.SelectBox
+import org.wasedacanlendar.android.utils.LocalizedOptionsGetter
 import java.time.DayOfWeek
 import java.time.format.TextStyle
 import java.util.Locale
@@ -209,6 +211,8 @@ fun SearchFormLayout(
     onSchoolChanged: (String?) -> Unit,
 ) {
     var showKeywordSwitch by remember { mutableStateOf(true) }
+    val context = LocalContext.current
+    println(context)
 
     Column {
         Row{
@@ -249,7 +253,7 @@ fun SearchFormLayout(
                 val semesterValues = integerArrayResource(R.array.semester_value).toList()
                 semesterValues.zip(semesterNames).toMap()
             }
-            ClearableSelectBox(
+            SelectBox(
                 value = semester,
                 onValueChange = { onSemesterChanged(it) },
                 options = semesterOptions,
@@ -268,7 +272,7 @@ fun SearchFormLayout(
                     .let {
                         (0..7).toList().zip(it).toMap()
                     }
-                ClearableSelectBox(
+                SelectBox(
                     value = weekday,
                     onValueChange = onWeekdayChanged,
                     options = dayOfWeekOptions,
@@ -283,7 +287,7 @@ fun SearchFormLayout(
                     val periodValues = integerArrayResource(R.array.period_value).toList()
                     periodValues.zip(periodNames).toMap()
                 }
-                ClearableSelectBox(
+                SelectBox(
                     value = period,
                     onValueChange = onPeriodChanged,
                     options = periodOptions,
@@ -294,15 +298,10 @@ fun SearchFormLayout(
         }
         Spacer(modifier = Modifier.height(12.dp))
         Row {
-            val schoolOptions = let {
-                val schoolNames = stringArrayResource(R.array.school_name).toList()
-                val schoolValues = stringArrayResource(R.array.school_value).toList()
-                schoolValues.zip(schoolNames).toMap()
-            }
             ClearableFilterBox(
                 value = school,
                 onValueChange = onSchoolChanged,
-                options = schoolOptions,
+                options = LocalizedOptionsGetter.getSchoolOptions(context),
                 label = { Text(stringResource(R.string.form_school)) },
                 filter = { text, options ->
                     options.filter { it.value.contains(text, ignoreCase = true) }

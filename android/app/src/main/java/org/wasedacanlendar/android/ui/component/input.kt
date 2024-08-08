@@ -8,9 +8,15 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.Chip
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -37,6 +43,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.tooling.preview.Preview
 import org.wasedacanlendar.android.R
 
 @Composable
@@ -45,6 +52,7 @@ fun ClearableTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     label: @Composable (() -> Unit)? = null,
+    icon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     outlined: Boolean = false,
 ) {
@@ -58,7 +66,8 @@ fun ClearableTextField(
             label = label,
             readOnly = readOnly,
             singleLine = true,
-            trailingIcon = { ClearIcon(value, onValueChange) }
+            trailingIcon = { ClearIcon(value, onValueChange) },
+            leadingIcon = icon
         )
     } else {
         TextField(
@@ -68,21 +77,24 @@ fun ClearableTextField(
             label = label,
             readOnly = readOnly,
             singleLine = true,
-            trailingIcon = { ClearIcon(value, onValueChange) }
+            trailingIcon = { ClearIcon(value, onValueChange) },
+            leadingIcon = icon
         )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <T> ClearableSelectBox(
+fun <T> SelectBox(
     value: T?,
     onValueChange: (T?) -> Unit,
     options: Map<T, String>,
     modifier: Modifier = Modifier,
     resetValue: T? = null,
     label: @Composable (() -> Unit)? = null,
+    icon: @Composable (() -> Unit)? = null,
     outlined: Boolean = false,
+    clearable: Boolean = true,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -97,11 +109,14 @@ fun <T> ClearableSelectBox(
                 modifier = modifier
                     .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                 trailingIcon = {
-                    ClearIcon(value = options[value] ?: "", onValueChange = {
-                        onValueChange(resetValue)
-                        expanded = false
-                    })
+                    if(clearable) {
+                        ClearIcon(value = options[value] ?: "", onValueChange = {
+                            onValueChange(resetValue)
+                            expanded = false
+                        })
+                    }
                 },
+                leadingIcon = icon
             )
         } else {
             TextField(
@@ -110,11 +125,14 @@ fun <T> ClearableSelectBox(
                 modifier = modifier
                     .menuAnchor(MenuAnchorType.PrimaryNotEditable),
                 trailingIcon = {
-                    ClearIcon(value = options[value] ?: "", onValueChange = {
-                        onValueChange(resetValue)
-                        expanded = false
-                    })
+                    if(clearable) {
+                        ClearIcon(value = options[value] ?: "", onValueChange = {
+                            onValueChange(resetValue)
+                            expanded = false
+                        })
+                    }
                 },
+                leadingIcon = icon
             )
         }
 
@@ -228,6 +246,7 @@ fun <T> ClearableFilterBox(
     }
 }
 
+
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ClearIcon(
@@ -248,9 +267,11 @@ fun ClearIcon(
         Icon(
             painter = painterResource(R.drawable.outline_cancel_24),
             contentDescription = stringResource(R.string.action_clear),
-            modifier = Modifier.clickable {
-                onValueChange("")
-            }.pointerInteropFilter { false }
+            modifier = Modifier
+                .clickable {
+                    onValueChange("")
+                }
+                .pointerInteropFilter { false }
 
         )
     }

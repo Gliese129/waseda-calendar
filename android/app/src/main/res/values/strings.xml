@@ -18,4 +18,6 @@
     <string name="hide_syllabus">Hide %1$s</string>
     <string name="show_syllabus">Show %1$s</string>
     <string name="hello">hello</string>
+    <string name="form_campus">Campus</string>
+    <string name="form_instructors">Instructors</string>
 </resources>

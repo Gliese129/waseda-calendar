@@ -2,9 +2,6 @@ package org.wasedacanlendar.android.ui.component.courseedit
 
 import android.content.Intent
 import android.net.Uri
-import android.view.MotionEvent
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -24,12 +21,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -57,7 +57,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -65,20 +64,24 @@ import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.times
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.navOptions
+import com.dokar.chiptextfield.Chip
+import com.dokar.chiptextfield.m3.OutlinedChipTextField
+import com.dokar.chiptextfield.rememberChipTextFieldState
 import kotlinx.coroutines.launch
 import org.wasedacanlendar.android.R
 import org.wasedacanlendar.android.model.Course
 import org.wasedacanlendar.android.model.Table
+import org.wasedacanlendar.android.ui.component.ClearableTextField
+import org.wasedacanlendar.android.ui.component.SelectBox
 import org.wasedacanlendar.android.utils.SharedPreferencesModule
 import kotlin.math.roundToInt
 
@@ -172,38 +175,55 @@ fun CourseEdit(
                                     .height(halfHeight)
                                     .padding(top = 10.dp),
                             ) {
-                                SyllabusRawView(
-                                    table = currentEditUiState.syllabusRaw,
-                                    url = currentEditUiState.currentEdit.getUrl(sharedPreferences.getString("search_lang", "ja") ?: "ja")
-                                )
+                                currentEditUiState.originalCourse?.getUrl?.let {
+                                    it(sharedPreferences.getString("search_lang", "ja") ?: "ja")
+                                }
+                                    ?.let {
+                                        SyllabusRawView(
+                                            table = currentEditUiState.syllabusRaw,
+                                            url = it
+                                        )
+                                    }
                             }
                         }
                     ) {
-                        Card(
-                            onClick = { scaffoldScope.launch {
-                                if(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
-                                    scaffoldState.bottomSheetState.partialExpand()
-                                } else {
-                                    scaffoldState.bottomSheetState.expand()
+                        Column {
+                            Card(
+                                onClick = { scaffoldScope.launch {
+                                    if(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
+                                        scaffoldState.bottomSheetState.partialExpand()
+                                    } else {
+                                        scaffoldState.bottomSheetState.expand()
+                                    }
+                                } },
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .fillMaxWidth(),
+                                shape = RectangleShape
+                            ) {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    var text = stringResource(R.string.description_syllabus_raw_content)
+                                    text = if(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
+                                        stringResource(R.string.hide_syllabus, text)
+                                    } else {
+                                        stringResource(R.string.show_syllabus, text)
+                                    }
+                                    Text(text = text, modifier = Modifier.align(Alignment.Center))
                                 }
-                            } },
-                            modifier = Modifier
-                                .height(50.dp)
-                                .fillMaxWidth(),
-                            shape = RectangleShape
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize()) {
-                                var text = stringResource(R.string.description_syllabus_raw_content)
-                                text = if(scaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
-                                    stringResource(R.string.hide_syllabus, text)
-                                } else {
-                                    stringResource(R.string.show_syllabus, text)
-                                }
-                                Text(text = text, modifier = Modifier.align(Alignment.Center))
                             }
+
+                            CourseEditForm(
+                                course = currentEditUiState.course,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(10.dp),
+                                onValueChange = { courseEditViewModel.onCourseChanged(it) }
+                            )
                         }
                     }
                 }
+
+
             }
 
             FloatSaveBtn(
@@ -214,6 +234,89 @@ fun CourseEdit(
     }
 }
 
+@Composable
+fun CourseEditForm(
+    course: Course,
+    modifier: Modifier = Modifier,
+    onValueChange: (Course) -> Unit,
+) {
+    println(course)
+    val schoolOptions = " ".let {
+        val schoolNames = stringArrayResource(R.array.school_name).toList()
+        val schoolValues = stringArrayResource(R.array.school_value).toList()
+        schoolValues.zip(schoolNames).toMap()
+    }
+    Column(modifier = modifier.padding(5.dp, 0.dp)) {
+        ClearableTextField(
+            value = course.name,
+            onValueChange = { onValueChange(course.copy(name = it)) },
+            label = { Text(text = stringResource(R.string.form_name)) },
+            icon = { Icon(Icons.Outlined.Edit, contentDescription = "Edit") },
+            outlined = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Row(modifier = Modifier.height(65.dp)) {
+            Column{
+                Icon(
+                    Icons.Outlined.LocationOn, contentDescription = "Location",
+                    modifier = Modifier.padding(0.dp, 25.dp, 5.dp, 0.dp)
+                )
+            }
+            Column(modifier = Modifier.weight(0.5f)) {
+                SelectBox(
+                    value = course.school,
+                    onValueChange = { if(it != null) onValueChange(course.copy(school = it)) },
+                    options = schoolOptions,
+                    outlined = true,
+                    label = { Text(text = stringResource(R.string.form_school)) },
+                    clearable = false,
+
+                )
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Column(modifier = Modifier.weight(0.4f)) {
+                ClearableTextField(
+                    value = course.campus,
+                    onValueChange = { onValueChange(course.copy(campus = it)) },
+                    outlined = true,
+                    label = { Text(text = stringResource(R.string.form_campus)) },
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Row {
+            var value by remember { mutableStateOf("") }
+            println(course.instructors)
+            val state = rememberChipTextFieldState<Chip>()
+            state.chips = course.instructors.map { Chip(it) }
+            Column(
+                modifier = Modifier.align(Alignment.CenterVertically).padding(end = 5.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.classroom),
+                    contentDescription = "Instructors",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Column {
+                OutlinedChipTextField(
+                    state = state,
+                    value = value,
+                    onValueChange = { value = it },
+                    onSubmit = {text ->
+                        val instructors = state.chips.map { it.text } + text.trim()
+                        onValueChange(course.copy(instructors = instructors))
+                        Chip(text)
+                    },
+                    label = { Text(text = stringResource(R.string.form_instructors)) },
+                )
+            }
+
+        }
+    }
+}
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SyllabusRawView(

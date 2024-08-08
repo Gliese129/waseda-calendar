@@ -12,6 +12,8 @@ data class CourseEditUiState (
 ) {
     val isEditing: Boolean
         get() = currentEditIndex >= 0
-    val currentEdit: Course
-        get() = editStack.getOrNull(currentEditIndex) ?: course
+    val currentEdit: Course?
+        get() = editStack.getOrNull(currentEditIndex)
+    val originalCourse: Course?
+        get() = editStack.firstOrNull()
 }

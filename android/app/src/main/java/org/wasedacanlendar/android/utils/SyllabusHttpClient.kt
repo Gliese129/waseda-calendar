@@ -16,6 +16,8 @@ object SyllabusHttpClient {
 
     private val client: OkHttpClient = OkHttpClient.Builder()
         .addInterceptor(logging)
+        .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
         .build()
 
     private val retrofit: Retrofit by lazy {

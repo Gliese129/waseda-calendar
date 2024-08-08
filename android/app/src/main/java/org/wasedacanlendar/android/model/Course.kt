@@ -2,30 +2,38 @@ package org.wasedacanlendar.android.model
 
 import android.content.Context
 import android.os.Parcelable
+import androidx.compose.ui.res.stringArrayResource
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.wasedacanlendar.android.R
 import org.wasedacanlendar.android.network.parse.CourseDetailParser
+import org.wasedacanlendar.android.utils.LocalizedOptionsGetter
 import org.wasedacanlendar.android.utils.MathUtils
 
 @Parcelize
+@Entity(tableName = "courses")
 data class Course(
     val code: String,
     val name: String,
     val instructors: List<String>,
     val school: String,
     val schedules: List<Schedule> = emptyList(),
-    val key: String = "",
+    @PrimaryKey val key: String = "",
     val campus: String = "",
     val credits: Int = 0,
     val outline: String = "",
-    val courseSchedule: String = "",
+    @ColumnInfo(name = "course_schedule") val courseSchedule: String = "",
     val evaluations: List<Evaluation> = emptyList(),
     val note: String = "",
-    val academicYear: Int = 0,
+    @ColumnInfo(name = "academic_year") val academicYear: Int = 0,
     val textbook: String = ""
 ): Parcelable {
     @IgnoredOnParcel
+    @Ignore
     val getUrl = { lang: String ->
         "https://www.wsl.waseda.jp/syllabus/JAA104.php?pKey=${key}&pLng=${lang}"
     }
@@ -33,11 +41,16 @@ data class Course(
     companion object {
         fun getCourseFromDetailedTable(table: Table, context: Context): Course {
             val getArray = { id: Int -> context.resources.getStringArray(id).toList() }
+            val schoolOptions = LocalizedOptionsGetter.getSchoolOptions(context).let {
+                it.entries.associate { (k, v) -> v to k }
+            }
             return Course(
                 academicYear = table.getValueByTitle(getArray(R.array.syllabus_academic_year)).let {
                     Regex("\\d{4}").find(it)?.value?.toIntOrNull() ?: 0
                 },
-                school = table.getValueByTitle(getArray(R.array.syllabus_school)),
+                school = table.getValueByTitle(getArray(R.array.syllabus_school)).let {
+                    schoolOptions[it] ?: it
+                },
                 name = table.getValueByTitle(getArray(R.array.syllabus_name)),
                 instructors = table.getValueByTitle(getArray(R.array.syllabus_instructors)).split('/').map { it.trim() },
                 campus = table.getValueByTitle(getArray(R.array.syllabus_campus)),

@@ -65,7 +65,8 @@ class CourseEditViewModel @Inject constructor(
                 currentState.copy(
                     course = course,
                     editStack = currentState.editStack.toMutableList().apply {
-                        set(currentState.currentEditIndex + 1, course)
+                        subList(0, currentState.currentEditIndex)
+                        add(course)
                     },
                     currentEditIndex = currentState.currentEditIndex + 1
                 )

@@ -35,6 +35,7 @@ class DynamicHtmlConverterFactory: Converter.Factory() {
             it.value[0].code.minus(0xFEE0).toChar().toString()
         }.replace("　", " ").replace("・", "/")
         .let {
+
             return Jsoup.parse(it)
         }
     }

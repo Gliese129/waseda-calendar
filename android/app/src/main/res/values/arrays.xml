@@ -154,6 +154,9 @@
         <item>留学センター</item>
         <item>グローバルエデュケーションセンター</item>
     </string-array>
+    <string-array name="school_name_en">
+
+    </string-array>
     <string-array name="syllabus_academic_year">
         <item>開講年度</item>
         <item>year</item>
